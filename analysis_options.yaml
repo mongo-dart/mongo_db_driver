@@ -1,0 +1,18 @@
+include: package:lints/recommended.yaml
+
+# For lint rules and documentation, see http://dart-lang.github.io/linter/lints.
+# Uncomment to specify additional rules.
+linter:
+  rules:
+    - camel_case_types
+    - await_only_futures
+    - unawaited_futures
+    
+
+analyzer:
+  errors:
+    todo: info  
+    
+# analyzer:
+###   exclude:
+###     - path/to/excluded/files/**

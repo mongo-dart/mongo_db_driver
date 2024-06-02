@@ -1,0 +1,13 @@
+packages
+/null/
+/pubspec.lock
+*.md.html
+*.dart.js.deps
+/*.project
+/.idea/
+/out/
+/.pub/
+*.json
+.packages
+.dart_tool/
+.vscode/
