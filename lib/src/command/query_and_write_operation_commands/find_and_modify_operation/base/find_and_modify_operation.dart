@@ -24,7 +24,7 @@ typedef FindAndModifyDocumentRec = (
 
 base class FindAndModifyOperation extends CommandOperation {
   FindAndModifyOperation.protected(MongoCollection collection,
-      {this.query = const QueryUnion(<String, dynamic>{}),
+      {QueryUnion? query,
       this.sort,
       bool? remove,
       this.update,
@@ -36,7 +36,8 @@ base class FindAndModifyOperation extends CommandOperation {
       this.hint,
       FindAndModifyOptions? findAndModifyOptions,
       Options? rawOptions})
-      : remove = remove ?? false,
+      : query = query ?? QueryUnion(emptyQueryFilter),
+        remove = remove ?? false,
         returnNew = returnNew ?? false,
         upsert = upsert ?? false,
         super(
@@ -55,7 +56,7 @@ base class FindAndModifyOperation extends CommandOperation {
   }
 
   factory FindAndModifyOperation(MongoCollection collection,
-      {QueryUnion query = const QueryUnion(<String, dynamic>{}),
+      {QueryUnion? query,
       SortUnion? sort,
       bool? remove,
       UpdateUnion? update,
@@ -67,6 +68,7 @@ base class FindAndModifyOperation extends CommandOperation {
       HintUnion? hint,
       FindAndModifyOptions? findAndModifyOptions,
       Options? rawOptions}) {
+    query ??= QueryUnion(emptyQueryFilter);
     if (collection.serverApi != null) {
       switch (collection.serverApi!.version) {
         case ServerApiVersion.v1:

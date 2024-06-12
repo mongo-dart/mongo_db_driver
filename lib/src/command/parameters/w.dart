@@ -1,7 +1,7 @@
 import 'package:mongo_db_driver/src/unions/base/union_type.dart';
 
-const W wMajority = W('majority');
-const W primaryAcknowledged = W(1);
+final W wMajority = W('majority');
+final W primaryAcknowledged = W(1);
 
 /// The String value can be 'majority' or a customo defined
 /// write concern base on servers tags (settings.getLastErrorModes)
@@ -26,5 +26,5 @@ const W primaryAcknowledged = W(1);
 /// See Configure Replica Set Tag Sets for more information and example.
 
 class W extends UnionType<int, String> {
-  const W(super.value);
+  W(super.value);
 }

@@ -1,7 +1,7 @@
 abstract class UnionType<T1, T2> {
-  const UnionType(dynamic value)
-      : valueOne = value is T1 ? value : null,
-        valueTwo = value is T2 ? value : null;
+  UnionType(dynamic value)
+      : valueOne = _assignValue<T1>(value),
+        valueTwo = _assignValue<T2>(value);
 
   dynamic get value => valueOne ?? valueTwo;
   bool get isNull => value == null;
@@ -11,12 +11,12 @@ abstract class UnionType<T1, T2> {
 }
 
 abstract class MultiUnionType<T1, T2, T3, T4, T5> {
-  const MultiUnionType(dynamic value)
-      : valueOne = value is T1 ? value : null,
-        valueTwo = value is T2 ? value : null,
-        valueThree = value is T3 ? value : null,
-        valueFour = value is T4 ? value : null,
-        valueFive = value is T5 ? value : null;
+  MultiUnionType(dynamic value)
+      : valueOne = _assignValue<T1>(value),
+        valueTwo = _assignValue<T2>(value),
+        valueThree = _assignValue<T3>(value),
+        valueFour = _assignValue<T4>(value),
+        valueFive = _assignValue<T5>(value);
 
   dynamic get value =>
       valueOne ?? valueTwo ?? valueThree ?? valueFour ?? valueFive;
@@ -30,16 +30,16 @@ abstract class MultiUnionType<T1, T2, T3, T4, T5> {
 }
 
 abstract class HugeUnionType<T1, T2, T3, T4, T5, T6, T7, T8, T9> {
-  const HugeUnionType(dynamic value)
-      : valueOne = value is T1 ? value : null,
-        valueTwo = value is T2 ? value : null,
-        valueThree = value is T3 ? value : null,
-        valueFour = value is T4 ? value : null,
-        valueFive = value is T5 ? value : null,
-        valueSix = value is T6 ? value : null,
-        valueSeven = value is T7 ? value : null,
-        valueEight = value is T8 ? value : null,
-        valueNine = value is T9 ? value : null;
+  HugeUnionType(dynamic value)
+      : valueOne = _assignValue<T1>(value),
+        valueTwo = _assignValue<T2>(value),
+        valueThree = _assignValue<T3>(value),
+        valueFour = _assignValue<T4>(value),
+        valueFive = _assignValue<T5>(value),
+        valueSix = _assignValue<T6>(value),
+        valueSeven = _assignValue<T7>(value),
+        valueEight = _assignValue<T8>(value),
+        valueNine = _assignValue<T9>(value);
 
   dynamic get value =>
       valueOne ??
@@ -62,4 +62,37 @@ abstract class HugeUnionType<T1, T2, T3, T4, T5, T6, T7, T8, T9> {
   final T7? valueSeven;
   final T8? valueEight;
   final T9? valueNine;
+}
+
+T? _assignValue<T>(value) {
+  if (value == null) {
+    return null;
+  } else if (value is T) {
+    return value;
+  } else if (value is Map) {
+    return _convertMap<T>(value);
+  } else if (value is List) {
+    return _convertList<T>(value);
+  }
+  return null;
+}
+
+M? _convertMap<M>(Map map) {
+  M ret;
+  try {
+    ret = map as M;
+  } catch (e) {
+    return null;
+  }
+  return ret;
+}
+
+L? _convertList<L>(List list) {
+  L ret;
+  try {
+    ret = list as L;
+  } catch (e) {
+    return null;
+  }
+  return ret;
 }

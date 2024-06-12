@@ -1,8 +1,8 @@
 part of '../../crud_test.dart';
 
 ///
-Future findDefault(MongoDatabase db, List<String> usedColletions) async {
-  var collectionName = getRandomCollectionName(usedColletions);
+Future findDefault(MongoDatabase db, List<String> usedCollections) async {
+  var collectionName = getRandomCollectionName(usedCollections);
   var collection = db.collection(collectionName);
   var (_, MongoDocument result, _, _) = await insertBio(collection);
   expect(result, containsPair('ok', 1.0));
@@ -17,8 +17,8 @@ Future findDefault(MongoDatabase db, List<String> usedColletions) async {
 
 ///
 Future findDefaultSelectionQuery(
-    MongoDatabase db, List<String> usedColletions) async {
-  var collectionName = getRandomCollectionName(usedColletions);
+    MongoDatabase db, List<String> usedCollections) async {
+  var collectionName = getRandomCollectionName(usedCollections);
   var collection = db.collection(collectionName);
   var (_, MongoDocument result, _, _) = await insertBio(collection);
   expect(result, containsPair('ok', 1.0));
@@ -31,8 +31,8 @@ Future findDefaultSelectionQuery(
 
 ///
 Future findDefaultEmbeddedQuery(
-    MongoDatabase db, List<String> usedColletions) async {
-  var collectionName = getRandomCollectionName(usedColletions);
+    MongoDatabase db, List<String> usedCollections) async {
+  var collectionName = getRandomCollectionName(usedCollections);
   var collection = db.collection(collectionName);
   var (_, MongoDocument result, _, _) = await insertBio(collection);
   expect(result, containsPair('ok', 1.0));
@@ -46,8 +46,8 @@ Future findDefaultEmbeddedQuery(
 
 ///
 Future findDefaultMultipleQuery(
-    MongoDatabase db, List<String> usedColletions) async {
-  var collectionName = getRandomCollectionName(usedColletions);
+    MongoDatabase db, List<String> usedCollections) async {
+  var collectionName = getRandomCollectionName(usedCollections);
   var collection = db.collection(collectionName);
   var (_, MongoDocument result, _, _) = await insertBio(collection);
   expect(result, containsPair('ok', 1.0));
@@ -62,8 +62,9 @@ Future findDefaultMultipleQuery(
   expect(findList.first['_id'], 5);
 }
 
-Future findDefaultQueries(MongoDatabase db, List<String> usedColletions) async {
-  var collectionName = getRandomCollectionName(usedColletions);
+Future findDefaultQueries(
+    MongoDatabase db, List<String> usedCollections) async {
+  var collectionName = getRandomCollectionName(usedCollections);
   var collection = db.collection(collectionName);
   var (_, MongoDocument result, _, _) = await insertBio(collection);
   expect(result, containsPair('ok', 1.0));
@@ -94,8 +95,8 @@ Future findDefaultQueries(MongoDatabase db, List<String> usedColletions) async {
 }
 
 Future findDefaultRangeQuery(
-    MongoDatabase db, List<String> usedColletions) async {
-  var collectionName = getRandomCollectionName(usedColletions);
+    MongoDatabase db, List<String> usedCollections) async {
+  var collectionName = getRandomCollectionName(usedCollections);
   var collection = db.collection(collectionName);
   var (_, MongoDocument result, _, _) = await insertBio(collection);
   expect(result, containsPair('ok', 1.0));
@@ -111,8 +112,8 @@ Future findDefaultRangeQuery(
 }
 
 Future findDefaultAndQuery(
-    MongoDatabase db, List<String> usedColletions) async {
-  var collectionName = getRandomCollectionName(usedColletions);
+    MongoDatabase db, List<String> usedCollections) async {
+  var collectionName = getRandomCollectionName(usedCollections);
   var collection = db.collection(collectionName);
   var (_, MongoDocument result, _, _) = await insertBio(collection);
   expect(result, containsPair('ok', 1.0));

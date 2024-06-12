@@ -4,7 +4,7 @@ import 'base/union_type.dart';
 
 class QueryUnion extends MultiUnionType<QueryFilter, FilterExpression,
     QueryExpression, Never, Never> {
-  const QueryUnion(super.value);
+  QueryUnion(super.value);
 
   QueryFilter get query {
     if (isNull) {

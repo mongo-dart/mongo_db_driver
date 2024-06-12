@@ -64,7 +64,7 @@ class WriteConcern {
   final String? provenance;
 
   /// Creates a WriteConcern object
-  const WriteConcern(
+  WriteConcern(
       {W? w, this.wtimeout, this.fsync = true, this.j = true, this.provenance})
       : w = w ?? primaryAcknowledged;
 
@@ -78,29 +78,29 @@ class WriteConcern {
   /// Write operations that use this write concern will return as soon as the
   /// message is written to the socket.
   /// Exceptions are raised for network issues, but not server errors.
-  static const unacknowledged =
+  static final unacknowledged =
       WriteConcern(w: W(0), wtimeout: 0, fsync: false, j: false);
 
   /// Write operations that use this write concern will wait for
   /// acknowledgement from the primary server before returning.
   /// Exceptions are raised for network issues, and server errors.
-  static const acknowledged =
+  static final acknowledged =
       WriteConcern(w: primaryAcknowledged, wtimeout: 0, fsync: false, j: false);
 
   /// Exceptions are raised for network issues, and server errors;
   /// waits for at least 2 servers for the write operation.
-  static const replicaAcknowledged =
+  static final replicaAcknowledged =
       WriteConcern(w: W(2), wtimeout: 0, fsync: false, j: false);
 
   /// Exceptions are raised for network issues, and server errors; the write
   /// operation waits for the server to
   /// group commit to the journal file on disk.
-  static const journaled =
+  static final journaled =
       WriteConcern(w: primaryAcknowledged, wtimeout: 0, fsync: false, j: true);
 
   /// Exceptions are raised for network issues, and server errors; waits on a
   /// majority of servers for the write operation.
-  static const majority =
+  static final majority =
       WriteConcern(w: wMajority, wtimeout: 0, fsync: false, j: false);
 
   /// Gets the getlasterror command for this write concern.

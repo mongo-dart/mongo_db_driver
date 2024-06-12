@@ -35,7 +35,7 @@ abstract base class FindOneAndUpdateOperation extends FindAndModifyOperation {
             remove: false, findAndModifyOptions: findOneAndUpdateOptions);
 
   factory FindOneAndUpdateOperation(MongoCollection collection,
-      {QueryUnion query = const QueryUnion(<String, dynamic>{}),
+      {QueryUnion? query,
       UpdateUnion? update,
       ProjectionUnion? fields,
       SortUnion? sort,
@@ -46,6 +46,7 @@ abstract base class FindOneAndUpdateOperation extends FindAndModifyOperation {
       HintUnion? hint,
       FindOneAndUpdateOptions? findOneAndUpdateOptions,
       Options? rawOptions}) {
+    query ??= QueryUnion(emptyQueryFilter);
     if (collection.serverApi != null) {
       switch (collection.serverApi!.version) {
         case ServerApiVersion.v1:

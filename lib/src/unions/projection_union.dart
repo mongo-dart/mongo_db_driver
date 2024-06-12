@@ -4,7 +4,7 @@ import 'base/union_type.dart';
 
 class ProjectionUnion
     extends UnionType<ProjectionDocument, ProjectionExpression> {
-  const ProjectionUnion(super.value);
+  ProjectionUnion(super.value);
 
   ProjectionDocument get projection {
     if (isNull) {
