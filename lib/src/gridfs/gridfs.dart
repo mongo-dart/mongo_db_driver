@@ -1,4 +1,8 @@
-part of '../../mongo_dart_old.dart';
+import 'package:mongo_db_query/mongo_db_query.dart';
+
+import '../database/database.dart';
+import 'grid_in.dart';
+import 'grid_out.dart';
 
 class GridFS {
   static int defaultChunkSize = 256 * 1024;
@@ -42,7 +46,7 @@ class GridFS {
 
   GridIn createFile(Stream<List<int>> input, String filename,
           [Map<String, dynamic>? extraData]) =>
-      GridIn._(this, filename, input, extraData);
+      GridIn(this, filename, input, extraData);
 
   /// **Beware!** This method removes all the documents in this bucket
   Future<void> clearBucket() async {

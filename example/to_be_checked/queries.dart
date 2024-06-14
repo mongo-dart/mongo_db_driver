@@ -1,6 +1,7 @@
-import 'package:mongo_db_driver/mongo_dart_old.dart';
+import 'package:bson/bson.dart';
 import 'package:mongo_db_driver/src/database/base/mongo_collection.dart';
 import 'package:mongo_db_driver/src/mongo_client.dart';
+import 'package:mongo_db_query/mongo_db_query.dart';
 
 void main() async {
   var client = MongoClient('mongodb://127.0.0.1/mongo_dart-test');

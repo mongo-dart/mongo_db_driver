@@ -1,8 +1,7 @@
-import 'package:mongo_db_driver/mongo_dart_old.dart'
-    show keyComment, keyWriteConcern;
 import 'package:mongo_db_driver/src/command/parameters/write_concern.dart';
 
 import '../../../database/base/mongo_database.dart';
+import '../../../utils/map_keys.dart';
 import '../../base/operation_base.dart';
 
 /// Drop command options;

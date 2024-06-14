@@ -1,8 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data' show Uint8List;
 
-import 'package:mongo_db_driver/mongo_dart_old.dart';
-
+import '../command/command.dart';
 import '../core/auth/auth.dart';
 import '../core/info/client_auth.dart';
 import '../settings/connection_string_options.dart';

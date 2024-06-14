@@ -1,4 +1,11 @@
-part of '../../mongo_dart_old.dart';
+import 'dart:typed_data';
+
+import 'package:bson/bson.dart';
+
+import '../core/error/mongo_dart_error.dart';
+import 'chunk_handler.dart';
+import 'grid_fs_file.dart';
+import 'gridfs.dart';
 
 class GridIn extends GridFSFile {
   late Stream<Uint8List> input;
@@ -11,7 +18,7 @@ class GridIn extends GridFSFile {
 
   /// Used for MD5 calculation, now deprecated
   //Uint8List contentToDigest = Uint8List(0);
-  GridIn._(GridFS fs, String filename, Stream<List<int>> inputStream,
+  GridIn(GridFS fs, String filename, Stream<List<int>> inputStream,
       [Map<String, dynamic>? extraData])
       : super(fs, extraData) {
     id = ObjectId();

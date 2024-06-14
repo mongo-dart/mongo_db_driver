@@ -1,24 +1,9 @@
-import 'package:mongo_db_driver/mongo_dart_old.dart'
-    show
-        CollationOptions,
-        keyAutoIndexId,
-        keyCapped,
-        keyCollation,
-        keyComment,
-        keyIndexOptionDefaults,
-        keyMax,
-        keyPipeline,
-        keySize,
-        keyStorageEngine,
-        keyValidationAction,
-        keyValidationLevel,
-        keyValidator,
-        keyViewOn,
-        keyWriteConcern;
 import 'package:mongo_db_driver/src/command/parameters/write_concern.dart';
 
 import '../../../database/base/mongo_database.dart';
+import '../../../utils/map_keys.dart';
 import '../../base/operation_base.dart';
+import '../../parameters/collation_options.dart';
 
 /// Create command options;
 ///

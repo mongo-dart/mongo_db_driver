@@ -8,12 +8,13 @@ import 'package:mongo_db_driver/src/command/base/command_operation.dart';
 import 'package:mongo_db_driver/src/command/aggregation_commands/aggregate/return_classes/change_event.dart';
 import 'package:mongo_db_driver/src/command/aggregation_commands/wrapper/change_stream/change_stream_handler.dart';
 
-import '../../mongo_dart_old.dart';
+import '../command/command.dart';
 import '../core/error/mongo_dart_error.dart';
 import '../command/base/db_admin_command_operation.dart';
 import '../command/base/operation_base.dart';
 import '../session/client_session.dart';
 import '../topology/server.dart';
+import '../utils/map_keys.dart';
 import 'base/mongo_database.dart';
 import 'base/mongo_collection.dart';
 

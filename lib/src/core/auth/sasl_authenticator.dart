@@ -4,19 +4,13 @@ import 'package:crypto/crypto.dart' show md5;
 import 'package:mongo_db_driver/src/core/auth/scram_sha1_authenticator.dart';
 import 'package:sasl_scram/sasl_scram.dart'
     show SaslMechanism, UsernamePasswordCredential;
-import 'package:mongo_db_driver/mongo_dart_old.dart'
-    show
-        SaslContinueCommand,
-        SaslStartCommand,
-        SaslStartOptions,
-        keyCode,
-        keyCodeName,
-        keyErrmsg,
-        keyOk;
+
 import 'package:mongo_db_driver/src/core/auth/auth.dart';
 
 import '../../command/base/auth_command.dart';
+import '../../command/command.dart';
 import '../../session/client_session.dart';
+import '../../utils/map_keys.dart';
 import '../error/mongo_dart_error.dart';
 import '../../topology/server.dart';
 

@@ -1,8 +1,10 @@
 library gridfs_tests;
 
-import 'package:mongo_db_driver/mongo_dart_old.dart';
-import 'package:mongo_db_driver/src/database/base/mongo_database.dart';
-import 'package:mongo_db_driver/src/mongo_client.dart';
+import 'package:mongo_db_driver/mongo_db_driver.dart';
+import 'package:mongo_db_driver/src/gridfs/chunk_handler.dart';
+import 'package:mongo_db_driver/src/gridfs/grid_in.dart';
+import 'package:mongo_db_driver/src/gridfs/gridfs.dart';
+import 'package:mongo_db_query/mongo_db_query.dart';
 import 'dart:io';
 import 'dart:async';
 import 'package:test/test.dart';

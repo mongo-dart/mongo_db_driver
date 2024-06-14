@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:mongo_db_driver/mongo_dart_old.dart';
 import '../../../core/network/abstract/connection_base.dart';
 import '../../../mongo_client.dart';
+import '../../../utils/map_keys.dart';
 import '../../base/auth_command.dart';
 import 'sasl_continue_options.dart';
 

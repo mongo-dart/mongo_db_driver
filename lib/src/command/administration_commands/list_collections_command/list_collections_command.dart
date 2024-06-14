@@ -1,7 +1,8 @@
-import 'package:mongo_db_driver/mongo_dart_old.dart';
 import 'package:mongo_db_driver/src/command/base/operation_base.dart';
 import '../../../database/base/mongo_database.dart';
+import '../../../utils/map_keys.dart';
 import '../../base/command_operation.dart';
+import 'list_collections_options.dart';
 
 /// listCollections command.
 ///

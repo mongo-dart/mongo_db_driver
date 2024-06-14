@@ -1,7 +1,7 @@
-import 'package:mongo_db_driver/mongo_dart_old.dart';
 import 'package:mongo_db_driver/src/command/base/operation_base.dart';
 
 import '../../core/error/mongo_dart_error.dart';
+import '../../utils/map_keys.dart';
 
 List<String> _caseFirstValidValues = <String>['upper', 'lower', 'off'];
 List<String> _alternateValidValues = <String>['non-ignorable', 'shifted'];

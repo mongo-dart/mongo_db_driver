@@ -1,5 +1,5 @@
 // Example Tested on release 0.7.0
-import 'package:mongo_db_driver/mongo_dart_old.dart';
+import 'package:mongo_db_driver/src/command/command.dart';
 import 'package:mongo_db_driver/src/database/cursor.dart';
 import 'package:mongo_db_driver/src/mongo_client.dart';
 import 'package:mongo_db_driver/src/unions/query_union.dart';

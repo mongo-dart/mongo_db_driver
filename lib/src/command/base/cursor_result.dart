@@ -1,9 +1,9 @@
 import 'package:fixnum/fixnum.dart';
-import 'package:mongo_db_driver/mongo_dart_old.dart';
 import 'package:mongo_db_driver/src/utils/mongo_db_namespace.dart';
 
 import '../../core/error/mongo_dart_error.dart';
 import '../../session/client_session.dart';
+import '../../utils/map_keys.dart';
 
 /// Contains the cursor information,
 /// including the cursor id and the firstBatch/nextBatch of documents.

@@ -1,4 +1,7 @@
-part of '../../mongo_dart_old.dart';
+import 'dart:async';
+
+import '../core/error/mongo_dart_error.dart';
+import 'gridfs.dart';
 
 abstract class GridFSFile {
   GridFS fs;

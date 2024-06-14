@@ -1,7 +1,9 @@
 // ignore_for_file: unused_local_variable
 
-import 'package:mongo_db_driver/mongo_dart_old.dart';
+import 'package:mongo_db_driver/src/command/command.dart';
 import 'package:mongo_db_driver/src/session/transaction_info.dart';
+import 'package:mongo_db_driver/src/utils/map_keys.dart';
+import 'package:mongo_db_query/mongo_db_query.dart';
 import 'package:test/test.dart';
 
 import '../utils/test_database.dart';

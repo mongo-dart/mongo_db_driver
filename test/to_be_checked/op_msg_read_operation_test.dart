@@ -1,13 +1,14 @@
 @Timeout(Duration(seconds: 30))
 library;
 
+import 'package:bson/bson.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:mongo_db_driver/mongo_db_driver.dart' hide MongoDocument;
-import 'package:mongo_db_driver/mongo_dart_old.dart';
 import 'package:mongo_db_driver/src/command/query_and_write_operation_commands/find_operation/find_result.dart';
 import 'package:mongo_db_driver/src/database/cursor.dart';
 import 'package:decimal/decimal.dart';
 import 'package:mongo_db_driver/src/unions/query_union.dart';
+import 'package:mongo_db_query/mongo_db_query.dart';
 import 'package:test/test.dart';
 import 'package:uuid/uuid.dart';
 

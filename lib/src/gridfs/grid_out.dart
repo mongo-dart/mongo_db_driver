@@ -1,4 +1,13 @@
-part of '../../mongo_dart_old.dart';
+import 'dart:async';
+import 'dart:io';
+
+import 'package:bson/bson.dart';
+import 'package:mongo_db_driver/src/extensions/file_ext.dart';
+import 'package:mongo_db_query/mongo_db_query.dart';
+import 'package:path/path.dart' as p;
+import 'package:uuid/uuid.dart';
+
+import 'grid_fs_file.dart';
 
 class GridOut extends GridFSFile {
   GridOut(super.fs, [super.data]);

@@ -1,5 +1,8 @@
-import 'package:mongo_db_driver/mongo_dart_old.dart';
+import 'package:bson/bson.dart';
 import 'package:mongo_db_driver/src/command/base/operation_base.dart';
+
+import '../../../../utils/map_keys.dart';
+import '../../../command.dart';
 
 /// Parameters for the ChangeStream Operation
 ///

@@ -2,7 +2,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:mongo_db_driver/mongo_db_driver.dart';
-import 'package:mongo_db_driver/mongo_dart_old.dart';
+import 'package:mongo_db_driver/src/gridfs/gridfs.dart';
+import 'package:mongo_db_query/mongo_db_query.dart';
 
 const dbName = 'mongo-dart-example';
 const dbAddress = '127.0.0.1';

@@ -1,7 +1,7 @@
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
-import 'package:mongo_db_driver/mongo_dart_old.dart';
 
+import '../../command/command.dart';
 import '../../core/error/mongo_dart_error.dart';
 import '../../core/info/server_config.dart';
 import '../../mongo_client.dart';
