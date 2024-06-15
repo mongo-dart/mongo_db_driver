@@ -1,6 +1,6 @@
 import 'package:mongo_db_driver/src/utils/map_keys.dart';
 
-import '../../aggregate/aggregate_operation.dart';
+import '../../aggregate/base/aggregate_operation.dart';
 import 'change_stream_options.dart';
 
 base class ChangeStreamOperation extends AggregateOperation {
@@ -11,7 +11,7 @@ base class ChangeStreamOperation extends AggregateOperation {
       super.hint,
       ChangeStreamOptions? changeStreamOptions,
       super.rawOptions})
-      : super(
+      : super.protected(
           cursor: batchSize == null
               ? null
               : <String, dynamic>{keyBatchSize: batchSize},

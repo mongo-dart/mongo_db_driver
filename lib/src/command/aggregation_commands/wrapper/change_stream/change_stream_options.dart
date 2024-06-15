@@ -18,7 +18,8 @@ class ChangeStreamOptions extends AggregateOptions {
       super.bypassDocumentValidation,
       super.allowDiskUse,
       super.collation,
-      super.comment});
+      super.comment})
+      : super.protected();
 
   /// Directs watch to attempt resuming notifications starting after the
   /// operation specified in the resume token.

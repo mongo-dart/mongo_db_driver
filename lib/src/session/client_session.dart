@@ -206,7 +206,8 @@ class ClientSession {
 
   void prepareCommand(Command command) {
     serverSession ??= client.serverSessionPool.acquireSession();
-    print('ServerSession: ${serverSession!.id}');
+    // TODO log?
+    //print('ServerSession: ${serverSession!.id}');
     serverSession!.lastUse = DateTime.now();
     command[keyLsid] = serverSession!.toMap;
     if (inTransaction) {
@@ -219,8 +220,9 @@ class ClientSession {
       command[keyTxnNumber] = transaction.transactionNumber;
       command[keyAutocommit] = false;
     }
-    print(command);
-    print('Tnx num: ${transaction.transactionNumber}');
+    // TODO log?
+    //print(command);
+    //print('Tnx num: ${transaction.transactionNumber}');
   }
 
 // TODO Execute the commands

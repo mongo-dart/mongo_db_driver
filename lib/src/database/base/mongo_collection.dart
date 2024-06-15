@@ -9,7 +9,7 @@ import 'package:mongo_db_driver/mongo_db_driver.dart'
         UpdateDocument;
 import '../../command/base/operation_base.dart';
 import '../../unions/hint_union.dart';
-import '../../command/aggregation_commands/aggregate/return_classes/change_event.dart';
+import '../../command/aggregation_commands/return_classes/change_event.dart';
 import '../../command/query_and_write_operation_commands/wrapper/find_one_and_delete/base/find_one_and_delete_operation.dart';
 import '../../command/query_and_write_operation_commands/wrapper/find_one_and_delete/base/find_one_and_delete_options.dart';
 import '../../command/query_and_write_operation_commands/wrapper/find_one_and_replace/base/find_one_and_replace_operation.dart';

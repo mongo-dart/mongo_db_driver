@@ -1,3 +1,4 @@
+import 'package:meta/meta.dart';
 import 'package:mongo_db_driver/mongo_db_driver.dart'
     show
         AggregateOptions,
@@ -13,17 +14,21 @@ import 'package:mongo_db_driver/mongo_db_driver.dart'
 import 'package:mongo_db_driver/src/command/base/operation_base.dart';
 import 'package:mongo_db_query/mongo_db_query.dart';
 
-import '../../../session/client_session.dart';
-import '../../../topology/server.dart';
-import '../../../unions/hint_union.dart';
-import '../../base/command_operation.dart';
-import 'aggregate_result.dart';
+import '../../../../server_api_version.dart';
+import '../../../../session/client_session.dart';
+import '../../../../topology/server.dart';
+import '../../../../unions/hint_union.dart';
+import '../../../base/command_operation.dart';
+import '../open/aggregate_operation_open.dart';
+import '../v1/aggregate_operation_v1.dart';
+import '../aggregate_result.dart';
 
 /// Collection is the collection on which the operation is performed
 /// In case of admin/diagnostic pipeline which does not require an underlying
 /// collection, the db parameter must be passed instead.
 base class AggregateOperation extends CommandOperation {
-  AggregateOperation(Object pipeline,
+  @protected
+  AggregateOperation.protected(Object pipeline,
       {MongoCollection? collection,
       MongoDatabase? db,
       bool? explain,
@@ -54,6 +59,43 @@ base class AggregateOperation extends CommandOperation {
           'while the method only accept "AggregationPipelineBuilder" or '
           '"List<Map<String, Object>>" objects');
     }
+  }
+
+  factory AggregateOperation(Object pipeline,
+      {MongoCollection? collection,
+      MongoDatabase? db,
+      bool? explain,
+      MongoDocument? cursor,
+      ClientSession? session,
+      HintUnion? hint,
+      AggregateOptions? aggregateOptions,
+      Options? rawOptions}) {
+    if (collection?.serverApi != null) {
+      switch (collection!.serverApi!.version) {
+        case ServerApiVersion.v1:
+          return AggregateOperationV1(pipeline,
+              collection: collection,
+              db: db,
+              explain: explain,
+              cursor: cursor,
+              session: session,
+              hint: hint,
+              aggregateOptions: aggregateOptions?.toV1,
+              rawOptions: rawOptions);
+        default:
+          throw MongoDartError(
+              'Stable Api ${collection.serverApi!.version} not managed');
+      }
+    }
+    return AggregateOperationOpen(pipeline,
+        collection: collection,
+        db: db,
+        explain: explain,
+        cursor: cursor,
+        session: session,
+        hint: hint,
+        aggregateOptions: aggregateOptions?.toOpen,
+        rawOptions: rawOptions);
   }
 
   /// An array of aggregation pipeline stages that process and transform

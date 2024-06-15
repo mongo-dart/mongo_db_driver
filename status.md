@@ -5,12 +5,12 @@
 [Reference][1]
 | Command | Developed | Tested  | Notes |
 | :---: | :---: | --- | :---: |
-| count | Not developed |  |  |
 | abortTransaction | Not developed |  |  |
-| aggregate | Not developed |  | [Limitation][2]  |
+| aggregate | :heavy_check_mark: |  | |
 | bulkWrite() | Not developed |  |  |
 | collMod | Not developed |  |  |
 | commitTransaction | Not developed |  |  |
+| count | Not developed |  |  |
 | create | Not developed |  |  |
 | createIndexes | Not developed |  |  |
 | delete | Not developed |  |  |
@@ -18,7 +18,7 @@
 | dropDatabase | Not developed |  |  |
 | dropIndexes | Not developed |  |  |
 | endSessions | Not developed |  |  |
-| explain | Not developed |  | [Limitation][3] |
+| explain | Not developed |  | |
 | find | Not developed |  |  |
 | findAndModify | Not developed |  |  |
 | getMore | Not developed |  |  |
@@ -54,5 +54,17 @@
 | refreshSessions | :white_square_button: |  |  |
 | startSession | :heavy_check_mark: |  |  |
 
+## Commands
+
+[Reference][5]
+| Command | Developed | Tested  | Notes |
+| :---: | :---: | --- | :---: |
+| | **Aggregation**  | **Commands** | |
+| aggregate | :heavy_check_mark: |  |  |
+| count |:heavy_check_mark: |  |  |
+| distinct | :heavy_check_mark: |  |  |
+| mapReduce | :white_square_button: |  |  |
+
  [1]: https://www.mongodb.com/docs/manual/reference/stable-api-changelog/#std-label-stable-api-changelog
  [4]: https://www.mongodb.com/docs/manual/reference/command/nav-sessions/
+ [5]: https://www.mongodb.com/docs/manual/reference/command/

@@ -482,14 +482,14 @@ void main() async {
         expect(session2.isTransactionCommitted, isFalse);
         expect(session2.transaction.state, TransactionState.none);
 
-        print('Start Session');
+        //print('Start Session');
         session.startTransaction();
 
         expect(session.inTransaction, isTrue);
         expect(session.isTransactionCommitted, isFalse);
         expect(session.transaction.state, TransactionState.starting);
 
-        print('insert on session');
+        //print('insert on session');
 
         var (writeResult, _, _, id) = await collection.insertOne(
             {'Name': 'Jack', 'DateOfBirth': DateTime(1987, 5, 12), 'Score': 98},
@@ -500,7 +500,7 @@ void main() async {
         expect(session.isTransactionCommitted, isFalse);
         expect(session.transaction.state, TransactionState.inProgress);
 
-        print('find on session');
+        //print('find on session');
         var result =
             await collection.findOne(filter: where..id(id), session: session);
         expect(result?['Name'], 'Jack');
@@ -509,7 +509,7 @@ void main() async {
         expect(session.isTransactionCommitted, isFalse);
         expect(session.transaction.state, TransactionState.inProgress);
 
-        print('start session 2');
+        //print('start session 2');
 
         session2.startTransaction();
 
@@ -517,7 +517,7 @@ void main() async {
         expect(session2.isTransactionCommitted, isFalse);
         expect(session2.transaction.state, TransactionState.starting);
 
-        print('insert one session 2');
+        //print('insert one session 2');
         (writeResult, _, _, id) = await collection2.insertOne(
             {'Name': 'Maria', 'DateOfBirth': DateTime(1999, 8, 4), 'Score': 85},
             session: session2);
@@ -527,7 +527,7 @@ void main() async {
         expect(session2.isTransactionCommitted, isFalse);
         expect(session2.transaction.state, TransactionState.inProgress);
 
-        print('find one session 2');
+        //print('find one session 2');
         result =
             await collection2.findOne(filter: where..id(id), session: session2);
         expect(result?['Name'], 'Maria');
@@ -537,7 +537,7 @@ void main() async {
         expect(session.isTransactionCommitted, isFalse);
         expect(session.transaction.state, TransactionState.inProgress);
 
-        print('commit session');
+        //print('commit session');
         await session.commitTransaction();
         // -------------------
 
@@ -546,7 +546,7 @@ void main() async {
         expect(session2.isTransactionCommitted, isFalse);
         expect(session2.transaction.state, TransactionState.inProgress);
 
-        print('commit session2');
+        //print('commit session2');
         var ret = await session2.commitTransaction();
 
         expect(session2.inTransaction, isFalse);

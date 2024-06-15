@@ -18,8 +18,8 @@ export 'administration_commands/wrapper/create_collection/create_collection_opti
 export 'administration_commands/wrapper/create_view/create_view_command.dart';
 export 'administration_commands/wrapper/create_view/create_view_options.dart';
 
-export 'aggregation_commands/aggregate/aggregate_operation.dart';
-export 'aggregation_commands/aggregate/aggregate_options.dart';
+export 'aggregation_commands/aggregate/base/aggregate_operation.dart';
+export 'aggregation_commands/aggregate/base/aggregate_options.dart';
 export 'aggregation_commands/count/count_operation.dart';
 export 'aggregation_commands/count/count_options.dart';
 export 'aggregation_commands/count/count_result.dart';

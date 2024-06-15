@@ -1,8 +1,52 @@
 import 'package:mongo_db_driver/mongo_db_driver.dart';
 
-import '../../base/operation_base.dart';
+import '../../../base/operation_base.dart';
+import '../open/aggregate_options_open.dart';
+import '../v1/aggregate_options_v1.dart';
 
 class AggregateOptions {
+  AggregateOptions.protected(
+      {this.allowDiskUse = false,
+      this.maxTimeMS,
+      this.bypassDocumentValidation = false,
+      this.readConcern,
+      this.collation,
+      this.comment,
+      this.writeConcern}) {
+    if (maxTimeMS != null && maxTimeMS! < 1) {
+      throw MongoDartError('MaxTimeMS parameter must be a positive value');
+    }
+  }
+
+  factory AggregateOptions(
+      {ServerApi? serverApi,
+      bool allowDiskUse = false,
+      int? maxTimeMS,
+      bool bypassDocumentValidation = false,
+      ReadConcern? readConcern,
+      CollationOptions? collation,
+      String? comment,
+      WriteConcern? writeConcern}) {
+    if (serverApi != null && serverApi.version == ServerApiVersion.v1) {
+      return AggregateOptionsV1(
+          allowDiskUse: allowDiskUse,
+          maxTimeMS: maxTimeMS,
+          bypassDocumentValidation: bypassDocumentValidation,
+          readConcern: readConcern,
+          collation: collation,
+          comment: comment,
+          writeConcern: writeConcern);
+    }
+    return AggregateOptionsOpen(
+        allowDiskUse: allowDiskUse,
+        maxTimeMS: maxTimeMS,
+        bypassDocumentValidation: bypassDocumentValidation,
+        readConcern: readConcern,
+        collation: collation,
+        comment: comment,
+        writeConcern: writeConcern);
+  }
+
   /// Enables writing to temporary files. When set to true, a
   /// ggregation stages can write data to the _tmp subdirectory in the dbPath
   /// directory.
@@ -92,18 +136,27 @@ class AggregateOptions {
   /// Omit to use the default write concern with the $out or $merge stage.
   final WriteConcern? writeConcern;
 
-  AggregateOptions(
-      {this.allowDiskUse = false,
-      this.maxTimeMS,
-      this.bypassDocumentValidation = false,
-      this.readConcern,
-      this.collation,
-      this.comment,
-      this.writeConcern}) {
-    if (maxTimeMS != null && maxTimeMS! < 1) {
-      throw MongoDartError('MaxTimeMS parameter must be a positive value');
-    }
-  }
+  AggregateOptionsOpen get toOpen => this is AggregateOptionsOpen
+      ? this as AggregateOptionsOpen
+      : AggregateOptionsOpen(
+          allowDiskUse: allowDiskUse,
+          maxTimeMS: maxTimeMS,
+          bypassDocumentValidation: bypassDocumentValidation,
+          readConcern: readConcern,
+          collation: collation,
+          comment: comment,
+          writeConcern: writeConcern);
+
+  AggregateOptionsV1 get toV1 => this is AggregateOptionsV1
+      ? this as AggregateOptionsV1
+      : AggregateOptionsV1(
+          allowDiskUse: allowDiskUse,
+          maxTimeMS: maxTimeMS,
+          bypassDocumentValidation: bypassDocumentValidation,
+          readConcern: readConcern,
+          collation: collation,
+          comment: comment,
+          writeConcern: writeConcern);
 
   Options getOptions(MongoDatabase? db) => <String, dynamic>{
         if (allowDiskUse) keyAllowDiskUse: allowDiskUse,
