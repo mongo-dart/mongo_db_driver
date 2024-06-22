@@ -142,6 +142,7 @@ const keyKillCursors = 'killCursors';
 const keyLatchAnalysis = 'latchAnalysis';
 const keyLastErrorObject = 'lastErrorObject';
 const keyLastWrite = 'lastWrite';
+const keyLet = 'let';
 const keyLevel = 'level';
 const keyLimit = 'limit';
 const keyListCollections = 'listCollections';

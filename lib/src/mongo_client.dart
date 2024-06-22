@@ -1,5 +1,8 @@
 import 'package:logging/logging.dart';
 
+import 'command/base/db_admin_command_operation.dart';
+import 'command/base/operation_base.dart';
+import 'database/database.dart';
 import 'session/session_options.dart';
 import 'topology/discover.dart';
 import 'command/command.dart';
@@ -15,7 +18,6 @@ import 'mongo_client_options.dart';
 import 'utils/decode_dns_seed_list.dart';
 import 'utils/decode_url_parameters.dart';
 import 'utils/split_hosts.dart';
-import 'database/base/mongo_database.dart';
 
 abstract class DriverInfo {
   String? name;
@@ -203,6 +205,12 @@ class MongoClient {
     }
     return retValue;
   }
+
+  /// Runs a database command
+  Future<MongoDocument> adminCommand(Command command,
+          {ClientSession? session}) =>
+      DbAdminCommandOperation(this, command,
+          session: session, options: <String, dynamic>{}).process();
 
 /* 
   void selectAuthenticationMechanism(String authenticationSchemeName) {

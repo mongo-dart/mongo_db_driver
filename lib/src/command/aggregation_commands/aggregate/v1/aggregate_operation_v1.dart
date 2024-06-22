@@ -25,6 +25,7 @@ base class AggregateOperationV1 extends AggregateOperation {
       super.session,
       super.hint,
       super.aggregateOptions,
-      super.rawOptions})
+      super.rawOptions,
+      super.let})
       : super.protected();
 }

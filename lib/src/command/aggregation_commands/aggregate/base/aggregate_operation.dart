@@ -1,16 +1,6 @@
 import 'package:meta/meta.dart';
 import 'package:mongo_db_driver/mongo_db_driver.dart'
-    show
-        AggregateOptions,
-        MongoCollection,
-        MongoDartError,
-        MongoDatabase,
-        keyAggregate,
-        keyCursor,
-        keyDbName,
-        keyExplain,
-        keyHint,
-        keyPipeline;
+    show AggregateOptions, MongoCollection, MongoDartError, MongoDatabase;
 import 'package:mongo_db_driver/src/command/base/operation_base.dart';
 import 'package:mongo_db_query/mongo_db_query.dart';
 
@@ -18,6 +8,7 @@ import '../../../../server_api_version.dart';
 import '../../../../session/client_session.dart';
 import '../../../../topology/server.dart';
 import '../../../../unions/hint_union.dart';
+import '../../../../utils/map_keys.dart';
 import '../../../base/command_operation.dart';
 import '../open/aggregate_operation_open.dart';
 import '../v1/aggregate_operation_v1.dart';
@@ -36,7 +27,8 @@ base class AggregateOperation extends CommandOperation {
       super.session,
       this.hint,
       AggregateOptions? aggregateOptions,
-      Options? rawOptions})
+      Options? rawOptions,
+      this.let})
       : cursor = cursor ?? <String, Object>{},
         explain = explain ?? false,
         super(
@@ -69,7 +61,8 @@ base class AggregateOperation extends CommandOperation {
       ClientSession? session,
       HintUnion? hint,
       AggregateOptions? aggregateOptions,
-      Options? rawOptions}) {
+      Options? rawOptions,
+      MongoDocument? let}) {
     if (collection?.serverApi != null) {
       switch (collection!.serverApi!.version) {
         case ServerApiVersion.v1:
@@ -81,7 +74,8 @@ base class AggregateOperation extends CommandOperation {
               session: session,
               hint: hint,
               aggregateOptions: aggregateOptions?.toV1,
-              rawOptions: rawOptions);
+              rawOptions: rawOptions,
+              let: let);
         default:
           throw MongoDartError(
               'Stable Api ${collection.serverApi!.version} not managed');
@@ -95,7 +89,8 @@ base class AggregateOperation extends CommandOperation {
         session: session,
         hint: hint,
         aggregateOptions: aggregateOptions?.toOpen,
-        rawOptions: rawOptions);
+        rawOptions: rawOptions,
+        let: let);
   }
 
   /// An array of aggregation pipeline stages that process and transform
@@ -129,6 +124,32 @@ base class AggregateOperation extends CommandOperation {
   /// equality condition on the _id field { _id: <value> }.
   HintUnion? hint;
 
+  /// Optional. Specifies a document with a list of variables.
+  /// This allows you to improve command readability by separating the
+  /// variables from the query text.
+  /// ``` dart
+  /// The document syntax is:
+  /// {
+  ///   <variable_name_1>: <expression_1>,
+  ///   ...,
+  ///   <variable_name_n>: <expression_n>
+  /// }
+  /// ```
+  /// The variable is set to the value returned by the expression, and cannot
+  /// be changed afterwards.
+  ///
+  /// To access the value of a variable in the command, use the double dollar
+  /// sign prefix ($$) together with your variable name in the form
+  /// $$<variable_name>. For example: $$targetTotal.
+  ///
+  /// **Note**
+  ///
+  /// To use a variable to filter results in a pipeline $match stage,
+  /// you must access the variable within the $expr operator.
+  ///
+  /// New in version 5.0.
+  MongoDocument? let;
+
   @override
   Command $buildCommand() {
     // on null collections (only aggregate) the query is performed
@@ -139,9 +160,9 @@ base class AggregateOperation extends CommandOperation {
     return <String, dynamic>{
       keyAggregate: collection?.collectionName ?? 1,
       keyPipeline: pipeline,
-      if (explain) keyExplain: explain,
-      keyCursor: cursor,
-      if (hint != null && !hint!.isNull) keyHint: hint!.value
+      if (explain) keyExplain: explain else keyCursor: cursor,
+      if (hint != null && !hint!.isNull) keyHint: hint!.value,
+      if (let != null) keyLet: let
     };
   }
 

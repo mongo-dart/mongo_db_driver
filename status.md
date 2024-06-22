@@ -6,7 +6,7 @@
 | Command | Developed | Tested  | Notes |
 | :---: | :---: | --- | :---: |
 | abortTransaction | Not developed |  |  |
-| aggregate | :heavy_check_mark: |  | |
+| aggregate | :heavy_check_mark: |  :heavy_check_mark:  | |
 | bulkWrite() | Not developed |  |  |
 | collMod | Not developed |  |  |
 | commitTransaction | Not developed |  |  |
