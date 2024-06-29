@@ -82,7 +82,7 @@ base class FindAndModifyOperation extends CommandOperation {
               upsert: upsert,
               arrayFilters: arrayFilters,
               session: session,
-              findAndModifyOptions: findAndModifyOptions?.toFindAndModifyV1,
+              findAndModifyOptionsV1: findAndModifyOptions?.toFindAndModifyV1,
               rawOptions: rawOptions);
         default:
           throw MongoDartError(
@@ -99,7 +99,7 @@ base class FindAndModifyOperation extends CommandOperation {
         upsert: upsert,
         arrayFilters: arrayFilters,
         session: session,
-        findAndModifyOptions: findAndModifyOptions?.toFindAndModifyOpen,
+        findAndModifyOptionsOpen: findAndModifyOptions?.toFindAndModifyOpen,
         rawOptions: rawOptions);
   }
 

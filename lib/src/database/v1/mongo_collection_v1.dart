@@ -1,15 +1,30 @@
+import 'package:mongo_db_driver/src/command/query_and_write_operation_commands/wrapper/delete_many/v1/delete_many_statement_v1.dart';
 import 'package:mongo_db_driver/src/unions/hint_union.dart';
 import 'package:mongo_db_query/mongo_db_query.dart';
 
+import '../../command/aggregation_commands/aggregate/v1/aggregate_operation_v1.dart';
 import '../../command/base/operation_base.dart';
 import '../../command/command.dart';
+import '../../command/query_and_write_operation_commands/find_operation/v1/find_operation_v1.dart';
 import '../../command/query_and_write_operation_commands/update_operation/base/update_union.dart';
+import '../../command/query_and_write_operation_commands/wrapper/delete_many/v1/delete_many_operation_v1.dart';
+import '../../command/query_and_write_operation_commands/wrapper/delete_one/v1/delete_one_operation_v1.dart';
+import '../../command/query_and_write_operation_commands/wrapper/delete_one/v1/delete_one_statement_v1.dart';
 import '../../command/query_and_write_operation_commands/wrapper/find_one_and_delete/base/find_one_and_delete_operation.dart';
 import '../../command/query_and_write_operation_commands/wrapper/find_one_and_delete/base/find_one_and_delete_options.dart';
+import '../../command/query_and_write_operation_commands/wrapper/find_one_and_delete/v1/find_one_and_delete_operation_v1.dart';
 import '../../command/query_and_write_operation_commands/wrapper/find_one_and_replace/base/find_one_and_replace_operation.dart';
 import '../../command/query_and_write_operation_commands/wrapper/find_one_and_replace/base/find_one_and_replace_options.dart';
+import '../../command/query_and_write_operation_commands/wrapper/find_one_and_replace/v1/find_one_and_replace_operation_v1.dart';
 import '../../command/query_and_write_operation_commands/wrapper/find_one_and_update/base/find_one_and_update_operation.dart';
 import '../../command/query_and_write_operation_commands/wrapper/find_one_and_update/base/find_one_and_update_options.dart';
+import '../../command/query_and_write_operation_commands/wrapper/find_one_and_update/v1/find_one_and_update_operation_v1.dart';
+import '../../command/query_and_write_operation_commands/wrapper/replace_one/v1/replace_one_operation_v1.dart';
+import '../../command/query_and_write_operation_commands/wrapper/replace_one/v1/replace_one_statement_v1.dart';
+import '../../command/query_and_write_operation_commands/wrapper/update_many/v1/update_many_operation_v1.dart';
+import '../../command/query_and_write_operation_commands/wrapper/update_many/v1/update_many_statement_v1.dart';
+import '../../command/query_and_write_operation_commands/wrapper/update_one/v1/update_one_operation_v1.dart';
+import '../../command/query_and_write_operation_commands/wrapper/update_one/v1/update_one_statement_v1.dart';
 import '../../session/client_session.dart';
 import '../../unions/query_union.dart';
 import '../database.dart'
@@ -60,15 +75,16 @@ class MongoCollectionV1 extends MongoCollection {
     QueryUnion uFilter = filter is QueryUnion ? filter : QueryUnion(filter);
     UpdateUnion uUpdate = update is UpdateUnion ? update : UpdateUnion(update);
 
-    var updateOneOperation = UpdateOneOperation(
+    var updateOneOperation = UpdateOneOperationV1(
         this,
-        UpdateOneStatement(uFilter, uUpdate,
+        UpdateOneStatementV1(uFilter, uUpdate,
             upsert: upsert,
             collation: collation,
             arrayFilters: arrayFilters,
             hint: hint),
         session: session,
-        updateOneOptions: UpdateOneOptions(writeConcern: writeConcern),
+        updateOneOptions:
+            UpdateOneOptions(writeConcern: writeConcern).toUpdateOneV1,
         rawOptions: rawOptions);
     return updateOneOperation.executeDocument();
   }
@@ -84,12 +100,13 @@ class MongoCollectionV1 extends MongoCollection {
       Options? rawOptions}) async {
     QueryUnion uFilter = filter is QueryUnion ? filter : QueryUnion(filter);
 
-    var replaceOneOperation = ReplaceOneOperation(
+    var replaceOneOperation = ReplaceOneOperationV1(
         this,
-        ReplaceOneStatement(uFilter, update,
+        ReplaceOneStatementV1(uFilter, update,
             upsert: upsert, collation: collation, hint: hint),
         session: session,
-        replaceOneOptions: ReplaceOneOptions(writeConcern: writeConcern),
+        replaceOneOptions:
+            ReplaceOneOptions(writeConcern: writeConcern).toReplaceOneV1,
         rawOptions: rawOptions);
     return replaceOneOperation.executeDocument();
   }
@@ -108,16 +125,16 @@ class MongoCollectionV1 extends MongoCollection {
         selector is QueryUnion ? selector : QueryUnion(selector);
     UpdateUnion uUpdate = update is UpdateUnion ? update : UpdateUnion(update);
     updateManyOptions?.writeConcern ??= writeConcern;
-    var updateManyOperation = UpdateManyOperation(
+    var updateManyOperation = UpdateManyOperationV1(
         this,
-        UpdateManyStatement(uFilter, uUpdate,
+        UpdateManyStatementV1(uFilter, uUpdate,
             upsert: upsert,
             collation: collation,
             arrayFilters: arrayFilters,
             hint: hint),
         session: session,
-        updateManyOptions:
-            updateManyOptions ?? UpdateManyOptions(writeConcern: writeConcern),
+        updateManyOptions: updateManyOptions?.toUpdateManyV1 ??
+            UpdateManyOptions(writeConcern: writeConcern).toUpdateManyV1,
         rawOptions: rawOptions);
     return updateManyOperation.executeDocument();
   }
@@ -132,11 +149,11 @@ class MongoCollectionV1 extends MongoCollection {
       Options? rawOptions}) async {
     QueryUnion uFilter =
         selector is QueryUnion ? selector : QueryUnion(selector);
-    var deleteOperation = DeleteOneOperation(
-        this, DeleteOneStatement(uFilter, collation: collation, hint: hint),
+    var deleteOperation = DeleteOneOperationV1(
+        this, DeleteOneStatementV1(uFilter, collation: collation, hint: hint),
         session: session,
-        deleteOneOptions:
-            deleteOneOptions ?? DeleteOneOptions(writeConcern: writeConcern),
+        deleteOneOptions: deleteOneOptions?.toDeleteOneV1 ??
+            DeleteOneOptions(writeConcern: writeConcern).toDeleteOneV1,
         rawOptions: rawOptions);
     return deleteOperation.executeDocument();
   }
@@ -152,11 +169,11 @@ class MongoCollectionV1 extends MongoCollection {
       Options? rawOptions}) async {
     QueryUnion uFilter =
         selector is QueryUnion ? selector : QueryUnion(selector);
-    var deleteOperation = DeleteManyOperation(
-        this, DeleteManyStatement(uFilter, collation: collation, hint: hint),
+    var deleteOperation = DeleteManyOperationV1(
+        this, DeleteManyStatementV1(uFilter, collation: collation, hint: hint),
         session: session,
-        deleteManyOptions:
-            deleteManyOptions ?? DeleteManyOptions(writeConcern: writeConcern),
+        deleteManyOptions: deleteManyOptions?.toDeleteManyV1 ??
+            DeleteManyOptions(writeConcern: writeConcern).toDeleteManyV1,
         rawOptions: rawOptions);
     return deleteOperation.executeDocument();
   }
@@ -175,11 +192,12 @@ class MongoCollectionV1 extends MongoCollection {
     var uSort = detectSortUnion(sort, queryExpression);
     var uHint = (hint is HintUnion) ? hint : HintUnion(hint);
 
-    var famOperation = FindOneAndDeleteOperation(this, uFilter,
+    var famOperation = FindOneAndDeleteOperationV1(this, uFilter,
         fields: uProjection,
         sort: uSort,
         hint: uHint,
-        findOneAndDeleteOptions: findOneAndDeleteOptions,
+        findOneAndDeleteOptions:
+            findOneAndDeleteOptions?.toFindOneAndDeleteOptionsV1,
         rawOptions: rawOptions);
     return famOperation.executeDocument();
   }
@@ -201,14 +219,15 @@ class MongoCollectionV1 extends MongoCollection {
     var uSort = detectSortUnion(sort, queryExpression);
     var uHint = (hint is HintUnion) ? hint : HintUnion(hint);
 
-    var famOperation = FindOneAndReplaceOperation(this, uFilter, replacement,
+    var famOperation = FindOneAndReplaceOperationV1(this, uFilter, replacement,
         fields: uProjection,
         sort: uSort,
         returnNew: returnNew,
         upsert: upsert,
         session: session,
         hint: uHint,
-        findOneAndReplaceOptions: findOneAndReplaceOptions,
+        findOneAndReplaceOptions:
+            findOneAndReplaceOptions?.toFindOneAndReplaceOptionsV1,
         rawOptions: rawOptions);
     return famOperation.executeDocument();
   }
@@ -230,7 +249,7 @@ class MongoCollectionV1 extends MongoCollection {
     var uSort = detectSortUnion(sort, queryExpression);
     var uHint = (hint is HintUnion) ? hint : HintUnion(hint);
 
-    var famOperation = FindOneAndUpdateOperation(this,
+    var famOperation = FindOneAndUpdateOperationV1(this,
         query: uFilter,
         update: UpdateUnion(update),
         fields: uProjection,
@@ -240,7 +259,8 @@ class MongoCollectionV1 extends MongoCollection {
         arrayFilters: arrayFilters,
         session: session,
         hint: uHint,
-        findOneAndUpdateOptions: findOneAndUpdateOptions,
+        findOneAndUpdateOptions:
+            findOneAndUpdateOptions?.toFindOneAndUpdateOptionsV1,
         rawOptions: rawOptions);
     return famOperation.executeDocument();
   }
@@ -279,14 +299,14 @@ class MongoCollectionV1 extends MongoCollection {
             ? filter.getSkip()
             : null);
 
-    var operation = FindOperation(this, uFilter,
+    var operation = FindOperationV1(this, uFilter,
         sort: uSort,
         projection: uProjection,
         hint: uHint,
         skip: skip,
         limit: 1,
         session: session,
-        findOptions: findOptions,
+        findOptions: findOptions?.toV1,
         rawOptions: rawOptions);
 
     return Cursor(operation, db.server).nextObject();
@@ -320,16 +340,48 @@ class MongoCollectionV1 extends MongoCollection {
         ? limit
         : ((filter is QueryExpression) ? filter.getLimit() : 0);
 
-    var operation = FindOperation(this, uFilter,
+    var operation = FindOperationV1(this, uFilter,
         sort: uSort,
         projection: uProjection,
         hint: uHint,
         limit: limit,
         skip: skip,
         session: session,
-        findOptions: findOptions,
+        findOptions: findOptions?.toV1,
         rawOptions: rawOptions);
 
     return Cursor(operation, db.server).stream;
+  }
+
+  // ********************************************
+  // ******************** Aggregate *************
+  // ********************************************
+
+  /// This method returns a curosr that can be read or transformed into
+  /// a stream with `stream` (for a stream you can directly call
+  /// `aggregateToStream`)
+  ///
+  /// The pipeline can be either an `AggregationPipelineBuilder` or a
+  /// List of Maps (`List<Map<String, Object>>`)
+  @override
+  Cursor aggregate(dynamic pipeline,
+      {bool? explain,
+      Map<String, Object>? cursor,
+      HintUnion? hint,
+      ClientSession? session,
+      AggregateOptions? aggregateOptions,
+      Map<String, Object>? rawOptions,
+      MongoDocument? let}) {
+    return Cursor(
+        AggregateOperationV1(pipeline,
+            collection: this,
+            explain: explain,
+            cursor: cursor,
+            hint: hint,
+            session: session,
+            aggregateOptionsV1: aggregateOptions?.toV1,
+            rawOptions: rawOptions,
+            let: let),
+        db.server);
   }
 }

@@ -259,7 +259,7 @@ void main() async {
       expect(resultOne?['pontosGastronomicos'].first['id'],
           '208a3f93-9fcb-4db7-ac44-bb11b86a2d31');
 
-      var cursor = collection.aggregateCursor([
+      var cursor = collection.aggregate([
         {
           r'$replaceRoot': {
             'newRoot': {
@@ -624,7 +624,7 @@ void main() async {
           'avg': $avg(Field('cost'))
         }));
 
-      var result = await collection.aggregate(pipeline).toList();
+      var result = await collection.aggregateToStream(pipeline).toList();
       expect(result.first[key_id], 'games');
       expect(result.first['avg'], Decimal.fromInt(15));
       expect(result.first['total'], Decimal.fromInt(45));
@@ -632,7 +632,7 @@ void main() async {
 
     group('admin/diagnostic pipeline', () {
       test('currentOp', () async {
-        var stream = db.aggregate([
+        var stream = db.aggregateToStream([
           {
             r'$currentOp': {'allUsers': true, 'idleConnections': true}
           },
@@ -679,7 +679,7 @@ void main() async {
       });
 
       test('listLocalSessions', () async {
-        var result = db.aggregate([
+        var result = db.aggregateToStream([
           {
             r'$listLocalSessions': {'allUsers': true}
           },

@@ -17,6 +17,7 @@ import '../topology/server.dart';
 import '../utils/map_keys.dart';
 import 'base/mongo_database.dart';
 import 'base/mongo_collection.dart';
+import 'document_types.dart';
 
 typedef MonadicBlock = void Function(Map<String, dynamic> value);
 
@@ -154,6 +155,7 @@ class Cursor {
   bool tailable = false;
   bool awaitData = false;
   bool isChangeStream = false;
+  MongoDocument? lastServerDocument;
 
   // Batch size for the getMore command if different from the default
   late int _batchSize;
@@ -198,6 +200,10 @@ class Cursor {
 
   void extractCursorData(Map<String, dynamic> operationReturnMap) {
     if (operationReturnMap[keyCursor] == null) {
+      // Explain option
+      if (operationReturnMap.containsKey('explainVersion')) {
+        return;
+      }
       throw MongoDartError('The operation type ${operation.runtimeType} '
           'does not return a cursor');
     }
@@ -282,6 +288,7 @@ class Cursor {
           getMoreOptions: GetMoreOptions(batchSize: _batchSize));
       result = await command.process();
     }
+    lastServerDocument = result;
     if (result == null) {
       throw MongoDartError('Could not execut a further search');
     }

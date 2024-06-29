@@ -479,7 +479,7 @@ void main() async {
 
       var view = db.collection(viewName);
 
-      var result = await view.aggregate([
+      var result = await view.aggregateToStream([
         {r'$sortByCount': r'$item'}
       ]).toList();
 

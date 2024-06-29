@@ -144,7 +144,7 @@ void main() async {
                         documents: ['unbounded', 'current']))))
               .build();
           var res = await MongoCollection(db, collectionName)
-              .aggregate(pipeline)
+              .aggregateToStream(pipeline)
               .toList();
           expect(res, isNotNull);
           expect(res, expectedResult);
@@ -233,7 +233,7 @@ void main() async {
                 })))
               .build();
           var res = await MongoCollection(db, collectionName)
-              .aggregate(pipeline)
+              .aggregateToStream(pipeline)
               .toList();
           expect(res, isNotNull);
           expect(res, expectedResult);
@@ -316,7 +316,7 @@ void main() async {
                 ])))
               .build();
           var res = await MongoCollection(db, collectionName)
-              .aggregate(pipeline)
+              .aggregateToStream(pipeline)
               .toList();
           expect(res, isNotNull);
           expect(res, expectedResult);
@@ -416,7 +416,7 @@ void main() async {
           // }
           // }
           var res = await MongoCollection(db, collectionName)
-              .aggregate(pipeline)
+              .aggregateToStream(pipeline)
               .toList();
           expect(res, isNotNull);
           expect(res, expectedResult);
@@ -500,7 +500,7 @@ void main() async {
                         range: [-10, 10]))))
               .build();
           var res = await MongoCollection(db, collectionName)
-              .aggregate(pipeline)
+              .aggregateToStream(pipeline)
               .toList();
           expect(res, isNotNull);
           expect(res, expectedResult);
@@ -597,7 +597,7 @@ void main() async {
                         range: ["unbounded", 10], unit: "month"))))
               .build();
           var res = await MongoCollection(db, collectionName)
-              .aggregate(pipeline)
+              .aggregateToStream(pipeline)
               .toList();
           expect(res, isNotNull);
           expect(res, expectedResult);
@@ -682,7 +682,7 @@ void main() async {
                         range: ["unbounded", -10], unit: "month"))))
               .build();
           var res = await MongoCollection(db, collectionName)
-              .aggregate(pipeline)
+              .aggregateToStream(pipeline)
               .toList();
           expect(res, isNotNull);
           expect(res, expectedResult);

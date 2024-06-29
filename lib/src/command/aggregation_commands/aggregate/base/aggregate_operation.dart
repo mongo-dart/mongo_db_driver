@@ -73,7 +73,7 @@ base class AggregateOperation extends CommandOperation {
               cursor: cursor,
               session: session,
               hint: hint,
-              aggregateOptions: aggregateOptions?.toV1,
+              aggregateOptionsV1: aggregateOptions?.toV1,
               rawOptions: rawOptions,
               let: let);
         default:
@@ -88,7 +88,7 @@ base class AggregateOperation extends CommandOperation {
         cursor: cursor,
         session: session,
         hint: hint,
-        aggregateOptions: aggregateOptions?.toOpen,
+        aggregateOptionsOpen: aggregateOptions?.toOpen,
         rawOptions: rawOptions,
         let: let);
   }

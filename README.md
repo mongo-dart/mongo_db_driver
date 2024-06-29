@@ -93,7 +93,39 @@ The following is a simple transaction example:
   await session.endSession();
 ```
 
+### Status
+
+- [Status]( https://github.com/mongo-dart/mongo_db_driver/blob/main/status.md)
+
 ### Check Examples
 
 In the example folders there are many cases that you can check to learn how to use mongo_db_driver.
 The documentation at present is not complete.
+
+### Operations
+
+#### Building aggregation queries
+
+There are 4 aggregate methods, two for Daatabase and two for collection.
+The main one for both is the aggregate method that return a cursor.
+You have then to use the cursor function to retrieve the content.
+Otherwise you can use the aggregateToStream method, that is a wrapper on the
+aggregate one and returns a stream for the cursor. From the stream is easy to obtain the
+contetn with the toList() method.
+For example:
+
+```dart
+ final pipeline = pipelineBuilder
+    ..addStage($match((where..$eq('status', 'A'))))
+    ..addStage(
+        $group(id: Field('cust_id'), fields: {'total': $sum(Field('amount'))}));
+
+  final result = await collection.aggregateToStream(pipeline).toList();
+```
+
+The pipeline can be a pipelineBuilder instance, or a Mongo document.
+Options are availabel through an AggregateOptions class.
+
+See an example [here]( https://github.com/mongo-dart/mongo_db_driver/blob/main/example/aggregate/aggregation.dart).
+
+Documentation [here]( https://github.com/mongo-dart/mongo_db_driver/blob/main/doc/manual/aggregate/aggregate.md)

@@ -34,11 +34,13 @@ void main() async {
   late MongoClient client;
   late MongoDatabase db;
   List<String> usedCollectionNames = [];
+  String? fcv;
 
   group('Query Expression', () {
     setUpAll(() async {
       client = MongoClient(defaultUri);
       db = await initializeDatabase(client);
+      fcv = client.topology?.getServer().serverCapabilities.fcv;
     });
 
     tearDownAll(() async {
@@ -350,6 +352,9 @@ void main() async {
       });
 
       test('Document - Ignore spaces and comments', () async {
+        if ((fcv?.compareTo('6.0') ?? -1) < 1) {
+          return;
+        }
         var pattern = 'abc #category code\n123 #item number';
         var findList = await collection!.find(filter: {
           'sku': {r'$regex': pattern, op$options: 'x'}
@@ -359,6 +364,9 @@ void main() async {
         expect(findList, expIgnoreSpaceAndComments);
       });
       test('FilterExpression - Ignore spaces and comments', () async {
+        if ((fcv?.compareTo('6.0') ?? -1) < 1) {
+          return;
+        }
         var pattern = 'abc #category code\n123 #item number';
         var findList = await collection!
             .find(
@@ -370,6 +378,9 @@ void main() async {
         expect(findList, expIgnoreSpaceAndComments);
       });
       test('QueryExpression - Ignore spaces and comments', () async {
+        if ((fcv?.compareTo('6.0') ?? -1) < 1) {
+          return;
+        }
         var pattern = 'abc #category code\n123 #item number';
         var findList = await collection!
             .find(

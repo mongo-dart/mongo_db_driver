@@ -39,7 +39,7 @@ void main() async {
   if (!ret.isSuccess) {
     print('Error detected in record insertion');
   }
-  var aggregateResult = await collection.aggregate([
+  var aggregateResult = await collection.aggregateToStream([
     {
       r'$project': {'state': 1, '_id': 0}
     },

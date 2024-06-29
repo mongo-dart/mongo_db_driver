@@ -1,9 +1,12 @@
+import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:mongo_db_driver/mongo_db_driver.dart';
 
 import '../../core/network/abstract/connection_base.dart';
 import '../../topology/server.dart';
 import 'operation_base.dart' show Aspect, Command, OperationBase, Options;
+
+Logger _log = Logger('Server Command');
 
 /// Run a command on a required server
 ///
@@ -13,9 +16,15 @@ base class ServerCommand extends OperationBase {
 
   ServerCommand(super.mongoClient, this.command,
       {super.options, super.session, Aspect? aspect})
-      : super(aspects: aspect);
+      : super(aspects: aspect) {
+    _debugInfo = mongoClient.debugOptions.commandExecutionLogLevel != Level.OFF;
+    if (_debugInfo) {
+      _log.level = mongoClient.debugOptions.commandExecutionLogLevel;
+    }
+  }
 
   Command $buildCommand() => command;
+  bool _debugInfo = false;
 
   /// ReadPrefernce must be managed before
   void processOptions(Command command) {
@@ -63,6 +72,10 @@ base class ServerCommand extends OperationBase {
     processOptions(command);
 
     command.addAll(options);
+
+    if (_debugInfo) {
+      _log.fine('Command: $command');
+    }
 
     return server.executeCommand(command, this, connection: connection);
   }

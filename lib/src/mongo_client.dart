@@ -3,6 +3,7 @@ import 'package:logging/logging.dart';
 import 'command/base/db_admin_command_operation.dart';
 import 'command/base/operation_base.dart';
 import 'database/database.dart';
+import 'mongo_client_debug_options.dart';
 import 'session/session_options.dart';
 import 'topology/discover.dart';
 import 'command/command.dart';
@@ -44,20 +45,33 @@ class MongoClient {
   /// mongodb+srv://[username:password@]host1[:port1]
   ///      [/[databaseName][?options]]
   /// More info are available [here](https://docs.mongodb.com/manual/reference/connection-string/)
-  MongoClient(this.url, {MongoClientOptions? mongoClientOptions}) {
+  MongoClient(this.url,
+      {MongoClientOptions? mongoClientOptions,
+      MongoClientDebugOptions? debugOptions}) {
     this.mongoClientOptions = mongoClientOptions ?? MongoClientOptions();
+    this.debugOptions = debugOptions ?? MongoClientDebugOptions();
     var uri = Uri.parse(url);
     if (uri.scheme != 'mongodb' && uri.scheme != 'mongodb+srv') {
       throw MongoDartError(
           'The only valid schemas for Db are: "mongodb" and "mongodb+srv".');
     }
     serverSessionPool = ServerSessionPool(this);
+
+    hierarchicalLoggingEnabled = true;
+
+    void listener(LogRecord r) {
+      var name = r.loggerName;
+      print('${r.time}: $name: ${r.message}');
+    }
+
+    Logger.root.onRecord.listen(listener);
   }
 
   final Logger log = Logger('Mongo Client');
 
   String url;
-  late MongoClientOptions mongoClientOptions;
+  late final MongoClientOptions mongoClientOptions;
+  late final MongoClientDebugOptions debugOptions;
   ClientAuth? clientAuth;
   final List<Uri> seedServers = <Uri>[];
   Topology? topology;

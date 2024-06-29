@@ -344,24 +344,57 @@ class MongoDatabase {
     return command.process();
   }
 
+  // ****************************************************
+  // ***********     AGGREGATE    ***********************
+  // ****************************************************
+
+  /// This method returns a stream that can be read or transformed into
+  /// a list with `.toList()`
+  ///
+  /// The pipeline can be either an `AggregationPipelineBuilder` or a
+  /// List of Maps (`List<Map<String, Object>>`)
+  Stream<Map<String, dynamic>> aggregateToStream(dynamic pipeline,
+          {bool? explain,
+          Map<String, Object>? cursor,
+          HintUnion? hint,
+          ClientSession? session,
+          AggregateOptions? aggregateOptions,
+          Map<String, Object>? rawOptions}) =>
+      aggregate(pipeline,
+              explain: explain,
+              cursor: cursor,
+              hint: hint,
+              session: session,
+              aggregateOptions: aggregateOptions,
+              rawOptions: rawOptions)
+          .stream;
+
+  /// This method returns a curosr that can be read or transformed into
+  /// a stream with `stream` (for a stream you can directly call
+  /// `aggregateToStream`)
+  ///
+  /// The pipeline can be either an `AggregationPipelineBuilder` or a
+  /// List of Maps (`List<Map<String, Object>>`)
+  ///
   /// Runs a specified admin/diagnostic pipeline which does not require an
   /// underlying collection. For aggregations on collection data,
   /// see `dbcollection.aggregate()`.
-  Stream<Map<String, dynamic>> aggregate(List<Map<String, Object>> pipeline,
+  Cursor aggregate(dynamic pipeline,
       {bool? explain,
       Map<String, Object>? cursor,
       HintUnion? hint,
+      ClientSession? session,
       AggregateOptions? aggregateOptions,
       Map<String, Object>? rawOptions}) {
     return Cursor(
-            AggregateOperation(pipeline,
-                db: this,
-                explain: explain,
-                cursor: cursor,
-                hint: hint,
-                aggregateOptions: aggregateOptions,
-                rawOptions: rawOptions),
-            server)
-        .stream;
+        AggregateOperation(pipeline,
+            db: this,
+            explain: explain,
+            cursor: cursor,
+            hint: hint,
+            session: session,
+            aggregateOptions: aggregateOptions,
+            rawOptions: rawOptions),
+        server);
   }
 }

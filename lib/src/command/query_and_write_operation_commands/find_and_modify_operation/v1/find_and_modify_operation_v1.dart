@@ -1,4 +1,5 @@
 import '../base/find_and_modify_operation.dart';
+import 'find_and_modify_options_v1.dart';
 
 base class FindAndModifyOperationV1 extends FindAndModifyOperation {
   FindAndModifyOperationV1(super.collection,
@@ -12,7 +13,7 @@ base class FindAndModifyOperationV1 extends FindAndModifyOperation {
       super.arrayFilters,
       super.session,
       super.hint,
-      super.findAndModifyOptions,
+      FindAndModifyOptionsV1? findAndModifyOptionsV1,
       super.rawOptions})
-      : super.protected();
+      : super.protected(findAndModifyOptions: findAndModifyOptionsV1);
 }

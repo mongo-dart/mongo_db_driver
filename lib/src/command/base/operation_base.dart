@@ -21,7 +21,7 @@ abstract base class OperationBase {
   Options options;
   final Set<Aspect> _aspects;
 
-  OperationBase(MongoClient mongoClient,
+  OperationBase(this.mongoClient,
       {Options? options, ClientSession? session, dynamic aspects})
       // Leaves the orginal Options document untouched
       : options = <String, dynamic>{...?options},
@@ -38,9 +38,9 @@ abstract base class OperationBase {
   bool requiresAuthentication = true;
 
   bool hasAspect(Aspect aspect) => _aspects.contains(aspect);
-  MongoClient get mongoClient => session.client;
+  MongoClient mongoClient;
   Topology get topology =>
-      session.client.topology ??
+      mongoClient.topology ??
       (throw MongoDartError('Topology not yet identified'));
 
   //Object? get session => options[keySession];

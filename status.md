@@ -60,7 +60,7 @@
 | Command | Developed | Tested  | Notes |
 | :---: | :---: | --- | :---: |
 | | **Aggregation**  | **Commands** | |
-| aggregate | :heavy_check_mark: |  |  |
+| aggregate | :heavy_check_mark: |  :heavy_check_mark: |  |
 | count |:heavy_check_mark: |  |  |
 | distinct | :heavy_check_mark: |  |  |
 | mapReduce | :white_square_button: |  |  |

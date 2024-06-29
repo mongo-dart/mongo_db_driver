@@ -237,63 +237,43 @@ abstract class MongoCollection {
   // ***********     AGGREGATE    ***********************
   // ****************************************************
 
-  /// Executes an aggregation pipeline
-  Stream<Map<String, dynamic>> aggregateToStream(
-      List<Map<String, Object>> pipeline,
-      {Map<String, Object> cursorOptions = const <String, Object>{},
-      ClientSession? session,
-      bool allowDiskUse = false}) {
-    return aggregate(pipeline,
-        cursor: cursorOptions,
-        session: session,
-        aggregateOptions: AggregateOptions(allowDiskUse: allowDiskUse));
-  }
-
   /// This method returns a stream that can be read or transformed into
   /// a list with `.toList()`
   ///
   /// The pipeline can be either an `AggregationPipelineBuilder` or a
   /// List of Maps (`List<Map<String, Object>>`)
-  Stream<Map<String, dynamic>> aggregate(dynamic pipeline,
+  Stream<Map<String, dynamic>> aggregateToStream(dynamic pipeline,
           {bool? explain,
           Map<String, Object>? cursor,
           HintUnion? hint,
           ClientSession? session,
           AggregateOptions? aggregateOptions,
-          Map<String, Object>? rawOptions}) =>
-      aggregateCursor(pipeline,
+          Map<String, Object>? rawOptions,
+          MongoDocument? let}) =>
+      aggregate(pipeline,
               explain: explain,
               cursor: cursor,
               hint: hint,
               session: session,
               aggregateOptions: aggregateOptions,
-              rawOptions: rawOptions)
+              rawOptions: rawOptions,
+              let: let)
           .stream;
 
-  /// This method returns a curosr that can be read or transformed into
+  /// This method returns a cursor that can be read or transformed into
   /// a stream with `stream` (for a stream you can directly call
-  /// `aggregate`)
+  /// `aggregateToStream`)
   ///
   /// The pipeline can be either an `AggregationPipelineBuilder` or a
   /// List of Maps (`List<Map<String, Object>>`)
-  Cursor aggregateCursor(dynamic pipeline,
+  Cursor aggregate(dynamic pipeline,
       {bool? explain,
       Map<String, Object>? cursor,
       HintUnion? hint,
       ClientSession? session,
       AggregateOptions? aggregateOptions,
-      Map<String, Object>? rawOptions}) {
-    return Cursor(
-        AggregateOperation(pipeline,
-            collection: this,
-            explain: explain,
-            cursor: cursor,
-            hint: hint,
-            session: session,
-            aggregateOptions: aggregateOptions,
-            rawOptions: rawOptions),
-        db.server);
-  }
+      Map<String, Object>? rawOptions,
+      MongoDocument? let});
 
   // **************************************************
   //              Drop Collection

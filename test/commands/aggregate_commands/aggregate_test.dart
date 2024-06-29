@@ -2,6 +2,7 @@
 library;
 
 import 'package:bson/bson.dart';
+import 'package:fixnum/fixnum.dart';
 import 'package:mongo_db_driver/mongo_db_driver.dart' hide MongoDocument;
 import 'package:mongo_db_driver/src/unions/hint_union.dart';
 import 'package:mongo_db_query/mongo_db_query.dart';
@@ -429,13 +430,13 @@ void main() async {
         expect(ret, isNotNull);
       });
       test('Aggregate Data Specifying Batch Size', () async {
-        var pipe = pipeline
+        var pipeline = pipelineBuilder
           ..addStage($match(where..$eq('status', 'A')))
           ..addStage(
               $group(id: r'$cust_id', fields: {'total': $sum(r'$amount')}))
           ..addStage($sort({'total': -1}))
           ..addStage($limit(2));
-        var command = AggregateOperation(pipe,
+        var command = AggregateOperation(pipeline,
             collection: collection, cursor: {'batchSize': 0});
         var result = await command.execute();
 
@@ -552,6 +553,8 @@ void main() async {
       MongoCollection? collection2;
       MongoCollection? collection3;
       MongoCollection? collection4;
+      MongoCollection? collection5;
+
       setUp(() async {
         var collectionName = getRandomCollectionName(usedCollectionNames);
         collection = db.collection(collectionName);
@@ -588,15 +591,34 @@ void main() async {
           {'_id': 2, 'flavor': "strawberry", 'salesTotal': 4350},
           {'_id': 3, 'flavor': "cherry", 'salesTotal': 2150}
         ]);
+        var collectionName5 = getRandomCollectionName(usedCollectionNamesV1);
+        collection5 = dbV1.collection(collectionName5);
+        var (_, _, _, _) = await collection5!.insertMany([
+          {'_id': 8751, 'title': 'The Banquet', 'author': 'Dante', 'copies': 2},
+          {
+            '_id': 8752,
+            'title': 'Divine Comedy',
+            'author': 'Dante',
+            'copies': 1
+          },
+          {'_id': 8645, 'title': 'Eclogues', 'author': 'Dante', 'copies': 2},
+          {
+            '_id': 7000,
+            'title': 'The Odyssey',
+            'author': 'Homer',
+            'copies': 10
+          },
+          {'_id': 7020, 'title': 'Iliad', 'author': 'Homer', 'copies': 10}
+        ]);
       });
 
       test('pipelineBuilder - Aggregate Data with Multi-Stage Pipeline',
           () async {
-        var pipe = pipeline
+        var pipeline = pipelineBuilder
           ..addStage($project(included: ['tags']))
           ..addStage($unwind(Field('tags')))
           ..addStage($group(id: r"$tags", fields: {'count': $sum(1)}));
-        var command = AggregateOperation(pipe, collection: collection);
+        var command = AggregateOperation(pipeline, collection: collection);
         var result = await command.execute();
 
         expect(result, isNotNull);
@@ -609,10 +631,11 @@ void main() async {
       });
 
       test('pipelineBuilder -  Use \$currentOp on an Admin Database', () async {
-        var pipe = pipeline
+        var pipeline = pipelineBuilder
           ..addStage($currentOp(allUsers: true, idleConnections: true))
           ..addStage($match(where..$eq('shard', 'shard01')));
-        var command = AggregateOperation(pipe, db: client.db(dbName: 'admin'));
+        var command =
+            AggregateOperation(pipeline, db: client.db(dbName: 'admin'));
         var result = await command.execute();
 
         expect(result, isNotNull);
@@ -626,13 +649,13 @@ void main() async {
 
       test('pipelineBuilder - Return Information on the Aggregation Operation',
           () async {
-        var pipe = pipeline
+        var pipeline = pipelineBuilder
           ..addStage($match(where..$eq('status', 'A')))
           ..addStage(
               $group(id: r'$cust_id', fields: {'total': $sum(r'$amount')}))
           ..addStage($sort({'total': -1}));
         var command =
-            AggregateOperation(pipe, collection: collection, explain: true);
+            AggregateOperation(pipeline, collection: collection, explain: true);
         var result = await command.execute();
 
         expect(result, isNotNull);
@@ -646,13 +669,13 @@ void main() async {
         expect(ret, isNotNull);
       });
       test('pipelineBuilder - Aggregate Data Specifying Batch Size', () async {
-        var pipe = pipeline
+        var pipeline = pipelineBuilder
           ..addStage($match(where..$eq('status', 'A')))
           ..addStage(
               $group(id: r'$cust_id', fields: {'total': $sum(r'$amount')}))
           ..addStage($sort({'total': -1}))
           ..addStage($limit(2));
-        var command = AggregateOperation(pipe,
+        var command = AggregateOperation(pipeline,
             collection: collection, cursor: {'batchSize': 0});
         var result = await command.execute();
 
@@ -666,10 +689,10 @@ void main() async {
       });
 
       test('pipelineBuilder - Specify a Collation', () async {
-        var pipe = pipeline
+        var pipeline = pipelineBuilder
           ..addStage($match(where..$eq('status', 'A')))
           ..addStage($group(id: r'$category', fields: {'count': $sum(1)}));
-        var command = AggregateOperation(pipe,
+        var command = AggregateOperation(pipeline,
             collection: collection2,
             aggregateOptions: AggregateOptions(
                 collation: CollationOptions('fr', strength: 1)));
@@ -685,13 +708,13 @@ void main() async {
         expect(ret.first, containsPair('count', 3));
       });
       test('Hint an Index', () async {
-        var pipe = pipeline
+        var pipeline = pipelineBuilder
           ..addStage($sort({'qty': 1}))
           ..addStage($match(where
             ..$eq('category', 'cake')
             ..$eq('qty', 10)))
           ..addStage($sort({'type': -1}));
-        var command = AggregateOperation(pipe,
+        var command = AggregateOperation(pipeline,
             collection: collection3,
             hint: HintUnion({'qty': 1, 'category': 1}));
         var result = await command.execute();
@@ -707,8 +730,8 @@ void main() async {
             {'_id': 1, 'category': "cake", 'type': 'chocolate', 'qty': 10});
       });
       test('Override Default Read Concern', () async {
-        var pipe = pipeline..addStage($match(where..$lt('qty', 18)));
-        var command = AggregateOperation(pipe,
+        var pipeline = pipelineBuilder..addStage($match(where..$lt('qty', 18)));
+        var command = AggregateOperation(pipeline,
             collection: collection3,
             aggregateOptions: AggregateOptions(
                 readConcern: ReadConcern(ReadConcernLevel.majority)));
@@ -725,10 +748,10 @@ void main() async {
             {'_id': 4, 'category': 'pie', 'type': 'blueberry', 'qty': 15});
       });
       test(' Use Variables in let', () async {
-        var pipe = pipeline
+        var pipeline = pipelineBuilder
           ..addStage($match(
               where..$expr($gt(Field('salesTotal'), Var('targetTotal')))));
-        var command = AggregateOperation(pipe,
+        var command = AggregateOperation(pipeline,
             collection: collection4, let: {'targetTotal': 3000});
         var result = await command.execute();
 
@@ -741,6 +764,23 @@ void main() async {
         expect(ret.length, 1);
         expect(
             ret.last, {'_id': 2, 'flavor': "strawberry", 'salesTotal': 4350});
+      });
+      test('No cursor returned', () async {
+        var pipeline = pipelineBuilder
+          ..addStage($group(
+              id: Field('author'), fields: {'books': $push(Field('title'))}))
+          ..addStage($out(coll: 'authors'));
+        var command = AggregateOperation(pipeline, collection: collection5);
+        var result = await command.execute();
+
+        expect(result, isNotNull);
+        expect(result, containsPair(keyOk, 1.0));
+
+        var ret = result[keyCursor][keyFirstBatch];
+
+        expect(ret, isNotNull);
+        expect(ret.length, 0);
+        expect(result[keyCursor][keyId], Int64(0));
       });
     });
     group('V1', () {
@@ -859,13 +899,13 @@ void main() async {
         expect(ret, isNotNull);
       });
       test('Aggregate Data Specifying Batch Size', () async {
-        var pipe = pipeline
+        var pipeline = pipelineBuilder
           ..addStage($match(where..$eq('status', 'A')))
           ..addStage(
               $group(id: r'$cust_id', fields: {'total': $sum(r'$amount')}))
           ..addStage($sort({'total': -1}))
           ..addStage($limit(2));
-        var command = AggregateOperation(pipe,
+        var command = AggregateOperation(pipeline,
             collection: collection, cursor: {'batchSize': 0});
         var result = await command.execute();
 
@@ -982,6 +1022,7 @@ void main() async {
       MongoCollection? collection2;
       MongoCollection? collection3;
       MongoCollection? collection4;
+      MongoCollection? collection5;
 
       setUp(() async {
         var collectionName = getRandomCollectionName(usedCollectionNamesV1);
@@ -1022,15 +1063,34 @@ void main() async {
           {'_id': 2, 'flavor': "strawberry", 'salesTotal': 4350},
           {'_id': 3, 'flavor': "cherry", 'salesTotal': 2150}
         ]);
+        var collectionName5 = getRandomCollectionName(usedCollectionNamesV1);
+        collection5 = dbV1.collection(collectionName5);
+        var (_, _, _, _) = await collection5!.insertMany([
+          {'_id': 8751, 'title': 'The Banquet', 'author': 'Dante', 'copies': 2},
+          {
+            '_id': 8752,
+            'title': 'Divine Comedy',
+            'author': 'Dante',
+            'copies': 1
+          },
+          {'_id': 8645, 'title': 'Eclogues', 'author': 'Dante', 'copies': 2},
+          {
+            '_id': 7000,
+            'title': 'The Odyssey',
+            'author': 'Homer',
+            'copies': 10
+          },
+          {'_id': 7020, 'title': 'Iliad', 'author': 'Homer', 'copies': 10}
+        ]);
       });
 
       test('pipelineBuilder - Aggregate Data with Multi-Stage Pipeline',
           () async {
-        var pipe = pipeline
+        var pipeline = pipelineBuilder
           ..addStage($project(included: ['tags']))
           ..addStage($unwind(Field('tags')))
           ..addStage($group(id: r"$tags", fields: {'count': $sum(1)}));
-        var command = AggregateOperation(pipe, collection: collection);
+        var command = AggregateOperation(pipeline, collection: collection);
 
         var result = await command.execute();
 
@@ -1045,10 +1105,11 @@ void main() async {
         expect(ret.length, 3);
       });
       test('pipelineBuilder -  Use \$currentOp on an Admin Database', () async {
-        var pipe = pipeline
+        var pipeline = pipelineBuilder
           ..addStage($currentOp(allUsers: true, idleConnections: true))
           ..addStage($match(where..$eq('shard', 'shard01')));
-        var command = AggregateOperation(pipe, db: client.db(dbName: 'admin'));
+        var command =
+            AggregateOperation(pipeline, db: client.db(dbName: 'admin'));
         var result = await command.execute();
 
         expect(result, isNotNull);
@@ -1061,13 +1122,13 @@ void main() async {
       });
       test('pipelineBuilder - Return Information on the Aggregation Operation',
           () async {
-        var pipe = pipeline
+        var pipeline = pipelineBuilder
           ..addStage($match(where..$eq('status', 'A')))
           ..addStage(
               $group(id: r'$cust_id', fields: {'total': $sum(r'$amount')}))
           ..addStage($sort({'total': -1}));
         var command =
-            AggregateOperation(pipe, collection: collection, explain: true);
+            AggregateOperation(pipeline, collection: collection, explain: true);
         var result = await command.execute();
 
         expect(result, isNotNull);
@@ -1081,13 +1142,13 @@ void main() async {
         expect(ret, isNotNull);
       });
       test('pipelineBuilder - Aggregate Data Specifying Batch Size', () async {
-        var pipe = pipeline
+        var pipeline = pipelineBuilder
           ..addStage($match(where..$eq('status', 'A')))
           ..addStage(
               $group(id: r'$cust_id', fields: {'total': $sum(r'$amount')}))
           ..addStage($sort({'total': -1}))
           ..addStage($limit(2));
-        var command = AggregateOperation(pipe,
+        var command = AggregateOperation(pipeline,
             collection: collection, cursor: {'batchSize': 0});
         var result = await command.execute();
 
@@ -1101,10 +1162,10 @@ void main() async {
       });
 
       test('pipelineBuilder - Specify a Collation', () async {
-        var pipe = pipeline
+        var pipeline = pipelineBuilder
           ..addStage($match(where..$eq('status', 'A')))
           ..addStage($group(id: r'$category', fields: {'count': $sum(1)}));
-        var command = AggregateOperation(pipe,
+        var command = AggregateOperation(pipeline,
             collection: collection2,
             aggregateOptions: AggregateOptions(
                 collation: CollationOptions('fr', strength: 1)));
@@ -1120,13 +1181,13 @@ void main() async {
         expect(ret.first, containsPair('count', 3));
       });
       test('Hint an Index', () async {
-        var pipe = pipeline
+        var pipeline = pipelineBuilder
           ..addStage($sort({'qty': 1}))
           ..addStage($match(where
             ..$eq('category', 'cake')
             ..$eq('qty', 10)))
           ..addStage($sort({'type': -1}));
-        var command = AggregateOperation(pipe,
+        var command = AggregateOperation(pipeline,
             collection: collection3,
             hint: HintUnion({'qty': 1, 'category': 1}));
         var result = await command.execute();
@@ -1142,8 +1203,8 @@ void main() async {
             {'_id': 1, 'category': "cake", 'type': 'chocolate', 'qty': 10});
       });
       test('Override Default Read Concern', () async {
-        var pipe = pipeline..addStage($match(where..$lt('qty', 18)));
-        var command = AggregateOperation(pipe,
+        var pipeline = pipelineBuilder..addStage($match(where..$lt('qty', 18)));
+        var command = AggregateOperation(pipeline,
             collection: collection3,
             aggregateOptions: AggregateOptions(
                 readConcern: ReadConcern(ReadConcernLevel.majority)));
@@ -1160,10 +1221,10 @@ void main() async {
             {'_id': 4, 'category': 'pie', 'type': 'blueberry', 'qty': 15});
       });
       test(' Use Variables in let', () async {
-        var pipe = pipeline
+        var pipeline = pipelineBuilder
           ..addStage($match(
               where..$expr($gt(Field('salesTotal'), Var('targetTotal')))));
-        var command = AggregateOperation(pipe,
+        var command = AggregateOperation(pipeline,
             collection: collection4, let: {'targetTotal': 3000});
         var result = await command.execute();
 
@@ -1176,6 +1237,23 @@ void main() async {
         expect(ret.length, 1);
         expect(
             ret.last, {'_id': 2, 'flavor': "strawberry", 'salesTotal': 4350});
+      });
+      test('No cursor returned', () async {
+        var pipeline = pipelineBuilder
+          ..addStage($group(
+              id: Field('author'), fields: {'books': $push(Field('title'))}))
+          ..addStage($out(coll: 'authors'));
+        var command = AggregateOperation(pipeline, collection: collection5);
+        var result = await command.execute();
+
+        expect(result, isNotNull);
+        expect(result, containsPair(keyOk, 1.0));
+
+        var ret = result[keyCursor][keyFirstBatch];
+
+        expect(ret, isNotNull);
+        expect(ret.length, 0);
+        expect(result[keyCursor][keyId], Int64(0));
       });
     });
   });

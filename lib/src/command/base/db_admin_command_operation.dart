@@ -1,3 +1,4 @@
+import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:mongo_db_driver/mongo_db_driver.dart';
 
@@ -5,13 +6,21 @@ import '../../session/client_session.dart';
 import '../../topology/server.dart';
 import 'operation_base.dart';
 
+Logger _log = Logger('Admin Command');
+
 base class DbAdminCommandOperation extends OperationBase {
   DbAdminCommandOperation(this.client, this.command,
       {super.session, super.options})
-      : super(client);
+      : super(client) {
+    _debugInfo = client.debugOptions.commandExecutionLogLevel != Level.OFF;
+    if (_debugInfo) {
+      _log.level = client.debugOptions.commandExecutionLogLevel;
+    }
+  }
 
   MongoClient client;
   Command command;
+  bool _debugInfo = false;
 
   Command $buildCommand() => command;
 
@@ -44,6 +53,10 @@ base class DbAdminCommandOperation extends OperationBase {
     }
 
     command.addAll(options);
+
+    if (_debugInfo) {
+      _log.fine('Command: $command');
+    }
 
     return server.executeCommand(command, this);
   }

@@ -1,4 +1,5 @@
 import '../base/aggregate_operation.dart';
+import 'aggregate_options_open.dart';
 
 /// Collection is the collection on which the operation is performed
 /// In case of admin/diagnostic pipeline which does not require an underlying
@@ -11,8 +12,8 @@ base class AggregateOperationOpen extends AggregateOperation {
       super.cursor,
       super.session,
       super.hint,
-      super.aggregateOptions,
+      AggregateOptionsOpen? aggregateOptionsOpen,
       super.rawOptions,
       super.let})
-      : super.protected();
+      : super.protected(aggregateOptions: aggregateOptionsOpen);
 }
