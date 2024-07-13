@@ -3,7 +3,7 @@ import 'package:mongo_db_query/mongo_db_query.dart';
 
 import '../../command/aggregation_commands/aggregate/open/aggregate_operation_open.dart';
 import '../../command/base/operation_base.dart';
-import '../../command/command.dart';
+import '../../command/command_exp.dart';
 import '../../command/query_and_write_operation_commands/find_operation/open/find_operation_open.dart';
 import '../../command/query_and_write_operation_commands/update_operation/base/update_union.dart';
 import '../../command/query_and_write_operation_commands/wrapper/delete_many/open/delete_many_operation_open.dart';
@@ -27,8 +27,7 @@ import '../../command/query_and_write_operation_commands/wrapper/update_one/open
 import '../../command/query_and_write_operation_commands/wrapper/update_one/open/update_one_statement_open.dart';
 import '../../session/client_session.dart';
 import '../../unions/query_union.dart';
-import '../database.dart'
-    hide MongoDocument, ProjectionDocument, IndexDocument, ArrayFilter;
+import '../database_exp.dart';
 import '../cursor.dart';
 
 class MongoCollectionOpen extends MongoCollection {

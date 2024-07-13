@@ -8,7 +8,7 @@ import 'package:sasl_scram/sasl_scram.dart'
 import 'package:mongo_db_driver/src/core/auth/auth.dart';
 
 import '../../command/base/auth_command.dart';
-import '../../command/command.dart';
+import '../../command/command_exp.dart';
 import '../../session/client_session.dart';
 import '../../utils/map_keys.dart';
 import '../error/mongo_dart_error.dart';

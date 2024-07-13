@@ -1,4 +1,5 @@
 import 'package:mongo_db_driver/mongo_db_driver.dart';
+import 'package:mongo_db_query/mongo_db_query.dart';
 
 import '../../../../unions/base/union_type.dart';
 

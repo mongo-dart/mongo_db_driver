@@ -9,8 +9,8 @@ import 'package:mongo_db_driver/mongo_db_driver.dart'
         UpdateOperation,
         WriteCommandType,
         WriteResult;
+import 'package:mongo_db_query/mongo_db_query.dart';
 
-import '../../../../../database/document_types.dart';
 import '../../../../../session/client_session.dart';
 import '../../../../base/operation_base.dart';
 import '../open/update_one_operation_open.dart';

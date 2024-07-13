@@ -4,7 +4,7 @@ import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:mongo_db_query/mongo_db_query.dart';
 
-import '../../command/command.dart';
+import '../../command/command_exp.dart';
 import '../../core/error/mongo_dart_error.dart';
 import '../../mongo_client.dart';
 import '../../server_api.dart';
@@ -17,7 +17,7 @@ import '../../utils/map_keys.dart';
 import '../cursor.dart';
 import '../../command/base/command_operation.dart';
 import '../../topology/server.dart';
-import '../database.dart' hide MongoDocument;
+import '../database_exp.dart';
 
 class MongoDatabase {
   @protected

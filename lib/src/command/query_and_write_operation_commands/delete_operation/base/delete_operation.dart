@@ -1,8 +1,12 @@
 import 'package:meta/meta.dart';
-import 'package:mongo_db_driver/mongo_db_driver.dart';
-import 'package:mongo_db_driver/src/command/base/command_operation.dart';
-import 'package:mongo_db_driver/src/command/base/operation_base.dart';
-import 'package:mongo_db_driver/src/command/query_and_write_operation_commands/delete_operation/base/delete_statement.dart';
+
+import '../../../../core/error/mongo_dart_error.dart';
+import '../../../../database/database_exp.dart';
+import '../../../../server_api_version.dart';
+import '../../../../utils/map_keys.dart';
+import '/src/command/base/command_operation.dart';
+import '/src/command/base/operation_base.dart';
+import '/src/command/query_and_write_operation_commands/delete_operation/base/delete_statement.dart';
 
 import '../../../../session/client_session.dart';
 import '../open/delete_operation_open.dart';

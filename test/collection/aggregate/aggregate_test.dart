@@ -4,7 +4,7 @@ library;
 import 'package:bson/bson.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:logging/logging.dart';
-import 'package:mongo_db_driver/mongo_db_driver.dart' hide MongoDocument;
+import 'package:mongo_db_driver/mongo_db_driver.dart';
 import 'package:mongo_db_driver/src/mongo_client_debug_options.dart';
 import 'package:mongo_db_driver/src/unions/hint_union.dart';
 import 'package:mongo_db_query/mongo_db_query.dart';

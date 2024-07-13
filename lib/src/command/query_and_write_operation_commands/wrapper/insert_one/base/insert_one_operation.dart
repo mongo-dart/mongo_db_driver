@@ -5,11 +5,11 @@ import 'package:mongo_db_driver/mongo_db_driver.dart'
         InsertOperation,
         MongoCollection,
         MongoDartError,
-        MongoDocument,
         WriteCommandType,
         WriteResult;
 import 'package:mongo_db_driver/src/command/base/operation_base.dart';
 import 'package:mongo_db_driver/src/server_api_version.dart';
+import 'package:mongo_db_query/mongo_db_query.dart';
 
 import '../../../../../session/client_session.dart';
 import '../open/insert_one_operation_open.dart';

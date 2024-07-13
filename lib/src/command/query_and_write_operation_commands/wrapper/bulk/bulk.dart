@@ -4,16 +4,16 @@ import 'package:bson/bson.dart';
 import 'package:mongo_db_driver/src/core/message/mongo_message.dart';
 import 'package:mongo_db_driver/src/command/base/command_operation.dart';
 import 'package:mongo_db_driver/src/command/base/operation_base.dart';
+import 'package:mongo_db_query/mongo_db_query.dart';
 
 import '../../../../core/error/mongo_dart_error.dart';
 import '../../../../database/base/mongo_collection.dart';
-import '../../../../database/document_types.dart';
 import '../../../../session/client_session.dart';
 import '../../../../topology/server.dart';
 import '../../../../unions/hint_union.dart';
 import '../../../../unions/query_union.dart';
 import '../../../../utils/map_keys.dart';
-import '../../../command.dart';
+import '../../../command_exp.dart';
 import '../../update_operation/base/update_union.dart';
 import 'bulk_options.dart';
 

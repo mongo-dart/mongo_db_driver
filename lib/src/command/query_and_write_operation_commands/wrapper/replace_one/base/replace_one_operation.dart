@@ -1,8 +1,8 @@
 import 'package:meta/meta.dart';
 import 'package:mongo_db_driver/mongo_db_driver.dart';
 import 'package:mongo_db_driver/src/command/query_and_write_operation_commands/wrapper/replace_one/open/replace_one_operation_open.dart';
+import 'package:mongo_db_query/mongo_db_query.dart';
 
-import '../../../../../session/client_session.dart';
 import '../../../../base/operation_base.dart';
 import '../v1/replace_one_operation_v1.dart';
 

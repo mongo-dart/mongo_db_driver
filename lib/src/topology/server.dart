@@ -1,10 +1,16 @@
 import 'dart:async';
 
 import 'package:logging/logging.dart';
-import 'package:mongo_db_driver/mongo_db_driver.dart';
-import 'package:mongo_db_driver/src/core/error/connection_exception.dart';
-import 'package:mongo_db_driver/src/settings/connection_pool_settings.dart';
+import 'package:mongo_db_query/mongo_db_query.dart';
 import 'package:sasl_scram/sasl_scram.dart' hide Authenticator;
+
+import '../command/command_exp.dart';
+import '../core/error/mongo_dart_error.dart';
+import '../mongo_client.dart';
+import '../session/session_exp.dart';
+import '../utils/map_keys.dart';
+import '/src/core/error/connection_exception.dart';
+import '/src/settings/connection_pool_settings.dart';
 
 import '../command/base/operation_base.dart';
 import '../core/auth/auth.dart';
@@ -15,7 +21,6 @@ import '../core/message/abstract/section.dart';
 import '../core/message/mongo_message.dart';
 import '../core/network/abstract/connection_base.dart';
 import '../core/network/connection_pool.dart';
-import '../session/client_session.dart';
 
 enum ServerState { closed, connected }
 

@@ -1,6 +1,6 @@
 import 'package:mongo_db_driver/src/settings/default_settings.dart';
 
-import '../command/command.dart';
+import '../command/command_exp.dart';
 
 class SessionOptions {
   bool causalConsistency = defSessionCausalConsistency;

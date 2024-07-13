@@ -1,5 +1,5 @@
 import 'package:bson/bson.dart' show BsonBinary;
-import 'package:mongo_db_driver/src/database/document_types.dart';
+import 'package:mongo_db_query/mongo_db_query.dart';
 
 import '../../utils/map_keys.dart';
 import '../error/mongo_dart_error.dart';

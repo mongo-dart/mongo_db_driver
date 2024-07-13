@@ -4,11 +4,12 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:fixnum/fixnum.dart';
-import 'package:mongo_db_driver/src/command/base/command_operation.dart';
-import 'package:mongo_db_driver/src/command/aggregation_commands/return_classes/change_event.dart';
-import 'package:mongo_db_driver/src/command/aggregation_commands/wrapper/change_stream/change_stream_handler.dart';
+import '../command/base/command_operation.dart';
+import '../command/aggregation_commands/return_classes/change_event.dart';
+import '../command/aggregation_commands/wrapper/change_stream/change_stream_handler.dart';
+import 'package:mongo_db_query/mongo_db_query.dart';
 
-import '../command/command.dart';
+import '../command/command_exp.dart';
 import '../core/error/mongo_dart_error.dart';
 import '../command/base/db_admin_command_operation.dart';
 import '../command/base/operation_base.dart';
@@ -17,7 +18,6 @@ import '../topology/server.dart';
 import '../utils/map_keys.dart';
 import 'base/mongo_database.dart';
 import 'base/mongo_collection.dart';
-import 'document_types.dart';
 
 typedef MonadicBlock = void Function(Map<String, dynamic> value);
 

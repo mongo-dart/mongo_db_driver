@@ -1,6 +1,6 @@
 import 'package:vy_string_utils/vy_string_utils.dart';
 
-import '../../command/command.dart';
+import '../../command/command_exp.dart';
 import '../../utils/map_keys.dart';
 
 class ServerCapabilities {

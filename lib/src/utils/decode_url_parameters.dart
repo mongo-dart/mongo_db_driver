@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data' show Uint8List;
 
-import '../command/command.dart';
+import '../command/command_exp.dart';
 import '../core/auth/auth.dart';
 import '../core/info/client_auth.dart';
 import '../settings/connection_string_options.dart';

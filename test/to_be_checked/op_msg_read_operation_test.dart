@@ -3,7 +3,7 @@ library;
 
 import 'package:bson/bson.dart';
 import 'package:fixnum/fixnum.dart';
-import 'package:mongo_db_driver/mongo_db_driver.dart' hide MongoDocument;
+import 'package:mongo_db_driver/mongo_db_driver.dart';
 import 'package:mongo_db_driver/src/command/query_and_write_operation_commands/find_operation/find_result.dart';
 import 'package:mongo_db_driver/src/database/cursor.dart';
 import 'package:decimal/decimal.dart';

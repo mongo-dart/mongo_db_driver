@@ -1,7 +1,7 @@
 import 'package:bson/bson.dart' show BsonBinary;
 import 'package:mongo_db_driver/src/core/message/mongo_message.dart'
     show MongoMessage;
-import 'package:mongo_db_driver/src/database/document_types.dart';
+import 'package:mongo_db_query/mongo_db_query.dart';
 import '../../error/mongo_dart_error.dart';
 import 'payload.dart' show Payload, Payload0, Payload1;
 

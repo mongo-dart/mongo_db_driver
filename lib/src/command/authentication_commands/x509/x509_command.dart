@@ -3,7 +3,7 @@ import '../../../mongo_client.dart';
 import '../../../utils/map_keys.dart';
 import '../../base/auth_command.dart';
 import '../../base/operation_base.dart';
-import '../../command.dart';
+import '../../command_exp.dart';
 
 base class X509Command extends AuthCommand {
   X509Command(MongoClient client, String mechanism, String? username,

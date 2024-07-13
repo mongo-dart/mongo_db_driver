@@ -1,5 +1,7 @@
 import 'package:bson/bson.dart';
-import 'package:mongo_db_driver/mongo_db_driver.dart';
+import 'package:mongo_db_driver/src/command/command_exp.dart';
+import 'package:mongo_db_driver/src/database/database_exp.dart';
+import 'package:mongo_db_query/mongo_db_query.dart';
 
 Future<(BulkWriteResult, MongoDocument, List<MongoDocument>, List<dynamic>)>
     insertBio(MongoCollection collection) async {

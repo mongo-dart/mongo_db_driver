@@ -3,7 +3,7 @@ import 'package:bson/bson.dart' show BsonBinary;
 import 'package:bson/src/types/bson_map.dart';
 // ignore: implementation_imports
 import 'package:bson/src/types/bson_string.dart';
-import 'package:mongo_db_driver/src/database/document_types.dart';
+import 'package:mongo_db_query/mongo_db_query.dart';
 
 abstract class Payload {
   void packValue(BsonBinary buffer);

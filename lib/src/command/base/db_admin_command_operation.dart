@@ -1,9 +1,12 @@
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
-import 'package:mongo_db_driver/mongo_db_driver.dart';
+import 'package:mongo_db_query/mongo_db_query.dart';
 
+import '../../core/error/mongo_dart_error.dart';
+import '../../mongo_client.dart';
 import '../../session/client_session.dart';
 import '../../topology/server.dart';
+import '../../utils/map_keys.dart';
 import 'operation_base.dart';
 
 Logger _log = Logger('Admin Command');

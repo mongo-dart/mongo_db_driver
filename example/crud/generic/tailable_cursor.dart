@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:mongo_db_driver/src/command/command.dart';
+import 'package:mongo_db_driver/src/command/command_exp.dart';
 import 'package:mongo_db_driver/src/database/cursor.dart';
-import 'package:mongo_db_driver/src/database/database.dart';
+import 'package:mongo_db_driver/src/database/database_exp.dart';
 import 'package:mongo_db_driver/src/mongo_client.dart';
 import 'package:mongo_db_driver/src/unions/query_union.dart';
 

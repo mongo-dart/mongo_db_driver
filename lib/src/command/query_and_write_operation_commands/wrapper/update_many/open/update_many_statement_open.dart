@@ -1,4 +1,4 @@
-import 'package:mongo_db_driver/src/command/command.dart';
+import 'package:mongo_db_driver/src/command/command_exp.dart';
 
 class UpdateManyStatementOpen extends UpdateManyStatement {
   UpdateManyStatementOpen(super.q, super.u,

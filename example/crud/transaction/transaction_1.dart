@@ -76,8 +76,8 @@ void main() async {
   // Ezra
 
 // *** In Transaction committed ***
-  session = client.startSession();
-  session.startTransaction();
+  session = client.startSession(clientSessionOptions: SessionOptions());
+  session.startTransaction(transactionOptions: TransactionOptions());
   var (ret2, _) = await collection.updateOne(
       where..$eq('rating', 90), modify..$inc('score', 1),
       session: session);

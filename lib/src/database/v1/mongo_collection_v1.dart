@@ -4,7 +4,7 @@ import 'package:mongo_db_query/mongo_db_query.dart';
 
 import '../../command/aggregation_commands/aggregate/v1/aggregate_operation_v1.dart';
 import '../../command/base/operation_base.dart';
-import '../../command/command.dart';
+import '../../command/command_exp.dart';
 import '../../command/query_and_write_operation_commands/find_operation/v1/find_operation_v1.dart';
 import '../../command/query_and_write_operation_commands/update_operation/base/update_union.dart';
 import '../../command/query_and_write_operation_commands/wrapper/delete_many/v1/delete_many_operation_v1.dart';
@@ -27,8 +27,7 @@ import '../../command/query_and_write_operation_commands/wrapper/update_one/v1/u
 import '../../command/query_and_write_operation_commands/wrapper/update_one/v1/update_one_statement_v1.dart';
 import '../../session/client_session.dart';
 import '../../unions/query_union.dart';
-import '../database.dart'
-    hide MongoDocument, ProjectionDocument, IndexDocument, ArrayFilter;
+import '../database_exp.dart';
 import '../cursor.dart';
 
 /// Collection class for Stable Api V1
