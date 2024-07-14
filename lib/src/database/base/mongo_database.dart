@@ -38,7 +38,7 @@ class MongoDatabase {
 
   final log = Logger('Db');
   // TODO check if needed;
-  final List<String> _uriList = <String>[];
+  //final List<String> _uriList = <String>[];
   late MongoClient mongoClient;
 
   //State state = State.init;
