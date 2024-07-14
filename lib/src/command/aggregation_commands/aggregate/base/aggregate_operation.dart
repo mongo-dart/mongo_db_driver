@@ -1,15 +1,15 @@
 import 'package:meta/meta.dart';
-import 'package:mongo_db_driver/mongo_db_driver.dart'
-    show AggregateOptions, MongoCollection, MongoDartError, MongoDatabase;
-import 'package:mongo_db_driver/src/command/base/operation_base.dart';
+
 import 'package:mongo_db_query/mongo_db_query.dart';
 
-import '../../../../server_api_version.dart';
+import '../../../../command/base/operation_base.dart';
+import '../../../../client/client_exp.dart';
+import '../../../../database/database_exp.dart';
 import '../../../../session/client_session.dart';
 import '../../../../topology/server.dart';
 import '../../../../unions/hint_union.dart';
-import '../../../../utils/map_keys.dart';
 import '../../../base/command_operation.dart';
+import '../../../command_exp.dart';
 import '../open/aggregate_operation_open.dart';
 import '../v1/aggregate_operation_v1.dart';
 import '../aggregate_result.dart';

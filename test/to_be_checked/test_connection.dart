@@ -1,5 +1,5 @@
 import 'package:logging/logging.dart';
-import 'package:mongo_db_driver/src/mongo_client.dart';
+import 'package:mongo_db_driver/mongo_db_driver.dart' show MongoClient;
 
 const dbName = 'test-mongo-dart';
 const dbAddress = '127.0.0.1';

@@ -1,11 +1,8 @@
 import 'dart:async';
 
 import 'package:logging/logging.dart';
-import 'package:mongo_db_driver/src/mongo_client.dart';
-import 'package:mongo_db_driver/src/database/base/mongo_database.dart';
-import 'package:mongo_db_driver/src/mongo_client_options.dart';
-import 'package:mongo_db_driver/src/utils/mongo_db_error.dart';
 import 'package:test/test.dart';
+import 'package:mongo_db_driver/mongo_db_driver.dart';
 
 const dbName = 'test-mongo-dart';
 const dbAddress = '127.0.0.1';

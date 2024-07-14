@@ -1,5 +1,4 @@
-import 'package:mongo_db_driver/mongo_db_driver.dart';
-
+import '../../../../command_exp.dart' show DeleteManyOperation;
 import 'delete_many_options_v1.dart';
 import 'delete_many_statement_v1.dart';
 

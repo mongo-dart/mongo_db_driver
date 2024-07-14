@@ -1,13 +1,12 @@
-import 'package:mongo_db_driver/mongo_db_driver.dart';
-import 'package:mongo_db_driver/src/command/base/operation_base.dart';
 import 'package:mongo_db_query/mongo_db_query.dart';
 
-import '../../../../unions/hint_union.dart';
-import '../../../../unions/query_union.dart';
+import '../../../../client/client_exp.dart';
+import '../../../../database/database_exp.dart';
+import '../../../../unions/unions_exp.dart';
+import '../../../base/operation_base.dart';
+import '../../../command_exp.dart';
 import '../open/update_statement_open.dart';
 import '../v1/update_statement_v1.dart';
-import 'update_spec.dart';
-import 'update_union.dart';
 
 class UpdateStatement {
   UpdateStatement.protected(QueryUnion q, UpdateUnion u,

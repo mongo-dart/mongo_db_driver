@@ -6,18 +6,14 @@ import '../../command/aggregation_commands/aggregate/v1/aggregate_operation_v1.d
 import '../../command/base/operation_base.dart';
 import '../../command/command_exp.dart';
 import '../../command/query_and_write_operation_commands/find_operation/v1/find_operation_v1.dart';
-import '../../command/query_and_write_operation_commands/update_operation/base/update_union.dart';
 import '../../command/query_and_write_operation_commands/wrapper/delete_many/v1/delete_many_operation_v1.dart';
 import '../../command/query_and_write_operation_commands/wrapper/delete_one/v1/delete_one_operation_v1.dart';
 import '../../command/query_and_write_operation_commands/wrapper/delete_one/v1/delete_one_statement_v1.dart';
-import '../../command/query_and_write_operation_commands/wrapper/find_one_and_delete/base/find_one_and_delete_operation.dart';
 import '../../command/query_and_write_operation_commands/wrapper/find_one_and_delete/base/find_one_and_delete_options.dart';
 import '../../command/query_and_write_operation_commands/wrapper/find_one_and_delete/v1/find_one_and_delete_operation_v1.dart';
 import '../../command/query_and_write_operation_commands/wrapper/find_one_and_replace/base/find_one_and_replace_operation.dart';
 import '../../command/query_and_write_operation_commands/wrapper/find_one_and_replace/base/find_one_and_replace_options.dart';
 import '../../command/query_and_write_operation_commands/wrapper/find_one_and_replace/v1/find_one_and_replace_operation_v1.dart';
-import '../../command/query_and_write_operation_commands/wrapper/find_one_and_update/base/find_one_and_update_operation.dart';
-import '../../command/query_and_write_operation_commands/wrapper/find_one_and_update/base/find_one_and_update_options.dart';
 import '../../command/query_and_write_operation_commands/wrapper/find_one_and_update/v1/find_one_and_update_operation_v1.dart';
 import '../../command/query_and_write_operation_commands/wrapper/replace_one/v1/replace_one_operation_v1.dart';
 import '../../command/query_and_write_operation_commands/wrapper/replace_one/v1/replace_one_statement_v1.dart';
@@ -28,7 +24,6 @@ import '../../command/query_and_write_operation_commands/wrapper/update_one/v1/u
 import '../../session/client_session.dart';
 import '../../unions/query_union.dart';
 import '../database_exp.dart';
-import '../cursor.dart';
 
 /// Collection class for Stable Api V1
 class MongoCollectionV1 extends MongoCollection {

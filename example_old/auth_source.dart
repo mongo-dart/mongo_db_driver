@@ -1,4 +1,4 @@
-import 'package:mongo_db_driver/src/mongo_client.dart';
+import 'package:mongo_db_driver/src/client/mongo_client.dart';
 
 const dbName = 'mongodb-auth';
 const dbAddress = '127.0.0.1';

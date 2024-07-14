@@ -6,7 +6,7 @@ import 'package:sasl_scram/sasl_scram.dart' hide Authenticator;
 
 import '../command/command_exp.dart';
 import '../core/error/mongo_dart_error.dart';
-import '../mongo_client.dart';
+import '../client/mongo_client.dart';
 import '../session/session_exp.dart';
 import '../utils/map_keys.dart';
 import '/src/core/error/connection_exception.dart';

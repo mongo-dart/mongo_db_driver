@@ -1,5 +1,5 @@
 import '../../../core/network/abstract/connection_base.dart';
-import '../../../mongo_client.dart';
+import '../../../client/mongo_client.dart';
 import '../../../utils/map_keys.dart';
 import '../../base/auth_command.dart';
 import '../../base/operation_base.dart';

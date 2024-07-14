@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'package:mongo_db_driver/src/command/base/operation_base.dart';
 import 'package:mongo_db_driver/src/core/network/abstract/connection_base.dart';
 
-import '../../../mongo_client.dart';
+import '../../../client/mongo_client.dart';
 import '../../../utils/map_keys.dart';
 import '../../base/auth_command.dart';
 import 'sasl_start_options.dart';

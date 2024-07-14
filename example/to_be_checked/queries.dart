@@ -1,6 +1,6 @@
 import 'package:bson/bson.dart';
 import 'package:mongo_db_driver/src/database/base/mongo_collection.dart';
-import 'package:mongo_db_driver/src/mongo_client.dart';
+import 'package:mongo_db_driver/src/client/mongo_client.dart';
 import 'package:mongo_db_query/mongo_db_query.dart';
 
 void main() async {

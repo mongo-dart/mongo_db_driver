@@ -12,7 +12,7 @@ import 'package:mongo_db_driver/src/utils/map_keys.dart'
 import '../../core/error/mongo_dart_error.dart';
 import '../../database/base/mongo_database.dart';
 import '../../database/base/mongo_collection.dart';
-import '../../mongo_client.dart';
+import '../../client/mongo_client.dart';
 
 typedef TagSet = Map<String, String>;
 

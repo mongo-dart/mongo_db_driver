@@ -1,19 +1,18 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:meta/meta.dart';
-import 'package:mongo_db_driver/mongo_db_driver.dart';
-import 'package:mongo_db_driver/src/core/network/abstract/connection_events.dart';
-import 'package:mongo_db_driver/src/core/network/connection.dart';
 
-import 'package:mongo_db_driver/src/core/network/secure_connection.dart';
-import 'package:mongo_db_driver/src/utils/generic_error.dart';
 import 'package:logging/logging.dart';
 
+import '../../../client/client_exp.dart';
 import '../../../topology/server.dart';
-import '../../../utils/events.dart';
+import '../../../utils/generic_error.dart';
 import '../../info/server_config.dart';
 import '../../message/handler/message_handler.dart';
 import '../../message/mongo_message.dart';
+import '../connection.dart';
+import '../secure_connection.dart';
+import 'connection_events.dart';
 
 const noSecureRequestError = 'The socket connection has been reset by peer.'
     '\nPossible causes:'

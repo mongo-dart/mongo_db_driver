@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:mongo_db_driver/src/utils/events.dart';
 import 'package:test/test.dart';
+import 'package:mongo_db_driver/mongo_db_driver.dart';
 
 class Emitter with EventEmitter {}
 

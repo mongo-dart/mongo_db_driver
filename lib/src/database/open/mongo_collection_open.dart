@@ -5,19 +5,15 @@ import '../../command/aggregation_commands/aggregate/open/aggregate_operation_op
 import '../../command/base/operation_base.dart';
 import '../../command/command_exp.dart';
 import '../../command/query_and_write_operation_commands/find_operation/open/find_operation_open.dart';
-import '../../command/query_and_write_operation_commands/update_operation/base/update_union.dart';
 import '../../command/query_and_write_operation_commands/wrapper/delete_many/open/delete_many_operation_open.dart';
 import '../../command/query_and_write_operation_commands/wrapper/delete_many/open/delete_many_statement_open.dart';
 import '../../command/query_and_write_operation_commands/wrapper/delete_one/open/delete_one_operation_open.dart';
 import '../../command/query_and_write_operation_commands/wrapper/delete_one/open/delete_one_statement_open.dart';
-import '../../command/query_and_write_operation_commands/wrapper/find_one_and_delete/base/find_one_and_delete_operation.dart';
 import '../../command/query_and_write_operation_commands/wrapper/find_one_and_delete/base/find_one_and_delete_options.dart';
 import '../../command/query_and_write_operation_commands/wrapper/find_one_and_delete/open/find_one_and_delete_operation_open.dart';
 import '../../command/query_and_write_operation_commands/wrapper/find_one_and_replace/base/find_one_and_replace_operation.dart';
 import '../../command/query_and_write_operation_commands/wrapper/find_one_and_replace/base/find_one_and_replace_options.dart';
 import '../../command/query_and_write_operation_commands/wrapper/find_one_and_replace/open/find_one_and_replace_operation_open.dart';
-import '../../command/query_and_write_operation_commands/wrapper/find_one_and_update/base/find_one_and_update_operation.dart';
-import '../../command/query_and_write_operation_commands/wrapper/find_one_and_update/base/find_one_and_update_options.dart';
 import '../../command/query_and_write_operation_commands/wrapper/find_one_and_update/open/find_one_and_update_operation_open.dart';
 import '../../command/query_and_write_operation_commands/wrapper/replace_one/open/replace_one_operation_open.dart';
 import '../../command/query_and_write_operation_commands/wrapper/replace_one/open/replace_one_statement_open.dart';
@@ -28,7 +24,6 @@ import '../../command/query_and_write_operation_commands/wrapper/update_one/open
 import '../../session/client_session.dart';
 import '../../unions/query_union.dart';
 import '../database_exp.dart';
-import '../cursor.dart';
 
 class MongoCollectionOpen extends MongoCollection {
   MongoCollectionOpen(super.db, super.collectionName) : super.protected();

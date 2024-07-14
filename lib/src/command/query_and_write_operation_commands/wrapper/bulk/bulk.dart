@@ -14,7 +14,6 @@ import '../../../../unions/hint_union.dart';
 import '../../../../unions/query_union.dart';
 import '../../../../utils/map_keys.dart';
 import '../../../command_exp.dart';
-import '../../update_operation/base/update_union.dart';
 import 'bulk_options.dart';
 
 typedef BulkDocumentRec = (

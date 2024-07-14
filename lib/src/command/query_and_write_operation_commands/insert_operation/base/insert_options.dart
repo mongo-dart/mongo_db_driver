@@ -1,8 +1,8 @@
 import 'package:meta/meta.dart';
 import 'package:mongo_db_driver/src/command/query_and_write_operation_commands/insert_operation/open/insert_options_open.dart';
 import 'package:mongo_db_driver/src/command/query_and_write_operation_commands/insert_operation/v1/insert_options_v1.dart';
-import 'package:mongo_db_driver/src/server_api.dart';
-import 'package:mongo_db_driver/src/server_api_version.dart';
+import 'package:mongo_db_driver/src/database/server_api.dart';
+import 'package:mongo_db_driver/src/database/server_api_version.dart';
 import 'package:mongo_db_driver/src/utils/map_keys.dart';
 import 'package:mongo_db_driver/src/command/parameters/write_concern.dart';
 

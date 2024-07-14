@@ -1,10 +1,11 @@
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
-import 'package:mongo_db_driver/mongo_db_driver.dart';
 import 'package:mongo_db_query/mongo_db_query.dart';
 
+import '../../client/client_exp.dart' show MongoDartError, keyWriteConcern;
 import '../../core/network/abstract/connection_base.dart';
 import '../../topology/server.dart';
+import '../command_exp.dart' show ReadPreference;
 import 'operation_base.dart' show Aspect, Command, OperationBase, Options;
 
 Logger _log = Logger('Server Command');

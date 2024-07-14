@@ -1,10 +1,9 @@
 import 'package:meta/meta.dart';
 import 'package:mongo_db_driver/src/command/base/db_admin_command_operation.dart';
 import '../../../../core/error/mongo_dart_error.dart';
-import '../../../../mongo_client.dart';
-import '../../../../server_api_version.dart';
+import '../../../../client/mongo_client.dart';
+import '../../../../database/server_api_version.dart';
 import '../../../../session/session_exp.dart';
-import '../../../../session/transaction_info.dart';
 import '../../../../utils/map_keys.dart';
 import '../../../base/operation_base.dart';
 import '../open/commit_transaction_command_open.dart';

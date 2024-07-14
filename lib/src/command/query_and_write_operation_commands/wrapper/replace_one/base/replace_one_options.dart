@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
-import 'package:mongo_db_driver/mongo_db_driver.dart';
 
-import '../open/replace_one_options_open.dart';
+import '../../../../../database/database_exp.dart';
+import '../../../../command_exp.dart';
 import '../v1/replace_one_options_v1.dart';
 
 abstract class ReplaceOneOptions extends UpdateOptions {

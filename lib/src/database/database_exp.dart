@@ -4,3 +4,7 @@ export 'v1/mongo_collection_v1.dart';
 export 'base/mongo_database.dart';
 export 'open/mongo_database_open.dart';
 export 'v1/mongo_database_v1.dart';
+
+export 'cursor.dart';
+export 'server_api.dart';
+export 'server_api_version.dart';

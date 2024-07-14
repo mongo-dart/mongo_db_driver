@@ -1,6 +1,7 @@
-import 'package:mongo_db_driver/mongo_db_driver.dart';
 import 'package:mongo_db_driver/src/command/base/operation_base.dart';
 
+import '../../../../client/client_exp.dart';
+import '../../../command_exp.dart';
 import 'bulk_options.dart';
 
 base class UnorderedBulk extends Bulk {

@@ -3,7 +3,6 @@ import 'package:mongo_db_query/mongo_db_query.dart';
 
 import '../../../../../core/error/mongo_dart_error.dart';
 import '../../../../../database/database_exp.dart';
-import '../../../../../server_api_version.dart';
 import '../../../../../session/session_exp.dart';
 import '../../../../../unions/hint_union.dart';
 import '../../../../../unions/projection_union.dart';
@@ -11,10 +10,8 @@ import '../../../../../unions/query_union.dart';
 import '../../../../../unions/sort_union.dart';
 import '../../../../base/operation_base.dart';
 import '../../../../command_exp.dart';
-import '../../../update_operation/base/update_union.dart';
 import '../open/find_one_and_update_operation_open.dart';
 import '../v1/find_one_and_update_operation_v1.dart';
-import 'find_one_and_update_options.dart';
 
 typedef FindOneAndUpdateDocumentRec = (
   FindAndModifyResult findAndModifyResult,

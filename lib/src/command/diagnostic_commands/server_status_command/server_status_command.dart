@@ -1,4 +1,4 @@
-import '../../../mongo_client.dart';
+import '../../../client/mongo_client.dart';
 import '../../../topology/server.dart';
 import '../../../utils/map_keys.dart';
 import '../../base/db_admin_command_operation.dart';

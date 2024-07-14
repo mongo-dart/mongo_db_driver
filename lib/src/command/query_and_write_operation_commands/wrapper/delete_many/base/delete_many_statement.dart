@@ -1,9 +1,9 @@
 import 'package:meta/meta.dart';
-import 'package:mongo_db_driver/mongo_db_driver.dart';
 import 'package:mongo_db_driver/src/command/query_and_write_operation_commands/delete_operation/base/delete_statement.dart';
-import 'package:mongo_db_driver/src/unions/hint_union.dart';
 
-import '../../../../../unions/query_union.dart';
+import '../../../../../database/database_exp.dart';
+import '../../../../../unions/unions_exp.dart';
+import '../../../../command_exp.dart';
 import '../open/delete_many_statement_open.dart';
 import '../v1/delete_many_statement_v1.dart';
 

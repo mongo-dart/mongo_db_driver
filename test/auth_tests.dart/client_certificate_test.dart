@@ -3,7 +3,6 @@
 import 'dart:io';
 
 import 'package:mongo_db_driver/mongo_db_driver.dart';
-import 'package:mongo_db_driver/src/core/error/connection_exception.dart';
 import 'package:test/test.dart';
 
 // Insert in your hosts file:

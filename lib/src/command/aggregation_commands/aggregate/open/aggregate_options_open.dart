@@ -1,4 +1,4 @@
-import 'package:mongo_db_driver/mongo_db_driver.dart';
+import '../../../command_exp.dart' show AggregateOptions;
 
 class AggregateOptionsOpen extends AggregateOptions {
   AggregateOptionsOpen(

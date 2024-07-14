@@ -1,6 +1,6 @@
 import 'package:mongo_db_driver/src/command/parameters/collation_options.dart';
 import 'package:mongo_db_driver/src/command/query_and_write_operation_commands/find_operation/base/find_options.dart';
-import 'package:mongo_db_driver/src/mongo_client.dart';
+import 'package:mongo_db_driver/src/client/mongo_client.dart';
 import 'package:mongo_db_query/mongo_db_query.dart';
 
 const dbName = 'mongo-dart-example';

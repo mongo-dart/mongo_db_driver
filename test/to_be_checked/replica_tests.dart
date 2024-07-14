@@ -1,8 +1,7 @@
 library replica_tests;
 
+import 'package:mongo_db_driver/mongo_db_driver.dart';
 import 'package:mongo_db_driver/src/core/auth/scram_sha256_authenticator.dart';
-import 'package:mongo_db_driver/src/database/base/mongo_collection.dart';
-import 'package:mongo_db_driver/src/mongo_client.dart';
 import 'dart:async';
 import 'package:test/test.dart';
 

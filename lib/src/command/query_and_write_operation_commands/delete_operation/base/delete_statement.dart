@@ -4,8 +4,8 @@ import 'package:mongo_db_driver/src/unions/hint_union.dart';
 import 'package:mongo_db_driver/src/unions/query_union.dart';
 import 'package:mongo_db_query/mongo_db_query.dart';
 
-import '../../../../server_api.dart';
-import '../../../../server_api_version.dart';
+import '../../../../database/server_api.dart';
+import '../../../../database/server_api_version.dart';
 import '../../../../utils/map_keys.dart';
 import '../../../command_exp.dart';
 import '../open/delete_statement_open.dart';

@@ -1,6 +1,7 @@
 library message_tests;
 
 import 'package:bson/bson.dart';
+import 'package:mongo_db_driver/mongo_db_driver.dart';
 import 'package:mongo_db_driver/src/core/message/mongo_message.dart';
 import 'package:mongo_db_driver/src/core/message/abstract/payload.dart';
 import 'package:mongo_db_driver/src/core/message/abstract/section.dart';

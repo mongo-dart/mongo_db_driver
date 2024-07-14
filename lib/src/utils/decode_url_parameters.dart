@@ -8,7 +8,7 @@ import '../settings/connection_string_options.dart';
 import '../core/auth/select_authentication_mechanism.dart';
 import '../core/error/mongo_dart_error.dart';
 import '../settings/default_settings.dart';
-import '../mongo_client_options.dart';
+import '../client/mongo_client_options.dart';
 
 /// Decode the url paramters
 ///

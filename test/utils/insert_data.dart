@@ -1,5 +1,4 @@
-import 'package:mongo_db_driver/src/command/command_exp.dart';
-import 'package:mongo_db_driver/src/database/base/mongo_collection.dart';
+import 'package:mongo_db_driver/mongo_db_driver.dart';
 
 /// For op_msg
 Future<BulkWriteResult> insertOrders(MongoCollection collection) async {

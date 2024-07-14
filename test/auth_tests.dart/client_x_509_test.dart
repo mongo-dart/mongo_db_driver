@@ -6,8 +6,6 @@ library;
 import 'dart:io';
 
 import 'package:mongo_db_driver/mongo_db_driver.dart';
-import 'package:mongo_db_driver/src/core/error/connection_exception.dart';
-import 'package:mongo_db_driver/src/settings/connection_pool_settings.dart';
 import 'package:test/test.dart';
 
 import '../utils/throws_utils.dart';

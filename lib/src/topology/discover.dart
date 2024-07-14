@@ -1,8 +1,7 @@
-import 'package:mongo_db_driver/mongo_db_driver.dart';
-import 'package:mongo_db_driver/src/topology/replica_set.dart';
-import 'package:mongo_db_driver/src/topology/sharded_cluster.dart';
-
+import '../client/client_exp.dart';
 import 'abstract/topology.dart';
+import 'replica_set.dart';
+import 'sharded_cluster.dart';
 import 'standalone.dart';
 
 /// This is a class used uniquely to discover which is the

@@ -1,8 +1,6 @@
 import 'dart:io';
 
-import 'package:mongo_db_driver/src/core/error/connection_exception.dart';
-import 'package:mongo_db_driver/src/mongo_client.dart';
-import 'package:mongo_db_driver/src/mongo_client_options.dart';
+import 'package:mongo_db_driver/mongo_db_driver.dart';
 import 'package:test/test.dart';
 
 // Insert in your hosts file:

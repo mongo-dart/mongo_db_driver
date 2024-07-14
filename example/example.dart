@@ -1,6 +1,6 @@
 import 'dart:io' show Platform;
 
-import 'package:mongo_db_driver/src/mongo_client.dart';
+import 'package:mongo_db_driver/src/client/mongo_client.dart';
 import 'package:mongo_db_query/mongo_db_query.dart';
 
 String host = Platform.environment['MONGO_DART_DRIVER_HOST'] ?? '127.0.0.1';

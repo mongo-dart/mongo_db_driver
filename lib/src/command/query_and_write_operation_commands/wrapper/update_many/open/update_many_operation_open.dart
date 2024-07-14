@@ -1,5 +1,4 @@
-import 'package:mongo_db_driver/mongo_db_driver.dart';
-
+import '../../../../command_exp.dart' show UpdateManyOperation;
 import 'update_many_options_open.dart';
 import 'update_many_statement_open.dart';
 

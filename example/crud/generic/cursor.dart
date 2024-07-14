@@ -1,7 +1,7 @@
 // Example Tested on release 0.7.0
 import 'package:mongo_db_driver/src/command/command_exp.dart';
 import 'package:mongo_db_driver/src/database/cursor.dart';
-import 'package:mongo_db_driver/src/mongo_client.dart';
+import 'package:mongo_db_driver/src/client/mongo_client.dart';
 import 'package:mongo_db_driver/src/unions/query_union.dart';
 
 const dbName = 'mongo-dart-example';

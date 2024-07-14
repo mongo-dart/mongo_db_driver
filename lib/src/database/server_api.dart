@@ -1,7 +1,5 @@
-import 'package:mongo_db_driver/mongo_db_driver.dart'
-    show keyApiStrict, keyApiVersion, keyApiDeprecationErrors;
-
-import 'command/base/operation_base.dart' show Options;
+import '../client/client_exp.dart';
+import '../command/base/operation_base.dart' show Options;
 import 'server_api_version.dart';
 
 class ServerApi {

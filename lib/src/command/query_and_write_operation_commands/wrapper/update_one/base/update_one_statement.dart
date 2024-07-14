@@ -1,8 +1,8 @@
 import 'package:meta/meta.dart';
-import 'package:mongo_db_driver/mongo_db_driver.dart';
-import 'package:mongo_db_driver/src/unions/hint_union.dart';
-import '../../../../../unions/query_union.dart';
-import '../../../update_operation/base/update_union.dart';
+import '../../../../../client/client_exp.dart';
+import '../../../../../database/database_exp.dart';
+import '../../../../../unions/unions_exp.dart';
+import '../../../../command_exp.dart';
 import '../open/update_one_statement_open.dart';
 import '../v1/update_one_statement_v1.dart';
 

@@ -1,7 +1,5 @@
 import 'package:fixnum/fixnum.dart';
 import 'package:mongo_db_driver/mongo_db_driver.dart';
-import 'package:mongo_db_driver/src/database/cursor.dart';
-import 'package:mongo_db_driver/src/unions/query_union.dart';
 import 'package:test/test.dart';
 import 'package:uuid/uuid.dart';
 
