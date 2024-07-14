@@ -1,6 +1,8 @@
 @Timeout(Duration(seconds: 400))
 library;
 
+import 'dart:io';
+
 import 'package:basic_utils/basic_utils.dart' show DnsUtils, RRecordType;
 import 'package:mongo_db_driver/mongo_db_driver.dart';
 import 'package:mongo_db_driver/src/utils/decode_dns_seed_list.dart';
@@ -33,46 +35,73 @@ const doConnectionString = 'mongodb+srv://user:pwd@'
     '&tlsCAFile=/home/cert-path&authMechanism=SCRAM-SHA-1';
 
 void main() {
+  Map<String, String> envVars = Platform.environment;
+  var atlasDomain = envVars['ATLAS_DOMAIN'] ?? '';
+  var atlasUser = envVars['ATLAS_USER'];
+  var atlasPwd = envVars['ATLAS_PWD'];
+  var atlasApp = envVars['ATLAS_APP'];
+
+  if (atlasDomain.isEmpty) {
+    throw StateError('Atlas Environment variables missing');
+  }
+
+  var atlasUrl = 'mongodb+srv://$atlasUser:$atlasPwd@$atlasDomain/test'
+      '?retryWrites=true&w=majority&appName=$atlasApp';
+
   group('Dns lookup', () {
     test('Testing connection TXT', () async {
-      var records =
-          await DnsUtils.lookupRecord('rs.joedrumgoole.com', RRecordType.TXT);
-      expect(records?.first.data, 'authSource=admin&replicaSet=srvdemo');
+      var records = await DnsUtils.lookupRecord(atlasDomain, RRecordType.TXT);
+      expect(records?.first.data,
+          'authSource=admin&replicaSet=atlas-jajzr3-shard-0');
     });
     test('Testing connection SRV', () async {
       var records = await DnsUtils.lookupRecord(
-          '_mongodb._tcp.' 'rs.joedrumgoole.com', RRecordType.SRV);
+          '_mongodb._tcp.$atlasDomain', RRecordType.SRV);
 
-      expect(records?.first.data, '0 0 27022 rs1.joedrumgoole.com.');
-      expect(records?[1].data, '0 0 27022 rs2.joedrumgoole.com.');
-      expect(records?.last.data, '0 0 27022 rs3.joedrumgoole.com.');
+      expect(records?.first.data.startsWith('0 0 27017'), isTrue);
+      expect(records?.first.data.endsWith('.mongodb.net.'), isTrue);
+      expect(records?[1].data.startsWith('0 0 27017'), isTrue);
+      expect(records?[1].data.endsWith('.mongodb.net.'), isTrue);
+      expect(records?.last.data.startsWith('0 0 27017'), isTrue);
+      expect(records?.last.data.endsWith('.mongodb.net.'), isTrue);
     });
 
     test('Decode Dns Seedlist', () async {
-      var result =
-          await decodeDnsSeedlist(Uri.parse('mongodb+srv://user:password@'
-              'rs.joedrumgoole.com/test?retryWrites=true&w=majority'));
+      var result = await decodeDnsSeedlist(Uri.parse(atlasUrl));
 
       expect(
-          result.first,
-          'mongodb://user:password@rs1.joedrumgoole.com:27022/'
-          'test?authSource=admin&replicaSet=srvdemo&'
-          'retryWrites=true&w=majority&ssl=true');
+          result.first.startsWith('mongodb://$atlasUser:$atlasPwd@'), isTrue);
       expect(
-          result[1],
-          'mongodb://user:password@rs2.joedrumgoole.com:27022/'
-          'test?authSource=admin&replicaSet=srvdemo&'
-          'retryWrites=true&w=majority&ssl=true');
+          result.first
+              .contains('.mongodb.net:27017/test?authSource=admin&replicaSet='),
+          isTrue);
       expect(
-          result.last,
-          'mongodb://user:password@rs3.joedrumgoole.com:27022/'
-          'test?authSource=admin&replicaSet=srvdemo&'
-          'retryWrites=true&w=majority&ssl=true');
+          result.first.endsWith(
+              '&retryWrites=true&w=majority&appName=$atlasApp&ssl=true'),
+          isTrue);
+
+      expect(result[1].startsWith('mongodb://$atlasUser:$atlasPwd@'), isTrue);
+      expect(
+          result[1]
+              .contains('.mongodb.net:27017/test?authSource=admin&replicaSet='),
+          isTrue);
+      expect(
+          result[1].endsWith(
+              '&retryWrites=true&w=majority&appName=$atlasApp&ssl=true'),
+          isTrue);
+
+      expect(result.last.startsWith('mongodb://$atlasUser:$atlasPwd@'), isTrue);
+      expect(
+          result.last
+              .contains('.mongodb.net:27017/test?authSource=admin&replicaSet='),
+          isTrue);
+      expect(
+          result.last.endsWith(
+              '&retryWrites=true&w=majority&appName=$atlasApp&ssl=true'),
+          isTrue);
     });
     test('Decode Dns Seedlist - sync', () {
-      decodeDnsSeedlist(Uri.parse('mongodb+srv://user:password@'
-              'rs.joedrumgoole.com/test?retryWrites=true&w=majority'))
-          .then((result) {
+      decodeDnsSeedlist(Uri.parse(atlasUrl)).then((result) {
         expect(
             result.first,
             'mongodb://user:password@rs1.joedrumgoole.com:27022/'
@@ -104,32 +133,25 @@ void main() {
           throwsMongoDartError);
     });
     test('Db creation with seedlist format url', () async {
-      var client = MongoClient('mongodb+srv://user:password@'
-          'rs.joedrumgoole.com/test?retryWrites=true&w=majority');
+      var client = MongoClient(atlasUrl);
       await client.connect();
       var db = client.db();
 
       var urilist = db.uriList;
       expect(
-          urilist.first,
-          'mongodb://user:password@rs1.joedrumgoole.com:27022/'
-          'test?authSource=admin&replicaSet=srvdemo&'
-          'retryWrites=true&w=majority&ssl=true');
+          urilist.first.startsWith('mongodb://$atlasUser:$atlasPwd@'), isTrue);
       expect(
-          urilist[1],
-          'mongodb://user:password@rs2.joedrumgoole.com:27022/'
-          'test?authSource=admin&replicaSet=srvdemo&'
-          'retryWrites=true&w=majority&ssl=true');
+          urilist[1]
+              .contains('.mongodb.net:27017/test?authSource=admin&replicaSet='),
+          isTrue);
       expect(
-          urilist.last,
-          'mongodb://user:password@rs3.joedrumgoole.com:27022/'
-          'test?authSource=admin&replicaSet=srvdemo&'
-          'retryWrites=true&w=majority&ssl=true');
+          urilist.last.endsWith(
+              '&retryWrites=true&w=majority&appName=$atlasApp&ssl=true'),
+          isTrue);
     });
     test('Test Atlas connection', () async {
       var clientOptions = MongoClientOptions()..tls = true;
-      var client =
-          MongoClient(atlasConnectionString, mongoClientOptions: clientOptions);
+      var client = MongoClient(atlasUrl, mongoClientOptions: clientOptions);
       await client.connect();
       var db = client.db();
 
@@ -144,14 +166,11 @@ void main() {
       expect(result['ops'].first['solved'], findResult.first['solved']);
       expect(result['ops'].first['autoinit'], findResult.first['autoinit']); */
       await client.close();
-    },
-        skip:
-            'Set the correct atlas connection string before running this test');
+    });
     test('Test Atlas connection performance', () async {
       var clientOptions = MongoClientOptions()..tls = true;
       var t0 = DateTime.now().millisecondsSinceEpoch;
-      var client =
-          MongoClient(atlasConnectionString, mongoClientOptions: clientOptions);
+      var client = MongoClient(atlasUrl, mongoClientOptions: clientOptions);
       var t1 = DateTime.now().millisecondsSinceEpoch;
       print('Client: ${t1 - t0}');
       await client.connect();
@@ -159,9 +178,7 @@ void main() {
       print('Connect: ${t2 - t1}');
       print('Total: ${t2 - t0}');
       await client.close();
-    },
-        skip:
-            'Set the correct atlas connection string before running this test');
+    });
     test('Test DigitalOcean connection', () async {
       var clientOptions = MongoClientOptions()..tls = true;
       var client =

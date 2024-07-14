@@ -124,7 +124,12 @@ class MongoClient {
     }
     seedServers.addAll([for (var element in hostsSeedList) Uri.parse(element)]);
 
-    clientAuth = await decodeUrlParameters(connectionUri, mongoClientOptions);
+    if (seedServers.isEmpty) {
+      throw MongoDartError('Incorrect connection string');
+    }
+
+    clientAuth =
+        await decodeUrlParameters(seedServers.first, mongoClientOptions);
     defaultDatabaseName = mongoClientOptions.defaultDbName ?? defMongoDbName;
 
     var discoverTopology = Discover(this, seedServers);

@@ -37,6 +37,7 @@ class MongoDatabase {
   }
 
   final log = Logger('Db');
+  // TODO check if needed;
   final List<String> _uriList = <String>[];
   late MongoClient mongoClient;
 
@@ -138,7 +139,9 @@ class MongoDatabase {
 
   MongoDatabase getSibling(String dbName) => mongoClient.db(dbName: dbName);
 
-  List<String> get uriList => _uriList.toList();
+  // Todo - Check Srvers Pool
+  List<String> get uriList =>
+      [for (var element in topology.seedList) element.toString()];
 
   // TODO session needed ?
   /// Ping command

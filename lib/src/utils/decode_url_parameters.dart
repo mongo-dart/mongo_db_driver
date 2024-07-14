@@ -37,6 +37,19 @@ Future<ClientAuth> decodeUrlParameters(
       case ConnectionStringOptions.replicaSet:
         options.replicaSet = value;
         break;
+      case ConnectionStringOptions.retryWrites:
+        options.retryWrites = bool.tryParse(value) ?? true;
+        break;
+      case ConnectionStringOptions.retryReads:
+        options.retryReads = bool.tryParse(value) ?? true;
+        break;
+
+      case ConnectionStringOptions.appName:
+        options.appName = value;
+        break;
+      case ConnectionStringOptions.w:
+        options.writeConcern = WriteConcern(w: W(value));
+        break;
       case ConnectionStringOptions.ssl:
       case ConnectionStringOptions.tls:
         if (value == 'true') {

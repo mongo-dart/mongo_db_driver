@@ -3,8 +3,8 @@ import 'package:mongo_db_driver/src/unions/base/union_type.dart';
 final W wMajority = W('majority');
 final W primaryAcknowledged = W(1);
 
-/// The String value can be 'majority' or a customo defined
-/// write concern base on servers tags (settings.getLastErrorModes)
+/// The String value can be 'majority' or a custom defined
+/// write concern based on servers tags (settings.getLastErrorModes)
 /// defined through replica set settings. In detail:
 ///   Type: document
 ///    A document used to define a custom write concern through the use of members[n].tags. The custom write concern can provide data-center awareness.
