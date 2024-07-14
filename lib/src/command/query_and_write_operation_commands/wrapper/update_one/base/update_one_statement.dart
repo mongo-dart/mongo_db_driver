@@ -3,8 +3,6 @@ import '../../../../../client/client_exp.dart';
 import '../../../../../database/database_exp.dart';
 import '../../../../../unions/unions_exp.dart';
 import '../../../../command_exp.dart';
-import '../open/update_one_statement_open.dart';
-import '../v1/update_one_statement_v1.dart';
 
 abstract class UpdateOneStatement extends UpdateStatement {
   @protected

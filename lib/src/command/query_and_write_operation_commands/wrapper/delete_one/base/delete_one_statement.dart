@@ -4,8 +4,6 @@ import 'package:mongo_db_driver/src/command/query_and_write_operation_commands/d
 import '../../../../../database/database_exp.dart';
 import '../../../../../unions/unions_exp.dart';
 import '../../../../command_exp.dart';
-import '../open/delete_one_statement_open.dart';
-import '../v1/delete_one_statement_v1.dart';
 
 abstract class DeleteOneStatement extends DeleteStatement {
   @protected
