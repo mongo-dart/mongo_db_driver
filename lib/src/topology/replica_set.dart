@@ -6,11 +6,9 @@ import '../core/error/mongo_dart_error.dart';
 import 'abstract/topology.dart';
 
 class ReplicaSet extends Topology {
-  ReplicaSet(super.mongoClient, super.hostsSeedList, {super.detectedServers})
-      : super.protected() {
-    type = TopologyType.replicaSet;
-    //updateServersStatus();
-  }
+  ReplicaSet(super.mongoClient, super.hostsSeedList,
+      {super.detectedServers, TopologyType? topologyType})
+      : super.protected(type: topologyType ?? TopologyType.replicaSetNoPrimary);
 
   Set<Server> secondaries = <Server>{};
 

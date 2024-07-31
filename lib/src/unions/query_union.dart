@@ -1,6 +1,5 @@
 import 'package:mongo_db_query/mongo_db_query.dart';
-
-import 'base/union_type.dart';
+import 'package:type_utils/union.dart';
 
 class QueryUnion extends MultiUnionType<QueryFilter, FilterExpression,
     QueryExpression, Never, Never> {

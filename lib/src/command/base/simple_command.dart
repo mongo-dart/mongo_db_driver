@@ -27,22 +27,34 @@ base class SimpleCommand extends ServerCommand {
   @nonVirtual
   Future<MongoDocument> process() async {
     Server? server;
-    if (topology.type == TopologyType.standalone) {
-      ReadPreference.removeReadPreferenceFromOptions(options);
-      server = topology.primary;
-    } else if (topology.type == TopologyType.replicaSet) {
-      server = topology.getServer(
-          readPreferenceMode:
-              readPreference?.mode ?? ReadPreferenceMode.primary);
-    } else if (topology.type == TopologyType.shardedCluster) {
-      server = topology.getServer();
-      readPreference ??= options[keyReadPreference] == null
-          ? null
-          : ReadPreference.fromOptions(options, removeFromOriginalMap: true);
-      ReadPreference.removeReadPreferenceFromOptions(options);
-      if (readPreference != null) {
-        options = {...options, ...readPreference!.toMap()};
-      }
+    switch (topology.type) {
+      case TopologyType.single:
+        ReadPreference.removeReadPreferenceFromOptions(options);
+        server = topology.primary;
+        break;
+      case TopologyType.replicaSetWithPrimary:
+        server = topology.getServer(
+            readPreferenceMode:
+                readPreference?.mode ?? ReadPreferenceMode.primary);
+        break;
+      case TopologyType.replicaSetNoPrimary:
+        server = topology.getServer(
+            readPreferenceMode:
+                readPreference?.mode ?? ReadPreferenceMode.secondary);
+        break;
+      case TopologyType.sharded:
+      case TopologyType.loadBalanced:
+        server = topology.getServer();
+        readPreference ??= options[keyReadPreference] == null
+            ? null
+            : ReadPreference.fromOptions(options, removeFromOriginalMap: true);
+        ReadPreference.removeReadPreferenceFromOptions(options);
+        if (readPreference != null) {
+          options = {...options, ...readPreference!.toMap()};
+        }
+        break;
+      case TopologyType.unknown:
+        throw MongoDartError('Topology not yet set-up');
     }
 
     return super.executeOnServer(

@@ -11,13 +11,13 @@ import 'standalone.dart';
 /// Once that it is done it can build the correct object.
 /// Here the connection is made only on one server.
 /// The correct topology object will have to complete all the connections.
-class Discover extends Topology {
-  Discover(super.mongoClient, super.hostsSeedList) : super.protected() {
-    type = TopologyType.unknown;
-  }
+class Unknown extends Topology {
+  Unknown(super.mongoClient, super.hostsSeedList, {TopologyType? topologyType})
+      : super.protected(type: topologyType ?? TopologyType.unknown);
 
   Future<Topology> getEffectiveTopology() async {
     Topology topology;
+
     if (servers.first.isStandalone) {
       topology =
           Standalone(mongoClient, hostsSeedList, detectedServers: servers);

@@ -1,7 +1,7 @@
 import 'package:mongo_db_query/mongo_db_query.dart';
+import 'package:type_utils/union.dart';
 
 import '../../../../client/client_exp.dart';
-import '../../../../unions/base/union_type.dart';
 
 class UpdateSpec extends UnionType<MongoDocument, List<Map<String, dynamic>>> {
   UpdateSpec(super.value) {

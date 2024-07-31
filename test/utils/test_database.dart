@@ -27,11 +27,11 @@ Future<DbTestInfo> testDatabase(String uriString,
     var db = testInfo.client!.db();
     testInfo.serverfound = true;
     testInfo.isStandalone =
-        testInfo.client!.topology!.type == TopologyType.standalone;
+        testInfo.client!.topology!.type == TopologyType.single;
     testInfo.isReplicaSet =
-        testInfo.client!.topology!.type == TopologyType.replicaSet;
+        testInfo.client!.topology!.type == TopologyType.replicaSetWithPrimary;
     testInfo.isShardedCluster =
-        testInfo.client!.topology!.type == TopologyType.shardedCluster;
+        testInfo.client!.topology!.type == TopologyType.sharded;
     testInfo.fcv = db.server.serverCapabilities.fcv;
     testInfo.isAuthenticated = testInfo.client!.isAuthenticated;
     testInfo.isVer3_2 = testInfo.fcv == '3.2';

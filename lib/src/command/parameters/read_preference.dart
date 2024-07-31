@@ -1,27 +1,29 @@
-import 'package:mongo_db_driver/src/command/base/operation_base.dart';
-import 'package:mongo_db_driver/src/utils/map_keys.dart'
+import '../../database/database_exp.dart' show MongoCollection, MongoDatabase;
+import '../../client/client_exp.dart'
     show
+        MongoClient,
+        MongoDartError,
         key$ReadPreference,
+        keyEnabled,
         keyHedgeOptions,
         keyMaxStalenessSecond,
         keyMode,
         keyReadPreference,
         keyReadPreferenceTags,
         keyTags;
-
-import '../../core/error/mongo_dart_error.dart';
-import '../../database/base/mongo_database.dart';
-import '../../database/base/mongo_collection.dart';
-import '../../client/mongo_client.dart';
+import '../base/operation_base.dart';
 
 typedef TagSet = Map<String, String>;
 
 enum ReadPreferenceMode {
-  primary,
-  primaryPreferred,
-  secondary,
-  secondaryPreferred,
-  nearest
+  primary('primary'),
+  primaryPreferred('primaryPreferred'),
+  secondary('secondary'),
+  secondaryPreferred('secondaryPreferred'),
+  nearest('nearest');
+
+  const ReadPreferenceMode(this.name);
+  final String name;
 }
 
 var readPrefernceKeys = [
@@ -32,24 +34,41 @@ var readPrefernceKeys = [
   keyHedgeOptions
 ];
 
-String getReadPreferenceModeString(ReadPreferenceMode mode) =>
-    '$mode'.replaceFirst('ReadPreferenceMode.', '');
 ReadPreferenceMode getReadPreferenceModeFromString(String mode) =>
-    ReadPreferenceMode.values
-        .firstWhere((element) => '$element' == 'ReadPreferenceMode.$mode');
+    ReadPreferenceMode.values.firstWhere((element) => element.name == mode);
 
 ///
 /// The **ReadPreference** class is a class that represents a MongoDB
 /// ReadPreference and is used to construct connections.
 ///  @class
-/// @param {string} mode A string describing the read preference mode (primary|primaryPreferred|secondary|secondaryPreferred|nearest)
-/// @param {array} tags The tags object
-/// @param {object} [toMap] Additional read preference options
-/// @param {number} [toMap.maxStalenessSeconds] Max secondary read staleness in seconds, Minimum value is 90 seconds.
+/// mode A string describing the read preference mode (primary|primaryPreferred|secondary|secondaryPreferred|nearest)
+///  tags The tags object
 /// @see https://docs.mongodb.com/manual/core/read-preference/
 /// @return {ReadPreference}
 class ReadPreference {
-  static const needSlaveOk = [
+  ReadPreference(this.mode,
+      {this.tags, this.maxStalenessSeconds, this.hedgeOptions}) {
+    if (mode == ReadPreferenceMode.primary) {
+      if (tags != null && tags!.isNotEmpty) {
+        if (tags!.length > 1 || tags!.first.isNotEmpty) {
+          throw ArgumentError(
+              'Primary read preference cannot be combined with tags');
+        }
+      }
+      if (maxStalenessSeconds != null) {
+        throw ArgumentError(
+            'Primary read preference cannot be combined with maxStalenessSeconds');
+      }
+      if (hedgeOptions != null) {
+        throw ArgumentError('Primary read preference cannot set hedge options');
+      }
+    }
+    if (maxStalenessSeconds != null && maxStalenessSeconds! < 0) {
+      throw ArgumentError('maxStalenessSeconds must be a positive integer');
+    }
+  }
+
+  static const secondaryOK = [
     ReadPreferenceMode.primaryPreferred,
     ReadPreferenceMode.secondary,
     ReadPreferenceMode.secondaryPreferred,
@@ -63,7 +82,8 @@ class ReadPreference {
       ReadPreference(ReadPreferenceMode.secondary);
   static ReadPreference secondaryPreferred =
       ReadPreference(ReadPreferenceMode.secondaryPreferred);
-  static ReadPreference nearest = ReadPreference(ReadPreferenceMode.nearest);
+  static ReadPreference nearest = ReadPreference(ReadPreferenceMode.nearest,
+      hedgeOptions: {keyEnabled: true});
 
   /// Default choice as per [specifications](https://github.com/mongodb/specifications/blob/master/source/server-selection/server-selection.rst#components-of-a-read-preference)
   static ReadPreference preferenceDefault = ReadPreference(
@@ -86,28 +106,8 @@ class ReadPreference {
 
   final ReadPreferenceMode mode;
   final List<TagSet>? tags;
-  //final Map<String, Object> options;
   final int? maxStalenessSeconds;
   final Map<String, Object>? hedgeOptions;
-
-  ReadPreference(this.mode,
-      {this.tags, this.maxStalenessSeconds, this.hedgeOptions}) {
-    if (mode == ReadPreferenceMode.primary) {
-      if (tags != null && tags!.isNotEmpty) {
-        if (tags!.length > 1 || tags!.first.isNotEmpty) {
-          throw ArgumentError(
-              'Primary read preference cannot be combined with tags');
-        }
-      }
-      if (maxStalenessSeconds != null) {
-        throw ArgumentError(
-            'Primary read preference cannot be combined with maxStalenessSeconds');
-      }
-    }
-    if (maxStalenessSeconds != null && maxStalenessSeconds! < 0) {
-      throw ArgumentError('maxStalenessSeconds must be a positive integer');
-    }
-  }
 
   /// We can accept three formats for ReadPreference inside Options:
   /// - options[keyReadPreference] id ReadPreference
@@ -116,7 +116,7 @@ class ReadPreference {
   ///    {keyMode: <String>,
   ///     keyReadPrefernceTags: <List>,
   ///     keyMaxStalenessSeconds: <int>,
-  ///     keyHedgedOptions: <map>
+  ///     keyHedgedOptions:  {'enabled' : true/false}
   ///    })
   /// - options[keyReadPreference] is ReadPreferenceMode.
   ///   In this this case we expect the other options to be inside the options
@@ -170,7 +170,7 @@ class ReadPreference {
   /// @method
   /// @return {boolean}
   /// @see https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#op-query
-  bool get slaveOk => needSlaveOk.contains(mode);
+  bool get secondaryOk => secondaryOK.contains(mode);
 
   @override
   bool operator ==(other) => other is ReadPreference && mode == other.mode;
@@ -180,7 +180,7 @@ class ReadPreference {
 
   Options toMap() => <String, dynamic>{
         key$ReadPreference: {
-          keyMode: getReadPreferenceModeString(mode),
+          keyMode: mode.name,
           if (tags != null) keyTags: tags!,
           if (maxStalenessSeconds != null)
             keyMaxStalenessSecond: maxStalenessSeconds!,

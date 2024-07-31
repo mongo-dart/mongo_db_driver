@@ -5,6 +5,9 @@
 - Moved Document types in package mongo_db_query
 - Export Reorganization
 - Fixed issue with mongodb+srv connection String
+- Using Union Base Classes and Error Base classes from type_utils packahge
+- Direct Connection
+- Server Monitoring (no log yet)
 
 ## 0.1.0-1.1.dev
 

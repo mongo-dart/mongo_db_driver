@@ -1,11 +1,10 @@
 import 'package:mongo_db_driver/src/command/parameters/write_concern.dart';
-import 'package:mongo_db_driver/src/settings/connection_pool_settings.dart';
 
 import '../command/parameters/read_concern.dart';
 import '../command/parameters/read_preference.dart';
 import '../core/auth/auth.dart';
 import '../core/compression.dart';
-import 'mongo_client.dart';
+import 'client_exp.dart';
 import '../database/server_api.dart';
 
 /// Describes all possible URI query options for the mongo client
@@ -149,7 +148,7 @@ class MongoClientOptions
 
   /// Allow a driver to force a Single topology type with a connection
   /// string containing one host
-  bool? directConnection;
+  bool directConnection = false;
 
   /// Instruct the driver it is connecting to a load balancer fronting a
   /// mongos like service

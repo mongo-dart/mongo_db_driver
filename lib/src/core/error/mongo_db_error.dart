@@ -1,4 +1,4 @@
-import 'generic_error.dart' show GenericError, TemplateError;
+import 'package:type_utils/error.dart';
 
 class MongoDbError extends GenericError {
   MongoDbError(super.errorMessage, {super.errorCode, super.stackTrace});

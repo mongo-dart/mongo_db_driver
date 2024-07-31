@@ -1,7 +1,7 @@
 //import 'package:mongo_db_driver/mongo_dart.dart';
 //import 'package:mongo_db_driver/mongo_dart_old.dart';
-import 'package:mongo_db_driver/src/unions/base/union_type.dart';
 import 'package:mongo_db_query/mongo_db_query.dart';
+import 'package:type_utils/union.dart';
 
 import '../../../../../core/error/mongo_dart_error.dart';
 

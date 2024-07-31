@@ -6,7 +6,7 @@ import '../command/base/operation_base.dart';
 import '../database/database_exp.dart';
 import 'mongo_client_debug_options.dart';
 import '../session/session_options.dart';
-import '../topology/discover.dart';
+import '../topology/unknown.dart';
 import '../command/command_exp.dart';
 import '../core/auth/auth.dart';
 import '../core/info/client_auth.dart';
@@ -114,25 +114,70 @@ class MongoClient {
   /// 4) run hello command and determine the topology.
   /// 5) creates the topology.
   Future connect() async {
+    var tempSeedList = <Uri>[];
     var connectionUri = Uri.parse(url);
 
     var hostsSeedList = <String>[];
     if (connectionUri.scheme == 'mongodb+srv') {
+      if (mongoClientOptions.directConnection) {
+        throw MongoDartError('SRV URI does not support directConnection');
+      }
       hostsSeedList.addAll(await decodeDnsSeedlist(connectionUri));
     } else {
       hostsSeedList.addAll(splitHosts(url));
     }
-    seedServers.addAll([for (var element in hostsSeedList) Uri.parse(element)]);
+    tempSeedList
+        .addAll([for (var element in hostsSeedList) Uri.parse(element)]);
+    // The host part of the server names must be normalized in lowercases
+    // https://github.com/mongodb/specifications/blob/master/source/server-discovery-and-monitoring/server-discovery-and-monitoring.md#initial-servers
+    for (Uri serverUri in tempSeedList) {
+      seedServers.add(Uri(
+          scheme: serverUri.scheme,
+          userInfo: serverUri.userInfo,
+          host: serverUri.host.toLowerCase(),
+          port: serverUri.port,
+          pathSegments: serverUri.pathSegments,
+          queryParameters: serverUri.queryParameters,
+          fragment: serverUri.fragment));
+    }
 
     if (seedServers.isEmpty) {
       throw MongoDartError('Incorrect connection string');
+    }
+    if (mongoClientOptions.directConnection && seedServers.length > 1) {
+      throw MongoDartError('DirectConnection option requires exactly one host');
     }
 
     clientAuth =
         await decodeUrlParameters(seedServers.first, mongoClientOptions);
     defaultDatabaseName = mongoClientOptions.defaultDbName ?? defMongoDbName;
 
-    var discoverTopology = Discover(this, seedServers);
+    TopologyType? type;
+
+    // Initial TopologyType
+
+    // If the directConnection URI option is specified when a MongoClient is
+    // constructed, the TopologyType must be initialized based on the value of
+    // the directConnection option and the presence of the replicaSet option
+    // according to the following table:
+    // | directConnection |	replicaSet present |	Initial TopologyType |
+    // |       true 	    |         no  	     |        Single         |
+    // |       true 	    |        yes 	       |        Single         |
+    // |       false 	    |         no 	       |        Unknown        |
+    // |       false 	    |        yes 	       |   ReplicaSetNoPrimary |
+    //
+    // https://github.com/mongodb/specifications/blob/master/source/server-discovery-and-monitoring/server-discovery-and-monitoring.md#initial-topologytype
+    if (mongoClientOptions.directConnection) {
+      type = TopologyType.single;
+    } else {
+      if (mongoClientOptions.replicaSet == null) {
+        type = TopologyType.unknown;
+      } else {
+        type = TopologyType.replicaSetNoPrimary;
+      }
+    }
+
+    var discoverTopology = Unknown(this, seedServers, topologyType: type);
 
     await discoverTopology.connect();
 
@@ -157,6 +202,7 @@ class MongoClient {
 
   // TODO clean the serverSessionPool
   Future close() async {
+    await topology?.close();
     topology = null;
   }
 

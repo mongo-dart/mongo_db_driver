@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 
@@ -10,27 +12,29 @@ import '../../client/mongo_client_options.dart';
 import '../server.dart';
 
 enum TopologyType {
-  standalone,
-  replicaSet,
-  shardedCluster,
-  loadBalancer,
+  single,
+  replicaSetNoPrimary,
+  replicaSetWithPrimary,
+  sharded,
+  loadBalanced,
   unknown
 }
 
 abstract class Topology {
   @protected
   Topology.protected(this.mongoClient, this.hostsSeedList,
-      {List<Server>? detectedServers}) {
+      {List<Server>? detectedServers, required this.type}) {
     if (detectedServers != null) {
       servers.addAll(detectedServers);
     }
   }
 
   final log = Logger('Topology');
-  TopologyType? type;
+  TopologyType type;
   final List<Uri> hostsSeedList;
   final MongoClient mongoClient;
   MongoClientOptions get mongoClientOptions => mongoClient.mongoClientOptions;
+  bool endMonitoring = false;
 
   /// Returns the primary writable server
   Server? primary;
@@ -64,6 +68,7 @@ abstract class Topology {
       await addServersFromSeedList();
       await updateServersStatus();
     }
+    unawaited(monitorServers());
   }
 
   Future<void> addServersFromSeedList() async {
@@ -86,8 +91,10 @@ abstract class Topology {
       } else {
         await server.refreshStatus();
       }
-      additionalServers
-          .addAll(await addOtherServers(server, additionalServers));
+      if (!mongoClientOptions.directConnection) {
+        additionalServers
+            .addAll(await addOtherServers(server, additionalServers));
+      }
     }
 
     for (var server in additionalServers) {
@@ -170,5 +177,18 @@ abstract class Topology {
       }
     }
     return selectedServer ?? (throw MongoDartError('No server detected'));
+  }
+
+  Future<void> monitorServers() async {
+    if (endMonitoring) {
+      return;
+    }
+    // TODO parametrize the time.
+    await Future.delayed(Duration(seconds: 10), updateServersStatus);
+    unawaited(monitorServers());
+  }
+
+  Future<void> close() async {
+    endMonitoring = true;
   }
 }

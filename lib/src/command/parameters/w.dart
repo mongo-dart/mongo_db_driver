@@ -1,4 +1,4 @@
-import 'package:mongo_db_driver/src/unions/base/union_type.dart';
+import 'package:type_utils/union.dart';
 
 final W wMajority = W('majority');
 final W primaryAcknowledged = W(1);

@@ -37,6 +37,9 @@ Future<ClientAuth> decodeUrlParameters(
       case ConnectionStringOptions.replicaSet:
         options.replicaSet = value;
         break;
+      case ConnectionStringOptions.directConnection:
+        options.directConnection = bool.tryParse(value) ?? false;
+        break;
       case ConnectionStringOptions.retryWrites:
         options.retryWrites = bool.tryParse(value) ?? true;
         break;

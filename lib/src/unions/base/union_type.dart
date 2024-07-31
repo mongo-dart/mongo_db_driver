@@ -1,4 +1,4 @@
-abstract class UnionType<T1, T2> {
+/* abstract class UnionType<T1, T2> {
   UnionType(dynamic value)
       : valueOne = _assignValue<T1>(value),
         valueTwo = _assignValue<T2>(value);
@@ -96,3 +96,4 @@ L? _convertList<L>(List list) {
   }
   return ret;
 }
+ */

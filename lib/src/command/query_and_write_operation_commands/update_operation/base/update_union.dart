@@ -1,6 +1,6 @@
 import 'package:mongo_db_driver/src/command/query_and_write_operation_commands/update_operation/base/update_spec.dart';
-import 'package:mongo_db_driver/src/unions/base/union_type.dart';
 import 'package:mongo_db_query/mongo_db_query.dart';
+import 'package:type_utils/union.dart';
 
 import '../../../../core/error/mongo_dart_error.dart';
 

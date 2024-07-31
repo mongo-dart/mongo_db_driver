@@ -1,13 +1,11 @@
 import 'dart:async';
 
 import 'package:logging/logging.dart';
-import 'package:mongo_db_driver/src/settings/connection_pool_settings.dart';
 
+import '../../client/client_exp.dart';
 import '../../settings/default_settings.dart';
 import '../../topology/server.dart';
-import '../../utils/events.dart';
 import '../../utils/generic_error.dart';
-import '../error/mongo_dart_error.dart';
 import '../info/server_config.dart';
 import 'abstract/connection_base.dart';
 import 'abstract/connection_events.dart';

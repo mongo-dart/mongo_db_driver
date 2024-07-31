@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'mongo_db_error.dart';
+import '../core/error/mongo_db_error.dart';
 
 String extractType<T>([T? object]) => object is Type ? '$object' : '$T';
 

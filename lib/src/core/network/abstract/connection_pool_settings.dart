@@ -1,3 +1,5 @@
+/// This roughly corresponds to connectionPoolOptions interface in specs
+/// https://github.com/mongodb/specifications/blob/master/source/connection-monitoring-and-pooling/connection-monitoring-and-pooling.md
 class ConnectionPoolSettings {
   /// The maximum number of connections in the connection pool.
   int _maxPoolSize = 100;
@@ -30,6 +32,8 @@ class ConnectionPoolSettings {
   ///  to provide the maximum number of threads allowed to wait for a
   /// connection to become available from the pool.
   /// For default values, see the driver documentation.
+  /// https://github.com/mongodb/specifications/blob/master/source/connection-monitoring-and-pooling/connection-monitoring-and-pooling.md
+  @Deprecated('See specs')
   int waitQueueMultiple = 0;
 
   /// The maximum time in milliseconds that a thread can wait for a

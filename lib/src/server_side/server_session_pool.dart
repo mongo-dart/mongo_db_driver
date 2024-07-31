@@ -41,7 +41,7 @@ class ServerSessionPool {
       if (possibleSession.isDirty) {
         continue;
       }
-      if (topologyType == TopologyType.loadBalancer) {
+      if (topologyType == TopologyType.loadBalanced) {
         selectedSession = possibleSession;
         break;
       }

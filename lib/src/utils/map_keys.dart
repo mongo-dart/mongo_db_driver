@@ -92,6 +92,7 @@ const keyDropDuplicatedEntries = 'dropDups';
 const keyDropIndexes = 'dropIndexes';
 const keyElectionId = 'electionId';
 const keyElectionMetrics = 'electionMetrics';
+const keyEnabled = 'enabled';
 const keyErrmsg = 'errmsg';
 const keyExpireAfterSeconds = 'expireAfterSeconds';
 const keyExplain = 'explain';

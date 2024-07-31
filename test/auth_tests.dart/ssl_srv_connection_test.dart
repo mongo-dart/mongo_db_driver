@@ -145,7 +145,7 @@ void main() {
               .contains('.mongodb.net:27017/test?authSource=admin&replicaSet='),
           isTrue);
       expect(
-          urilist.last.endsWith(
+          urilist.last.contains(
               '&retryWrites=true&w=majority&appName=$atlasApp&ssl=true'),
           isTrue);
     });

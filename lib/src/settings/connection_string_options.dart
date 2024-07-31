@@ -23,6 +23,14 @@ class ConnectionStringOptions {
   /// set member(s) to the host[:port] component of the uri.
   static const replicaSet = 'replicaSet';
 
+  /// Specifies whether the client connects directly to the host[:port] in
+  /// the connection URI:
+  /// - true: The client sends operations to only the specified host.
+  /// It doesn't attempt to discover any other members of the replica set.
+  /// - false: The client attempts to discover all servers in the replica set,
+  /// and sends operations to the primary member. This is the default value.
+  static const directConnection = 'directConnection';
+
   // *TLS Options*
 
   /// Enables or disables TLS/SSL for the connection:
