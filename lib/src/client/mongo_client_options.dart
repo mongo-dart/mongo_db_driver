@@ -127,7 +127,11 @@ class MongoClientOptions
   /// MongoDB deployment. Specify the interval (in milliseconds) between checks,
   /// counted from the end of the previous check until the beginning
   /// of the next one.
-  int? heartbeatFrequencyMS;
+  /// For multi-threaded and asynchronous drivers it MUST default to 10
+  /// seconds and MUST be configurable.
+  /// The driver MUST NOT permit users to configure it less than
+  /// minHeartbeatFrequencyMS (500ms).
+  int heartbeatFrequencyMS = 10000;
 
   /// Sets the minimum heartbeat frequency. In the event that the driver
   /// has to frequently re-check a server's availability, it will wait at
@@ -152,7 +156,7 @@ class MongoClientOptions
 
   /// Instruct the driver it is connecting to a load balancer fronting a
   /// mongos like service
-  bool? loadBalanced;
+  bool loadBalanced = false;
 
   WriteConcern? writeConcern;
 

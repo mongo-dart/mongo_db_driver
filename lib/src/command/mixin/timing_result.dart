@@ -1,4 +1,5 @@
 import 'package:bson/bson.dart';
+import 'package:fixnum/fixnum.dart';
 import 'package:mongo_db_driver/src/utils/map_keys.dart';
 
 /// Basic communication from a MongoDb server
@@ -41,7 +42,7 @@ mixin TimingResult {
 /// and the id of the key used to sign the cluster time.
 class Signature {
   BsonBinary? hash;
-  int? keyId;
+  Int64? keyId;
 
   Signature(Map<String, dynamic> document) {
     _extract(document);
@@ -49,7 +50,7 @@ class Signature {
 
   void _extract(Map<String, dynamic> document) {
     //document ??= <String, dynamic>{};
-    keyId = document[keyKeyId] as int?;
+    keyId = document[keyKeyId] == null ? null : Int64(document[keyKeyId]);
     hash = document[keyHash] as BsonBinary?;
   }
 }
@@ -74,4 +75,7 @@ class $ClusterTime {
     clusterTime = document[keyClusterTime] as DateTime?;
     signature = Signature(document);
   }
+
+  bool isAfter($ClusterTime other) =>
+      clusterTime?.isAfter(other.clusterTime ?? DateTime(1970)) ?? false;
 }

@@ -49,6 +49,18 @@ class ReplicaSet extends Topology {
   Future<Set<Server>> addOtherServers(
       Server server, Set<Server> additionalServers) async {
     var addedServers = <Server>{};
+
+    /// An RSGhost server has no hosts list nor setName. Therefore the client
+    ///  MUST NOT attempt to use its hosts list nor check its setName.
+    /// However, the client MUST keep the RSGhost member in its
+    /// TopologyDescription, in case the client's only hope for staying
+    ///  connected to the replica set is that this member will transition to a
+    /// more useful state.
+    // https://github.com/mongodb/specifications/blob/master/source/server-discovery-and-monitoring/server-discovery-and-monitoring.md#rsghost-and-rsother
+    if (server.serverType == ServerType.rsGhost) {
+      return addedServers;
+    }
+    // TODO check if also passives and arbiters are needed
     if (server.hello?.hosts != null) {
       for (var url in server.hello!.hosts!) {
         if (servers.any((element) => element.url == url)) {

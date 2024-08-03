@@ -1,7 +1,6 @@
 import 'package:vy_string_utils/vy_string_utils.dart';
 
 import '../../command/command_exp.dart';
-import '../../utils/map_keys.dart';
 
 class ServerCapabilities {
   int minWireVersion = 0;
@@ -21,7 +20,7 @@ class ServerCapabilities {
   bool isShardedCluster = false;
   bool isStandalone = false;
   String? fcv;
-
+/* 
   void getParamsFromIstMaster(Map<String, dynamic> isMaster) {
     if (isMaster.containsKey('maxWireVersion')) {
       maxWireVersion = isMaster['maxWireVersion'] as int;
@@ -61,7 +60,7 @@ class ServerCapabilities {
       fcv = '3.6';
     }
   }
-
+ */
   void getParamsFromHello(HelloResult result) {
     minWireVersion = result.minWireVersion;
 

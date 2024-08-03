@@ -1,5 +1,8 @@
 import 'package:mongo_db_driver/mongo_db_driver.dart';
 import 'package:mongo_db_driver/src/topology/abstract/topology.dart';
+import 'package:mongo_db_driver/src/topology/replica_set.dart';
+import 'package:mongo_db_driver/src/topology/sharded_cluster.dart';
+import 'package:mongo_db_driver/src/topology/standalone.dart';
 import 'package:sasl_scram/sasl_scram.dart';
 
 class DbTestInfo {
@@ -26,12 +29,9 @@ Future<DbTestInfo> testDatabase(String uriString,
     await testInfo.client!.connect();
     var db = testInfo.client!.db();
     testInfo.serverfound = true;
-    testInfo.isStandalone =
-        testInfo.client!.topology!.type == TopologyType.single;
-    testInfo.isReplicaSet =
-        testInfo.client!.topology!.type == TopologyType.replicaSetWithPrimary;
-    testInfo.isShardedCluster =
-        testInfo.client!.topology!.type == TopologyType.sharded;
+    testInfo.isStandalone = testInfo.client!.topology is Standalone;
+    testInfo.isReplicaSet = testInfo.client!.topology is ReplicaSet;
+    testInfo.isShardedCluster = testInfo.client!.topology is SharderdCluster;
     testInfo.fcv = db.server.serverCapabilities.fcv;
     testInfo.isAuthenticated = testInfo.client!.isAuthenticated;
     testInfo.isVer3_2 = testInfo.fcv == '3.2';

@@ -3,6 +3,7 @@ import 'package:mongo_db_query/mongo_db_query.dart';
 
 import '../command/base/db_admin_command_operation.dart';
 import '../command/base/operation_base.dart';
+import '../command/mixin/timing_result.dart';
 import '../database/database_exp.dart';
 import 'mongo_client_debug_options.dart';
 import '../session/session_options.dart';
@@ -81,7 +82,7 @@ class MongoClient {
   late ServerSessionPool serverSessionPool;
   Set<ClientSession> activeSessions = <ClientSession>{};
 
-  DateTime? clientClusterTime;
+  $ClusterTime? clientClusterTime;
 
   WriteConcern? get writeConcern => mongoClientOptions.writeConcern;
   ReadConcern? get readConcern => mongoClientOptions.readConcern;
@@ -144,8 +145,19 @@ class MongoClient {
     if (seedServers.isEmpty) {
       throw MongoDartError('Incorrect connection string');
     }
+    // TODO, this test shoul be done on the effective server,
+    // and not on the server seeds.
+    // https://github.com/mongodb/specifications/blob/master/source/server-discovery-and-monitoring/server-discovery-and-monitoring.md#handling-of-srv-uris-resolving-to-single-host
     if (mongoClientOptions.directConnection && seedServers.length > 1) {
       throw MongoDartError('DirectConnection option requires exactly one host');
+    }
+
+    // https://github.com/mongodb/specifications/blob/master/source/server-discovery-and-monitoring/server-discovery-and-monitoring.md#allowed-configuration-combinations
+    if (mongoClientOptions.loadBalanced &&
+        (mongoClientOptions.directConnection ||
+            mongoClientOptions.replicaSet != null)) {
+      throw MongoDartError('Load Balanced option cannot '
+          'be used with direct Connection or Replica Set');
     }
 
     clientAuth =
@@ -201,6 +213,13 @@ class MongoClient {
   }
 
   // TODO clean the serverSessionPool
+  /// Client closing
+  ///
+  /// When a client is closing, before it emits the TopologyClosedEvent as per
+  /// the Events API, it SHOULD remove all servers from its
+  /// TopologyDescription and set its TopologyType to Unknown, emitting the
+  /// corresponding TopologyDescriptionChangedEvent.
+  // https://github.com/mongodb/specifications/blob/master/source/server-discovery-and-monitoring/server-discovery-and-monitoring.md#client-closing
   Future close() async {
     await topology?.close();
     topology = null;

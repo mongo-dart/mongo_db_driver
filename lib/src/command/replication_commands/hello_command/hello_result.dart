@@ -1,6 +1,11 @@
 import 'package:bson/bson.dart';
 import 'package:mongo_db_driver/src/command/mixin/basic_result.dart';
+import 'package:mongo_db_driver/src/command/mixin/timing_result.dart';
 import 'package:mongo_db_driver/src/utils/map_keys.dart';
+import 'package:mongo_db_query/mongo_db_query.dart';
+
+import '../../../core/info/server_description.dart';
+import '../../../topology/topology_version.dart';
 
 /// Class representing the output of the Hello command
 /// Not all values are represented. If you need something that here is missing
@@ -19,7 +24,7 @@ import 'package:mongo_db_driver/src/utils/map_keys.dart';
 /// MongoDB drivers and clients use hello to determine the state of the
 /// replica set members and to discover additional members of a replica set.
 
-class HelloResult with BasicResult {
+class HelloResult with BasicResult, TimingResult {
   HelloResult(Map<String, dynamic> document)
       : isWritablePrimary = document[keyIsWritablePrimary] as bool? ?? false,
         maxBsonObjectSize =
@@ -32,10 +37,13 @@ class HelloResult with BasicResult {
             document[keyLogicalSessionTimeoutMinutes] as int,
         minWireVersion = document[keyMinWireVersion] as int,
         maxWireVersion = document[keyMaxWireVersion] as int,
-        readOnly = document[keyReadOnly] as bool? ?? false {
+        readOnly = document[keyReadOnly] ?? false,
+        isreplicaset = document['isreplicaset'] ?? false,
+        topologyVersion =
+            TopologyVersion.document(document[keyTopologyVersion]) {
     extractBasic(document);
+    extractTiming(document);
 
-    topologyVersion = document[keyTopologyVersion];
     connectionId = document[keyConnectionId] as int?;
     compression = document[keyCompression] as List<String>?;
     saslSupportedMechs = document.containsKey(keySaslSupportedMechs)
@@ -47,16 +55,16 @@ class HelloResult with BasicResult {
 
     // Replica set
     hosts = document.containsKey(keyHosts)
-        ? <String>[...?(document[keyHosts] as List?)]
+        ? <String>{...?(document[keyHosts] as List?)}
         : null;
     setName = document[keySetName] as String?;
     setVersion = document[keySetVersion] as int?;
     secondary = document[keySecondary] as bool?;
     passives = document.containsKey(keyPassives)
-        ? <String>[...?(document[keyPassives] as List?)]
+        ? <String>{...?(document[keyPassives] as List?)}
         : null;
     arbiters = document.containsKey(keyArbiters)
-        ? <String>[...?(document[keyArbiters] as List?)]
+        ? <String>{...?(document[keyArbiters] as List?)}
         : null;
     primary = document[keyPrimary] as String?;
     arbiterOnly = document[keyArbiterOnly] as bool?;
@@ -67,7 +75,8 @@ class HelloResult with BasicResult {
         : null;
     me = document[keyMe] as String?;
     electionId = document[keyElectionId] as ObjectId?;
-    lastWrite = document[keyLastWrite] as Map?;
+    lastWrite = document[keyLastWrite] as MongoDocument?;
+    ;
   }
 
   // ***** INSTANCE INFORMATION ******
@@ -79,7 +88,7 @@ class HelloResult with BasicResult {
   bool isWritablePrimary;
 
   /// **_For internal use by MongoDB._**
-  dynamic topologyVersion;
+  TopologyVersion topologyVersion;
 
   /// The maximum permitted size of a BSON object in bytes for this mongod
   ///  process. If not provided, clients should assume a max size
@@ -171,7 +180,7 @@ class HelloResult with BasicResult {
   /// members of the replica set that are neither hidden, passive, nor arbiters.
   /// Drivers use this array and the hello.passives to determine which
   /// members to read from.
-  List<String>? hosts;
+  Set<String>? hosts;
 
   /// The name of the current :replica set.
   String? setName;
@@ -189,13 +198,13 @@ class HelloResult with BasicResult {
   /// members[n].priority of 0.
   /// Drivers use this array and the hello.hosts to determine which members
   /// to read from.
-  List<String>? passives;
+  Set<String>? passives;
 
-  /// An array of strings in the format of "[hostname]:[port]" listing all
+  /// A set of strings in the format of "[hostname]:[port]" listing all
   /// members of the replica set that are arbiters.
   /// This field only appears if there is at least one arbiter in the
   /// replica set.
-  List<String>? arbiters;
+  Set<String>? arbiters;
 
   /// A string in the format of "[hostname]:[port]" listing the
   /// current primary member of the replica set.
@@ -225,7 +234,7 @@ class HelloResult with BasicResult {
   /// settings.getLastErrorModes and settings.getLastErrorDefaults.
   /// For more information, see [Configure Replica Set Tag Sets]
   /// (https://docs.mongodb.com/v5.0/tutorial/configure-replica-set-tag-sets/).
-  Map<String, String>? tags;
+  TagSet? tags;
 
   /// The [hostname]:[port] of the member that returned hello.
   String? me;
@@ -248,5 +257,22 @@ class HelloResult with BasicResult {
   ///
   /// For details on the ok status field, the operationTime field, and the
   /// $clusterTime field, see Command Response.
-  Map? lastWrite;
+  MongoDocument? lastWrite;
+
+  /// it is set for ghost servers (to be checked)
+  /// RSGhost members occur in at least three situations:
+  ///
+  ///   - briefly during server startup,
+  ///   - in an uninitialized replica set,
+  ///    - or when the server is shunned (removed from the replica set config).
+  ///
+  /// An RSGhost server has no hosts list nor setName. Therefore the client
+  /// MUST NOT attempt to use its hosts list nor check its setName
+  /// However, the client MUST keep the RSGhost member in its TopologyDescription,
+  /// in case the client's only hope for staying connected to the replica set is
+  /// that this member will transition to a more useful state.
+
+  /// For simplicity, this is the rule: any server is an RSGhost that reports
+  /// "isreplicaset: true".
+  bool isreplicaset;
 }

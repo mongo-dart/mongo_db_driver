@@ -1,6 +1,6 @@
 # Errors
 
-## Mongo Dart
+## Mongo Db Driver
 
 | Code  | Message | Fields  | Notes |
 | :---: | :---: | --- | :---: |

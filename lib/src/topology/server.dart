@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:logging/logging.dart';
+import 'package:mongo_db_driver/src/core/info/server_description.dart';
 import 'package:mongo_db_query/mongo_db_query.dart';
 import 'package:sasl_scram/sasl_scram.dart' hide Authenticator;
 
@@ -49,7 +51,11 @@ class Server {
 
   ServerState state = ServerState.closed;
   HelloResult? hello;
+
   int lastHelloExecutionMS = 0;
+  List<int> last10HelloExecutionsMS = List<int>.filled(10, 9999999);
+  int lastExecutionIdx = 0;
+  MongoDartError? lastExecutionError;
 
   bool get isAuthenticated => mongoClient.isAuthenticated;
   bool get isConnected => state == ServerState.connected;
@@ -153,9 +159,15 @@ class Server {
       }
       lastHelloExecutionMS =
           DateTime.now().millisecondsSinceEpoch - actualTimeMS;
+      if (lastExecutionIdx > 9) {
+        lastExecutionIdx = 0;
+      }
+      last10HelloExecutionsMS[lastExecutionIdx++] = lastHelloExecutionMS;
+      lastExecutionError = null;
     } on MongoDartError catch (err) {
       //Do nothing
       print('Passed by _runHello() - Error ${err.message}');
+      lastExecutionError = err;
     }
     if (result[keyOk] == 1.0) {
       hello = HelloResult(result);
@@ -228,5 +240,70 @@ class Server {
     connection.isAuthenticated = true;
 
     return true;
+  }
+
+  ServerDescription get serverDescription {
+    return ServerDescription(serverConfig.hostUrl,
+        options: ServerDescriptionOptions()
+          ..error = lastExecutionError
+          ..roundTripTime = lastHelloExecutionMS
+          ..minRoundTripTime = last10HelloExecutionsMS
+              .reduce((value, element) => min(value, element))
+          ..loadBalanced = MongoClientOptions().loadBalanced,
+        type: serverType,
+        hosts: hello?.hosts,
+        arbiters: hello?.arbiters,
+        passives: hello?.passives,
+        tags: hello?.tags,
+        topologyVersion: hello?.topologyVersion,
+        minWireVersion: hello?.minWireVersion,
+        maxWireVersion: hello?.maxWireVersion,
+        lastWrite: hello?.lastWrite,
+        me: hello?.me,
+        primary: hello?.primary,
+        setName: hello?.setName,
+        setVersion: hello?.setVersion,
+        electionId: hello?.electionId,
+        logicalSessionTimeoutMinutes: hello?.logicalSessionTimeoutMinutes,
+        operationTime: hello?.operationTime,
+        $clusterTime: hello?.$clusterTime);
+  }
+
+// Parses a `hello` message and determines the server type
+  ServerType get serverType {
+    if (mongoClient.mongoClientOptions.loadBalanced) {
+      return ServerType.loadBalancer;
+    }
+
+    if (hello == null) {
+      return ServerType.unknown;
+    }
+    if (hello!.failure) {
+      return ServerType.unknown;
+    }
+
+    if (hello!.isreplicaset) {
+      return ServerType.rsGhost;
+    }
+
+    if (hello!.msg != null && hello!.msg == 'isdbgrid') {
+      return ServerType.mongos;
+    }
+
+    if (hello!.setName != null) {
+      if (hello!.hidden ?? false) {
+        return ServerType.rsArbiter;
+      } else if (hello!.isWritablePrimary) {
+        return ServerType.rsPrimary;
+      } else if (hello!.secondary ?? false) {
+        return ServerType.rsSecondary;
+      } else if (hello!.arbiterOnly ?? false) {
+        return ServerType.rsArbiter;
+      } else {
+        return ServerType.rsOther;
+      }
+    }
+
+    return ServerType.standalone;
   }
 }

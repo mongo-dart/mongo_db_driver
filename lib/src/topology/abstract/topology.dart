@@ -179,12 +179,53 @@ abstract class Topology {
     return selectedServer ?? (throw MongoDartError('No server detected'));
   }
 
+  // https://github.com/mongodb/specifications/blob/master/source/server-discovery-and-monitoring/server-discovery-and-monitoring.md#parsing-a-hello-or-legacy-hello-response
+  /// The client represents its view of each server with a ServerDescription.
+  /// Each time the client checks a server, it MUST replace its description of
+  /// that server with a new one if and only if the new ServerDescription's
+  /// topologyVersion is greater than or equal to the current
+  /// ServerDescription's topologyVersion.
+  ///
+  /// MongoDB 4.4 and later include a topologyVersion field in all hello or
+  /// legacy hello and State Change Error responses. Clients MUST check for
+  /// this field and set the ServerDescription's topologyVersion field to this
+  /// value, if present. The topologyVersion helps the client and server
+  ///  determine the relative freshness of topology information in concurrent
+  /// messages. (See What is the purpose of topologyVersion?)
+  ///
+  /// The topologyVersion is a subdocument with two fields, "processId" and
+  /// "counter":
+  ///
+  /// {
+  ///     topologyVersion: {processId: <ObjectId>, counter: <int64>},
+  ///     ( ... other fields ...)
+  /// }
+  ///
+  /// topologyVersion Comparison
+  ///
+  /// To compare a topologyVersion from a hello or legacy hello or State Change
+  ///  Error response to the current ServerDescription's topologyVersion:
+  /// - If the response topologyVersion is unset or the ServerDescription's
+  ///  topologyVersion is null, the client MUST assume the response is more
+  /// recent.
+  /// - If the response's topologyVersion.processId is not equal to the
+  /// ServerDescription's, the client MUST assume the response is more recent.
+  /// - If the response's topologyVersion.processId is equal to the
+  /// ServerDescription's, the client MUST use the counter field to determine
+  /// which topologyVersion is more recent.
+  ///
+  /// See Replacing the TopologyDescription for an example implementation of
+  /// topologyVersion comparison.
+//https://github.com/mongodb/specifications/blob/master/source/server-discovery-and-monitoring/server-discovery-and-monitoring.md#topologyversion
+
   Future<void> monitorServers() async {
     if (endMonitoring) {
       return;
     }
-    // TODO parametrize the time.
-    await Future.delayed(Duration(seconds: 10), updateServersStatus);
+
+    await Future.delayed(
+        Duration(milliseconds: mongoClientOptions.heartbeatFrequencyMS),
+        updateServersStatus);
     unawaited(monitorServers());
   }
 

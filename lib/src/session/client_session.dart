@@ -4,6 +4,7 @@ import 'package:mongo_db_query/mongo_db_query.dart';
 import 'package:uuid/uuid.dart';
 
 import '../command/base/operation_base.dart';
+import '../command/mixin/timing_result.dart';
 import '../command/session_commands/commit_transaction_command/base/commit_transaction_command.dart';
 import '../command/session_commands/commit_transaction_command/base/commit_transaction_options.dart';
 import '../core/error/mongo_dart_error.dart';
@@ -47,7 +48,7 @@ class ClientSession {
   ///    invalid only that one session will be affected.
   /// The MongoClient clusterTime is only updated with $clusterTime values
   ///    known to be valid because they were received directly from a server.
-  DateTime? clusterTime;
+  $ClusterTime? clusterTime;
   final SessionOptions sessionOptions;
 
   /// This property returns the session ID of this session.
@@ -65,7 +66,7 @@ class ClientSession {
   bool get isCausalConsistency => sessionOptions.causalConsistency;
   bool get shouldRetryWrite => sessionOptions.retryWrites;
 
-  void advanceClusterTime(DateTime detectedClusterTime) {
+  void advanceClusterTime($ClusterTime detectedClusterTime) {
     clusterTime ??= detectedClusterTime;
     if (detectedClusterTime.isAfter(clusterTime!)) {
       clusterTime = detectedClusterTime;
