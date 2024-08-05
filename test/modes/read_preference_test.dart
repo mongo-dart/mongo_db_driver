@@ -1,11 +1,18 @@
-@Timeout(Duration(minutes: 10))
+// ignore_for_file: deprecated_member_use_from_same_package
+
+@Timeout(Duration(minutes: 2))
 library;
 
 import 'package:bson/bson.dart';
 import 'package:mongo_db_driver/mongo_db_driver.dart';
+import 'package:mongo_db_driver/src/client/client_exp.dart';
+import 'package:mongo_db_driver/src/topology/abstract/topology.dart';
+import 'package:mongo_db_driver/src/utils/map_keys.dart';
 import 'dart:async';
 import 'package:test/test.dart';
 import 'package:uuid/uuid.dart';
+
+import '../utils/test_database.dart';
 
 const dbName = 'test-mongo-dart-read-preference';
 
@@ -30,13 +37,16 @@ Future<MongoDatabase> initializeDatabase(MongoClient client) async {
 Future cleanupDatabase(MongoClient client) async => await client.close();
 
 void main() async {
-  late MongoClient client;
   late MongoDatabase db;
   List<String> usedCollectionNames = [];
+  var testInfo = await testDatabase(defaultUri);
+  var client = testInfo.client;
+  if (client == null) {
+    return;
+  }
 
-  group('Aggregate', () {
+  group('Read Preference', () {
     setUpAll(() async {
-      client = MongoClient(defaultUri);
       db = await initializeDatabase(client);
     });
 
@@ -48,12 +58,9 @@ void main() async {
       await client.close();
     });
 
-    // https://www.mongodb.com/docs/manual/reference/command/aggregate
-    group('Read Preference', () {
+    // https://www.mongodb.com/docs/manual/core/read-preference/
+    group('Class construction', () {
       MongoCollection? collection;
-      MongoCollection? collection2;
-      MongoCollection? collection3;
-      MongoCollection? collection4;
 
       setUp(() async {
         var collectionName = getRandomCollectionName(usedCollectionNames);
@@ -66,124 +73,510 @@ void main() async {
             'tags': ["programming", "database", "mongodb"]
           }
         ]);
-        var collectionName2 = getRandomCollectionName(usedCollectionNames);
-        collection2 = db.collection(collectionName2);
-        var (_, _, _, _) = await collection2!.insertMany([
-          {'_id': 1, 'category': "café", 'status': "A"},
-          {'_id': 2, 'category': "cafe", 'status': "a"},
-          {'_id': 3, 'category': "cafE", 'status': "a"}
-        ]);
-        var collectionName3 = getRandomCollectionName(usedCollectionNames);
-        collection3 = db.collection(collectionName3);
-        var (_, _, _, _) = await collection3!.insertMany([
-          {'_id': 1, 'category': "cake", 'type': 'chocolate', 'qty': 10},
-          {'_id': 2, 'category': 'cake', 'type': 'ice cream', 'qty': 25},
-          {'_id': 3, 'category': 'pie', 'type': 'boston cream', 'qty': 20},
-          {'_id': 4, 'category': 'pie', 'type': 'blueberry', 'qty': 15}
-        ]);
-        await collection3!.createIndex(keys: {'qty': 1, 'type': 1});
-        await collection3!.createIndex(keys: {'qty': 1, 'category': 1});
-        var collectionName4 = getRandomCollectionName(usedCollectionNames);
-        collection4 = db.collection(collectionName4);
-        var (_, _, _, _) = await collection4!.insertMany([
-          {'_id': 1, 'flavor': "chocolate", 'salesTotal': 1580},
-          {'_id': 2, 'flavor': "strawberry", 'salesTotal': 4350},
-          {'_id': 3, 'flavor': "cherry", 'salesTotal': 2150}
-        ]);
       });
 
-      test('RunCommand - Aggregate Data with Multi-Stage Pipeline', () async {
-        var result = await db.runCommand({
-          'aggregate': collection!.collectionName,
-          'pipeline': [
-            {
-              r'$project': {'tags': 1}
-            },
-            {r'$unwind': r'$tags'},
-            {
-              r'$group': {
-                '_id': r"$tags",
-                'count': {r'$sum': 1}
-              }
-            }
-          ],
-          'cursor': {}
-        });
+      test('primary', () async {
+        var readPreference = ReadPreference(ReadPreferenceMode.primary);
 
-        expect(result, isNotNull);
-        expect(result, containsPair(keyOk, 1.0));
-
-        var ret = result[keyCursor][keyFirstBatch];
-
-        expect(ret, isNotNull);
-        expect(ret.length, 3);
+        expect(readPreference, ReadPreference.primary);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, isNull);
       });
-    });
-    group('Open', () {
-      MongoCollection? collection;
-      MongoCollection? collection2;
-      MongoCollection? collection3;
-      MongoCollection? collection4;
-      setUp(() async {
-        var collectionName = getRandomCollectionName(usedCollectionNames);
-        collection = db.collection(collectionName);
-        await collection!.insertMany([
-          {
-            '_id': ObjectId.parse('52769ea0f3dc6ead47c9a1b2'),
-            'author': "abc123",
-            'title': "zzz",
-            'tags': ["programming", "database", "mongodb"]
+
+      /// [see](https://www.mongodb.com/docs/manual/reference/method/Mongo.setReadPref/#parameters)
+      test('primary + tagSet', () async {
+        expect(
+            () => ReadPreference(ReadPreferenceMode.primary, tags: [
+                  {'region': 'South', 'datacenter': 'A'},
+                  {'rack': 'rack-1'},
+                  {}
+                ]),
+            throwsArgumentError);
+      });
+      test('primary + maxStalenessSeconds', () async {
+        expect(
+            () => ReadPreference(ReadPreferenceMode.primary,
+                maxStalenessSeconds: 90),
+            throwsArgumentError);
+      });
+
+      /// Optional. A document that specifies whether to enable the use of hedged reads:
+      ///
+      /// { enabled: <boolean> }
+      ///
+      /// The enabled field defaults to true; i.e. specifying an empty document
+      /// { } is equivalent to specifying { enabled: true }.
+      test('primary + hedgeOptions empty', () async {
+        expect(
+            () => ReadPreference(ReadPreferenceMode.primary, hedgeOptions: {}),
+            throwsArgumentError);
+      });
+      test('primary + hedgeOptions', () async {
+        expect(
+            () => ReadPreference(ReadPreferenceMode.primary,
+                hedgeOptions: {'enabled': true}),
+            throwsArgumentError);
+      });
+      test('secondary', () async {
+        var readPreference = ReadPreference(ReadPreferenceMode.secondary);
+
+        expect(readPreference, ReadPreference.secondary);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, isNull);
+      });
+      test('secondary + tagSet', () async {
+        var readPreference =
+            ReadPreference(ReadPreferenceMode.secondary, tags: [
+          {'region': 'South', 'datacenter': 'A'},
+          {'rack': 'rack-1'},
+          {}
+        ]);
+
+        expect(readPreference, ReadPreference.secondary);
+        expect(readPreference.tags, [
+          {'region': 'South', 'datacenter': 'A'},
+          {'rack': 'rack-1'},
+          {}
+        ]);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, isNull);
+
+        if (testInfo.isShardedCluster) {
+          expect(
+              readPreference.toMap(
+                  topologyType: client.topology?.type ?? TopologyType.unknown),
+              {
+                key$ReadPreference: {
+                  keyMode: readPreference.mode.toString(),
+                  keyTags: readPreference.tags
+                }
+              });
+        } else if (testInfo.isReplicaSet) {
+          if ((client.topology?.type ?? TopologyType.unknown) ==
+              TopologyType.single) {
+            expect(
+                readPreference.toMap(
+                    topologyType:
+                        client.topology?.type ?? TopologyType.unknown),
+                {
+                  key$ReadPreference: {keyMode: 'primary'}
+                });
+          } else {
+            expect(
+                readPreference.toMap(
+                    topologyType:
+                        client.topology?.type ?? TopologyType.unknown),
+                {
+                  key$ReadPreference: {
+                    keyMode: readPreference.mode.name,
+                    keyTags: readPreference.tags
+                  }
+                });
           }
-        ]);
+        } else {
+          expect(
+              readPreference.toMap(
+                  topologyType: client.topology?.type ?? TopologyType.unknown),
+              {
+                key$ReadPreference: {keyMode: 'primary'}
+              });
+        }
+      });
+      test('secondary + maxStalenessSeconds -error', () async {
+        expect(
+            () => ReadPreference(ReadPreferenceMode.primary,
+                maxStalenessSeconds: 60),
+            throwsArgumentError);
+      });
+      test('secondary + maxStalenessSeconds', () async {
+        var readPreference = ReadPreference(ReadPreferenceMode.secondary,
+            maxStalenessSeconds: 90);
 
-        var collectionName2 = getRandomCollectionName(usedCollectionNames);
-        collection2 = db.collection(collectionName2);
-        var (_, _, _, _) = await collection2!.insertMany([
-          {'_id': 1, 'category': "café", 'status': "A"},
-          {'_id': 2, 'category': "cafe", 'status': "a"},
-          {'_id': 3, 'category': "cafE", 'status': "a"}
-        ]);
-        var collectionName3 = getRandomCollectionName(usedCollectionNames);
-        collection3 = db.collection(collectionName3);
-        var (_, _, _, _) = await collection3!.insertMany([
-          {'_id': 1, 'category': "cake", 'type': 'chocolate', 'qty': 10},
-          {'_id': 2, 'category': 'cake', 'type': 'ice cream', 'qty': 25},
-          {'_id': 3, 'category': 'pie', 'type': 'boston cream', 'qty': 20},
-          {'_id': 4, 'category': 'pie', 'type': 'blueberry', 'qty': 15}
-        ]);
-        await collection3!.createIndex(keys: {'qty': 1, 'type': 1});
-        await collection3!.createIndex(keys: {'qty': 1, 'category': 1});
-        var collectionName4 = getRandomCollectionName(usedCollectionNames);
-        collection4 = db.collection(collectionName4);
-        var (_, _, _, _) = await collection4!.insertMany([
-          {'_id': 1, 'flavor': "chocolate", 'salesTotal': 1580},
-          {'_id': 2, 'flavor': "strawberry", 'salesTotal': 4350},
-          {'_id': 3, 'flavor': "cherry", 'salesTotal': 2150}
-        ]);
+        expect(readPreference, ReadPreference.secondary);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, 90);
+        expect(readPreference.hedgeOptions, isNull);
+
+        if (testInfo.isShardedCluster) {
+          expect(
+              readPreference.toMap(
+                  topologyType: client.topology?.type ?? TopologyType.unknown),
+              {
+                key$ReadPreference: {
+                  keyMode: readPreference.mode.toString(),
+                  keyMaxStalenessSecond: readPreference.maxStalenessSeconds
+                }
+              });
+        } else if (testInfo.isReplicaSet) {
+          if ((client.topology?.type ?? TopologyType.unknown) ==
+              TopologyType.single) {
+            expect(
+                readPreference.toMap(
+                    topologyType:
+                        client.topology?.type ?? TopologyType.unknown),
+                {
+                  key$ReadPreference: {keyMode: 'primary'}
+                });
+          } else {
+            expect(
+                readPreference.toMap(
+                    topologyType:
+                        client.topology?.type ?? TopologyType.unknown),
+                {
+                  key$ReadPreference: {
+                    keyMode: readPreference.mode.name,
+                    keyMaxStalenessSecond: readPreference.maxStalenessSeconds
+                  }
+                });
+          }
+        } else {
+          expect(
+              readPreference.toMap(
+                  topologyType: client.topology?.type ?? TopologyType.unknown),
+              {
+                key$ReadPreference: {keyMode: 'primary'}
+              });
+        }
       });
 
-      test('Aggregate Data with Multi-Stage Pipeline', () async {
-        var command = AggregateOperation([
-          {
-            r'$project': {'tags': 1}
-          },
-          {r'$unwind': r'$tags'},
-          {
-            r'$group': {
-              '_id': r"$tags",
-              'count': {r'$sum': 1}
-            }
+      /// Optional. A document that specifies whether to enable the use of hedged reads:
+      ///
+      /// { enabled: <boolean> }
+      ///
+      /// The enabled field defaults to true; i.e. specifying an empty document
+      /// { } is equivalent to specifying { enabled: true }.
+      test('secondary + hedgeOptions empty', () async {
+        var readPreference =
+            ReadPreference(ReadPreferenceMode.secondary, hedgeOptions: {});
+
+        expect(readPreference, ReadPreference.secondary);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, {});
+
+        if (testInfo.isShardedCluster) {
+          expect(
+              readPreference.toMap(
+                  topologyType: client.topology?.type ?? TopologyType.unknown),
+              {
+                key$ReadPreference: {
+                  keyMode: readPreference.mode.toString(),
+                  keyHedgeOptions: readPreference.hedgeOptions
+                }
+              });
+        } else if (testInfo.isReplicaSet) {
+          if ((client.topology?.type ?? TopologyType.unknown) ==
+              TopologyType.single) {
+            expect(
+                readPreference.toMap(
+                    topologyType:
+                        client.topology?.type ?? TopologyType.unknown),
+                {
+                  key$ReadPreference: {keyMode: 'primary'}
+                });
+          } else {
+            expect(
+                readPreference.toMap(
+                    topologyType:
+                        client.topology?.type ?? TopologyType.unknown),
+                {
+                  key$ReadPreference: {
+                    keyMode: readPreference.mode.name,
+                  }
+                });
           }
-        ], collection: collection);
-        var result = await command.execute();
+        } else {
+          expect(
+              readPreference.toMap(
+                  topologyType: client.topology?.type ?? TopologyType.unknown),
+              {
+                key$ReadPreference: {keyMode: 'primary'}
+              });
+        }
+      });
+      test('secondary + hedgeOptions', () async {
+        var readPreference = ReadPreference(ReadPreferenceMode.secondary,
+            hedgeOptions: {'enabled': true});
 
-        expect(result, isNotNull);
-        expect(result, containsPair(keyOk, 1.0));
+        expect(readPreference, ReadPreference.secondary);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, {'enabled': true});
 
-        var ret = result[keyCursor][keyFirstBatch];
+        if (testInfo.isShardedCluster) {
+          expect(
+              readPreference.toMap(
+                  topologyType: client.topology?.type ?? TopologyType.unknown),
+              {
+                key$ReadPreference: {
+                  keyMode: readPreference.mode.toString(),
+                  keyHedgeOptions: readPreference.hedgeOptions
+                }
+              });
+        } else if (testInfo.isReplicaSet) {
+          if ((client.topology?.type ?? TopologyType.unknown) ==
+              TopologyType.single) {
+            expect(
+                readPreference.toMap(
+                    topologyType:
+                        client.topology?.type ?? TopologyType.unknown),
+                {
+                  key$ReadPreference: {keyMode: 'primary'}
+                });
+          } else {
+            expect(
+                readPreference.toMap(
+                    topologyType:
+                        client.topology?.type ?? TopologyType.unknown),
+                {
+                  key$ReadPreference: {
+                    keyMode: readPreference.mode.name,
+                  }
+                });
+          }
+        } else {
+          expect(
+              readPreference.toMap(
+                  topologyType: client.topology?.type ?? TopologyType.unknown),
+              {
+                key$ReadPreference: {keyMode: 'primary'}
+              });
+        }
+      });
 
-        expect(ret, isNotNull);
-        expect(ret.length, 3);
+      test('nearest', () async {
+        var readPreference = ReadPreference(ReadPreferenceMode.nearest);
+
+        expect(readPreference, ReadPreference.nearest);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, {});
+      });
+      test('nearest from static ', () async {
+        expect(ReadPreference.nearest, ReadPreference.nearest);
+        expect(ReadPreference.nearest.tags, isNull);
+        expect(ReadPreference.nearest.maxStalenessSeconds, isNull);
+        expect(ReadPreference.nearest.hedgeOptions, {'enabled': true});
+      });
+      test('nearest + tagSet', () async {
+        var readPreference = ReadPreference(ReadPreferenceMode.nearest, tags: [
+          {'region': 'South', 'datacenter': 'A'},
+          {'rack': 'rack-1'},
+          {}
+        ]);
+
+        expect(readPreference, ReadPreference.nearest);
+        expect(readPreference.tags, [
+          {'region': 'South', 'datacenter': 'A'},
+          {'rack': 'rack-1'},
+          {}
+        ]);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, {});
+
+        if (testInfo.isShardedCluster) {
+          expect(
+              readPreference.toMap(
+                  topologyType: client.topology?.type ?? TopologyType.unknown),
+              {
+                key$ReadPreference: {
+                  keyMode: readPreference.mode.toString(),
+                  keyTags: readPreference.tags
+                }
+              });
+        } else if (testInfo.isReplicaSet) {
+          if ((client.topology?.type ?? TopologyType.unknown) ==
+              TopologyType.single) {
+            expect(
+                readPreference.toMap(
+                    topologyType:
+                        client.topology?.type ?? TopologyType.unknown),
+                {
+                  key$ReadPreference: {keyMode: 'primary'}
+                });
+          } else {
+            expect(
+                readPreference.toMap(
+                    topologyType:
+                        client.topology?.type ?? TopologyType.unknown),
+                {
+                  key$ReadPreference: {
+                    keyMode: readPreference.mode.name,
+                    keyTags: readPreference.tags
+                  }
+                });
+          }
+        } else {
+          expect(
+              readPreference.toMap(
+                  topologyType: client.topology?.type ?? TopologyType.unknown),
+              {
+                key$ReadPreference: {keyMode: 'primary'}
+              });
+        }
+      });
+      test('nearest + maxStalenessSeconds -error', () async {
+        expect(
+            () => ReadPreference(ReadPreferenceMode.nearest,
+                maxStalenessSeconds: 60),
+            throwsArgumentError);
+      });
+      test('nearest + maxStalenessSeconds', () async {
+        var readPreference =
+            ReadPreference(ReadPreferenceMode.nearest, maxStalenessSeconds: 90);
+
+        expect(readPreference, ReadPreference.nearest);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, 90);
+        expect(readPreference.hedgeOptions, {});
+
+        if (testInfo.isShardedCluster) {
+          expect(
+              readPreference.toMap(
+                  topologyType: client.topology?.type ?? TopologyType.unknown),
+              {
+                key$ReadPreference: {
+                  keyMode: readPreference.mode.toString(),
+                  keyMaxStalenessSecond: readPreference.maxStalenessSeconds
+                }
+              });
+        } else if (testInfo.isReplicaSet) {
+          if ((client.topology?.type ?? TopologyType.unknown) ==
+              TopologyType.single) {
+            expect(
+                readPreference.toMap(
+                    topologyType:
+                        client.topology?.type ?? TopologyType.unknown),
+                {
+                  key$ReadPreference: {keyMode: 'primary'}
+                });
+          } else {
+            expect(
+                readPreference.toMap(
+                    topologyType:
+                        client.topology?.type ?? TopologyType.unknown),
+                {
+                  key$ReadPreference: {
+                    keyMode: readPreference.mode.name,
+                    keyMaxStalenessSecond: readPreference.maxStalenessSeconds
+                  }
+                });
+          }
+        } else {
+          expect(
+              readPreference.toMap(
+                  topologyType: client.topology?.type ?? TopologyType.unknown),
+              {
+                key$ReadPreference: {keyMode: 'primary'}
+              });
+        }
+      });
+
+      /// Optional. A document that specifies whether to enable the use of hedged reads:
+      ///
+      /// { enabled: <boolean> }
+      ///
+      /// The enabled field defaults to true; i.e. specifying an empty document
+      /// { } is equivalent to specifying { enabled: true }.
+      test('nearest + hedgeOptions empty', () async {
+        var readPreference =
+            ReadPreference(ReadPreferenceMode.nearest, hedgeOptions: {});
+
+        expect(readPreference, ReadPreference.nearest);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, {});
+
+        if (testInfo.isShardedCluster) {
+          expect(
+              readPreference.toMap(
+                  topologyType: client.topology?.type ?? TopologyType.unknown),
+              {
+                key$ReadPreference: {
+                  keyMode: readPreference.mode.toString(),
+                  keyHedgeOptions: readPreference.hedgeOptions
+                }
+              });
+        } else if (testInfo.isReplicaSet) {
+          if ((client.topology?.type ?? TopologyType.unknown) ==
+              TopologyType.single) {
+            expect(
+                readPreference.toMap(
+                    topologyType:
+                        client.topology?.type ?? TopologyType.unknown),
+                {
+                  key$ReadPreference: {keyMode: 'primary'}
+                });
+          } else {
+            expect(
+                readPreference.toMap(
+                    topologyType:
+                        client.topology?.type ?? TopologyType.unknown),
+                {
+                  key$ReadPreference: {
+                    keyMode: readPreference.mode.name,
+                  }
+                });
+          }
+        } else {
+          expect(
+              readPreference.toMap(
+                  topologyType: client.topology?.type ?? TopologyType.unknown),
+              {
+                key$ReadPreference: {keyMode: 'primary'}
+              });
+        }
+      });
+      test('nearest + hedgeOptions', () async {
+        var readPreference = ReadPreference(ReadPreferenceMode.nearest,
+            hedgeOptions: {'enabled': true});
+
+        expect(readPreference, ReadPreference.nearest);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, {'enabled': true});
+
+        if (testInfo.isShardedCluster) {
+          expect(
+              readPreference.toMap(
+                  topologyType: client.topology?.type ?? TopologyType.unknown),
+              {
+                key$ReadPreference: {
+                  keyMode: readPreference.mode.toString(),
+                  keyHedgeOptions: readPreference.hedgeOptions
+                }
+              });
+        } else if (testInfo.isReplicaSet) {
+          if ((client.topology?.type ?? TopologyType.unknown) ==
+              TopologyType.single) {
+            expect(
+                readPreference.toMap(
+                    topologyType:
+                        client.topology?.type ?? TopologyType.unknown),
+                {
+                  key$ReadPreference: {keyMode: 'primary'}
+                });
+          } else {
+            expect(
+                readPreference.toMap(
+                    topologyType:
+                        client.topology?.type ?? TopologyType.unknown),
+                {
+                  key$ReadPreference: {
+                    keyMode: readPreference.mode.name,
+                  }
+                });
+          }
+        } else {
+          expect(
+              readPreference.toMap(
+                  topologyType: client.topology?.type ?? TopologyType.unknown),
+              {
+                key$ReadPreference: {keyMode: 'primary'}
+              });
+        }
       });
     });
   });

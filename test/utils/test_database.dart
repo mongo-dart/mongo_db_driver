@@ -1,5 +1,4 @@
 import 'package:mongo_db_driver/mongo_db_driver.dart';
-import 'package:mongo_db_driver/src/topology/abstract/topology.dart';
 import 'package:mongo_db_driver/src/topology/replica_set.dart';
 import 'package:mongo_db_driver/src/topology/sharded_cluster.dart';
 import 'package:mongo_db_driver/src/topology/standalone.dart';

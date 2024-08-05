@@ -50,7 +50,10 @@ base class SimpleCommand extends ServerCommand {
             : ReadPreference.fromOptions(options, removeFromOriginalMap: true);
         ReadPreference.removeReadPreferenceFromOptions(options);
         if (readPreference != null) {
-          options = {...options, ...readPreference!.toMap()};
+          options = {
+            ...options,
+            ...readPreference!.toMap(topologyType: TopologyType.sharded)
+          };
         }
         break;
       case TopologyType.unknown:

@@ -76,7 +76,6 @@ class HelloResult with BasicResult, TimingResult {
     me = document[keyMe] as String?;
     electionId = document[keyElectionId] as ObjectId?;
     lastWrite = document[keyLastWrite] as MongoDocument?;
-    ;
   }
 
   // ***** INSTANCE INFORMATION ******

@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 import '../../database/database_exp.dart' show MongoCollection, MongoDatabase;
 import '../../client/client_exp.dart'
     show
@@ -11,6 +13,7 @@ import '../../client/client_exp.dart'
         keyReadPreference,
         keyReadPreferenceTags,
         keyTags;
+import '../../topology/abstract/topology.dart';
 import '../base/operation_base.dart';
 
 typedef TagSet = Map<String, String>;
@@ -24,9 +27,12 @@ enum ReadPreferenceMode {
 
   const ReadPreferenceMode(this.name);
   final String name;
+
+  static ReadPreferenceMode fromString(String mode) =>
+      values.firstWhere((element) => element.name == mode);
 }
 
-var readPrefernceKeys = [
+var _readPrefernceKeys = [
   key$ReadPreference,
   keyReadPreference,
   keyReadPreferenceTags,
@@ -34,37 +40,36 @@ var readPrefernceKeys = [
   keyHedgeOptions
 ];
 
-ReadPreferenceMode getReadPreferenceModeFromString(String mode) =>
-    ReadPreferenceMode.values.firstWhere((element) => element.name == mode);
-
-///
 /// The **ReadPreference** class is a class that represents a MongoDB
 /// ReadPreference and is used to construct connections.
-///  @class
-/// mode A string describing the read preference mode (primary|primaryPreferred|secondary|secondaryPreferred|nearest)
-///  tags The tags object
-/// @see https://docs.mongodb.com/manual/core/read-preference/
-/// @return {ReadPreference}
+/// see https://docs.mongodb.com/manual/core/read-preference/
 class ReadPreference {
   ReadPreference(this.mode,
-      {this.tags, this.maxStalenessSeconds, this.hedgeOptions}) {
+      {this.tags,
+      this.maxStalenessSeconds,
+      @Deprecated('since 8.0') Map<String, Object>? hedgeOptions})
+      : hedgeOptions = hedgeOptions ??
+            (mode == ReadPreferenceMode.nearest ? <String, Object>{} : null) {
     if (mode == ReadPreferenceMode.primary) {
       if (tags != null && tags!.isNotEmpty) {
         if (tags!.length > 1 || tags!.first.isNotEmpty) {
-          throw ArgumentError(
-              'Primary read preference cannot be combined with tags');
+          throw ArgumentError('Read Preference Constructor - '
+              'primary cannot be combined with tags');
         }
       }
       if (maxStalenessSeconds != null) {
-        throw ArgumentError(
-            'Primary read preference cannot be combined with maxStalenessSeconds');
+        throw ArgumentError('Read Preference Constructor - '
+            'primary cannot be combined with maxStalenessSeconds');
       }
       if (hedgeOptions != null) {
-        throw ArgumentError('Primary read preference cannot set hedge options');
+        throw ArgumentError('Read Preference Constructor - '
+            'primary cannot set hedge options');
       }
     }
-    if (maxStalenessSeconds != null && maxStalenessSeconds! < 0) {
-      throw ArgumentError('maxStalenessSeconds must be a positive integer');
+    // https://www.mongodb.com/docs/manual/core/read-preference-staleness/
+    if (maxStalenessSeconds != null && maxStalenessSeconds! < 90) {
+      throw ArgumentError('Read Preference Constructor - '
+          'maxStalenessSeconds must be at least 90 seconds');
     }
   }
 
@@ -85,7 +90,8 @@ class ReadPreference {
   static ReadPreference nearest = ReadPreference(ReadPreferenceMode.nearest,
       hedgeOptions: {keyEnabled: true});
 
-  /// Default choice as per [specifications](https://github.com/mongodb/specifications/blob/master/source/server-selection/server-selection.rst#components-of-a-read-preference)
+  /// Default choice as per
+  /// [specifications](https://github.com/mongodb/specifications/blob/master/source/server-selection/server-selection.rst#components-of-a-read-preference)
   static ReadPreference preferenceDefault = ReadPreference(
       ReadPreferenceMode.primary,
       tags: <Map<String, String>>[<String, String>{}]);
@@ -105,8 +111,55 @@ class ReadPreference {
   }
 
   final ReadPreferenceMode mode;
+
+  /// If a replica set member or members are associated with tags, you can
+  /// specify a tag set list (array of tag sets) in the read preference to
+  /// target those members.
+  /// To configure a member with tags, set members[n].tags to a document that
+  /// contains the tag name and value pairs. The value of the tags must be a
+  /// string.
+  ///
+  /// { "<tag1>": "<string1>", "<tag2>": "<string2>",... }
+  ///
+  /// Then, you can include a tag set list in the read preference to target
+  /// tagged members. A tag set list is an array of tag sets, where each tag
+  /// set contains one or more tag/value pairs.
+  ///
+  /// [ { "<tag1>": "<string1>", "<tag2>": "<string2>",... }, ... ]
+  ///
+  /// To find replica set members, MongoDB tries each document in succession
+  /// until a match is found.
   final List<TagSet>? tags;
+
+  /// Replica set members can lag behind the primary due to network congestion,
+  /// low disk throughput, long-running operations, etc. The read preference
+  /// maxStalenessSeconds option lets you specify a maximum replication lag,
+  /// or "staleness", for reads from secondaries. When a secondary's estimated
+  /// staleness exceeds maxStalenessSeconds, the client stops using it for
+  /// read operations.
+  ///
+  /// Max staleness is not compatible with mode primary and only applies when
+  /// selecting a secondary member of a set for a read operation.
+  ///
+  /// By default, there is no maximum staleness and clients will not consider a
+  /// secondary's lag when choosing where to direct a read operation.
+  ///
+  /// You must specify a maxStalenessSeconds value of 90 seconds or longer:
+  /// specifying a smaller maxStalenessSeconds value will raise an error.
+  /// Clients estimate secondaries' staleness by periodically checking the
+  /// latest write date of each replica set member. Since these checks are
+  /// infrequent, the staleness estimate is coarse. Thus, clients cannot
+  ///  enforce a maxStalenessSeconds value of less than 90 seconds.
+  // TODO Check, write date on Secondary?
   final int? maxStalenessSeconds;
+
+  /// You can specify the use of hedged reads for non-primary read preferences
+  /// on sharded clusters.
+  ///
+  /// With hedged reads, the mongos instances can route read operations to two
+  /// replica set members per each queried shard and return results from the
+  /// first respondent per shard.
+  @Deprecated('since 8.0')
   final Map<String, Object>? hedgeOptions;
 
   /// We can accept three formats for ReadPreference inside Options:
@@ -144,7 +197,7 @@ class ReadPreference {
     } else if (readPreference is Map) {
       var mode = readPreference[keyMode] as String?;
       if (mode != null) {
-        return ReadPreference(getReadPreferenceModeFromString(mode),
+        return ReadPreference(ReadPreferenceMode.fromString(mode),
             tags: (remove
                 ? readPreference.remove(keyReadPreferenceTags)
                 : readPreference[keyReadPreferenceTags]) as List<TagSet>?,
@@ -162,14 +215,7 @@ class ReadPreference {
         'unmanaged type ${options[keyReadPreference].runtimeType}');
   }
 
-  // As in Dart mode is enum, the value is always valid
-  /* static bool isValid(ReadPreferenceMode mode) => true; */
-
-  ///
-  /// Indicates that this readPreference needs the "slaveOk" bit when sent over the wire
-  /// @method
-  /// @return {boolean}
-  /// @see https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#op-query
+  // TODO check if still needed
   bool get secondaryOk => secondaryOK.contains(mode);
 
   @override
@@ -178,18 +224,37 @@ class ReadPreference {
   @override
   int get hashCode => mode.hashCode;
 
-  Options toMap() => <String, dynamic>{
-        key$ReadPreference: {
-          keyMode: mode.name,
-          if (tags != null) keyTags: tags!,
-          if (maxStalenessSeconds != null)
-            keyMaxStalenessSecond: maxStalenessSeconds!,
-          if (hedgeOptions != null) keyHedgeOptions: hedgeOptions!
-        }
-      };
+  Options toMap({TopologyType topologyType = TopologyType.unknown}) {
+    switch (topologyType) {
+      case TopologyType.single:
+      case TopologyType.unknown:
+        return <String, dynamic>{};
+      case TopologyType.loadBalanced:
+      case TopologyType.sharded:
+        return <String, dynamic>{
+          key$ReadPreference: {
+            keyMode: mode.name,
+            if (tags != null) keyTags: tags,
+            if (maxStalenessSeconds != null)
+              keyMaxStalenessSecond: maxStalenessSeconds,
+            if (hedgeOptions != null) keyHedgeOptions: hedgeOptions
+          }
+        };
+      case TopologyType.replicaSetNoPrimary:
+      case TopologyType.replicaSetWithPrimary:
+        return <String, dynamic>{
+          key$ReadPreference: {
+            keyMode: mode.name,
+            if (tags != null) keyTags: tags,
+            if (maxStalenessSeconds != null)
+              keyMaxStalenessSecond: maxStalenessSeconds,
+          }
+        };
+    }
+  }
 
   static void removeReadPreferenceFromOptions(Map<String, dynamic> options) =>
-      options.removeWhere((key, value) => readPrefernceKeys.contains(key));
+      options.removeWhere((key, value) => _readPrefernceKeys.contains(key));
 }
 
 /// Resolves a read preference based on well-defined inheritance rules.
@@ -197,10 +262,10 @@ class ReadPreference {
 /// but will also ensure the returned value is a properly constructed
 /// instance of `ReadPreference`.
 ///
-/// @param {Collection|Db|MongoClient} parent The parent of the operation on
+/// parent The parent of the operation on
 /// which to determine the read preference, used for determining the inherited
 /// read preference.
-/// @param {Object} options The options passed into the method,
+/// options The options passed into the method,
 /// potentially containing a read preference
 ReadPreference? resolveReadPreference(parent,
     {Options? options, bool? inheritReadPreference = true}) {
@@ -209,7 +274,7 @@ ReadPreference? resolveReadPreference(parent,
 
   if (options[keyReadPreference] != null) {
     return ReadPreference.fromOptions(options);
-  } // Todo session Class not yet implemented
+  } // TODO session Class not yet implemented
   /*else if ((session?.inTransaction() ?? false) && session.transaction.options[CommandOperation.keyReadPreference]) {
     // The transaction’s read preference MUST override all other user configurable read preferences.
     readPreference = session.transaction.options[CommandOperation.keyReadPreference];
