@@ -1,4 +1,5 @@
 import 'package:mongo_db_driver/src/client/mongo_client.dart';
+import 'package:mongo_db_driver/mongo_db_driver.dart';
 
 const dbName = 'mongo-dart-example';
 const dbAddress = '127.0.0.1';

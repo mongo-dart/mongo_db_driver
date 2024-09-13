@@ -1,9 +1,7 @@
 @Timeout(Duration(minutes: 10))
 library crud_test;
 
-import 'package:bson/bson.dart';
 import 'package:mongo_db_driver/mongo_db_driver.dart';
-import 'package:mongo_db_query/mongo_db_query.dart';
 import 'dart:async';
 import 'package:test/test.dart';
 import 'package:uuid/uuid.dart';

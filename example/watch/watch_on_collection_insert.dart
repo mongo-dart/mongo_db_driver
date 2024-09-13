@@ -1,5 +1,4 @@
 import 'package:mongo_db_driver/mongo_db_driver.dart';
-import 'package:mongo_db_query/mongo_db_query.dart';
 
 /// Watch does not work on Standalone systems
 /// Only Replica Set and Sharded Cluster

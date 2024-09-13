@@ -2,12 +2,10 @@
 library database_tests;
 
 import 'dart:async';
-import 'package:bson/bson.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:mongo_db_driver/mongo_db_driver.dart';
 import 'package:crypto/crypto.dart' as crypto;
 import 'package:mongo_db_driver/src/command/base/command_operation.dart';
-import 'package:mongo_db_query/mongo_db_query.dart';
 import 'package:test/test.dart';
 import 'package:uuid/uuid.dart';
 

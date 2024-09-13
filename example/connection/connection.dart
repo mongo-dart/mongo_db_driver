@@ -1,6 +1,7 @@
 import 'package:logging/logging.dart'
     show Level, LogRecord, Logger, hierarchicalLoggingEnabled;
 import 'package:mongo_db_driver/src/client/mongo_client.dart';
+import 'package:mongo_db_driver/mongo_db_driver.dart';
 
 const dbName = 'mongo-dart-example';
 const dbAddress = 'localhost';

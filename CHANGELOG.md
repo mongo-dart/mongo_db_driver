@@ -1,5 +1,9 @@
 # Changelog Mongo Db Driver
 
+## 0.1.0-1.3.dev
+
+- Fixed bson and mongo_db_query exports
+
 ## 0.1.0-1.2.dev
 
 - Moved Document types in package mongo_db_query

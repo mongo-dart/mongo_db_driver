@@ -1,7 +1,6 @@
 library gridfs_tests;
 
 import 'package:mongo_db_driver/mongo_db_driver.dart';
-import 'package:mongo_db_query/mongo_db_query.dart';
 import 'dart:io';
 import 'dart:async';
 import 'package:test/test.dart';

@@ -3,11 +3,8 @@
 @Timeout(Duration(minutes: 2))
 library;
 
-import 'package:bson/bson.dart';
 import 'package:mongo_db_driver/mongo_db_driver.dart';
-import 'package:mongo_db_driver/src/client/client_exp.dart';
 import 'package:mongo_db_driver/src/topology/abstract/topology.dart';
-import 'package:mongo_db_driver/src/utils/map_keys.dart';
 import 'dart:async';
 import 'package:test/test.dart';
 import 'package:uuid/uuid.dart';
@@ -577,6 +574,1030 @@ void main() async {
                 key$ReadPreference: {keyMode: 'primary'}
               });
         }
+      });
+    });
+    group('from Option - instance', () {
+      MongoCollection? collection;
+
+      setUp(() async {
+        var collectionName = getRandomCollectionName(usedCollectionNames);
+        collection = db.collection(collectionName);
+        await collection!.insertMany([
+          {
+            '_id': ObjectId.parse('52769ea0f3dc6ead47c9a1b2'),
+            'author': "abc123",
+            'title': "zzz",
+            'tags': ["programming", "database", "mongodb"]
+          }
+        ]);
+      });
+
+      test('primary', () async {
+        var readPreferenceBase = ReadPreference(ReadPreferenceMode.primary);
+        MongoDocument document = {keyReadPreference: readPreferenceBase};
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.primary);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, isNull);
+        expect(readPreference, readPreferenceBase);
+      });
+
+      /// [see](https://www.mongodb.com/docs/manual/reference/method/Mongo.setReadPref/#parameters)
+      test('primary + tagSet', () async {
+        expect(
+            () => ReadPreference(ReadPreferenceMode.primary, tags: [
+                  {'region': 'South', 'datacenter': 'A'},
+                  {'rack': 'rack-1'},
+                  {}
+                ]),
+            throwsArgumentError);
+      });
+      test('primary + maxStalenessSeconds', () async {
+        expect(
+            () => ReadPreference(ReadPreferenceMode.primary,
+                maxStalenessSeconds: 90),
+            throwsArgumentError);
+      });
+
+      /// Optional. A document that specifies whether to enable the use of hedged reads:
+      ///
+      /// { enabled: <boolean> }
+      ///
+      /// The enabled field defaults to true; i.e. specifying an empty document
+      /// { } is equivalent to specifying { enabled: true }.
+      test('primary + hedgeOptions empty', () async {
+        expect(
+            () => ReadPreference(ReadPreferenceMode.primary, hedgeOptions: {}),
+            throwsArgumentError);
+      });
+      test('primary + hedgeOptions', () async {
+        expect(
+            () => ReadPreference(ReadPreferenceMode.primary,
+                hedgeOptions: {'enabled': true}),
+            throwsArgumentError);
+      });
+      test('secondary', () async {
+        var readPreferenceBase = ReadPreference(ReadPreferenceMode.secondary);
+        MongoDocument document = {keyReadPreference: readPreferenceBase};
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.secondary);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, isNull);
+      });
+      test('secondary + tagSet', () async {
+        var readPreferenceBase =
+            ReadPreference(ReadPreferenceMode.secondary, tags: [
+          {'region': 'South', 'datacenter': 'A'},
+          {'rack': 'rack-1'},
+          {}
+        ]);
+        MongoDocument document = {keyReadPreference: readPreferenceBase};
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.secondary);
+        expect(readPreference.tags, [
+          {'region': 'South', 'datacenter': 'A'},
+          {'rack': 'rack-1'},
+          {}
+        ]);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, isNull);
+      });
+      test('secondary + maxStalenessSeconds -error', () async {
+        expect(
+            () => ReadPreference(ReadPreferenceMode.secondary,
+                maxStalenessSeconds: 60),
+            throwsArgumentError);
+      });
+      test('secondary + maxStalenessSeconds', () async {
+        var readPreferenceBase = ReadPreference(ReadPreferenceMode.secondary,
+            maxStalenessSeconds: 90);
+        MongoDocument document = {keyReadPreference: readPreferenceBase};
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.secondary);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, 90);
+        expect(readPreference.hedgeOptions, isNull);
+      });
+
+      /// Optional. A document that specifies whether to enable the use of hedged reads:
+      ///
+      /// { enabled: <boolean> }
+      ///
+      /// The enabled field defaults to true; i.e. specifying an empty document
+      /// { } is equivalent to specifying { enabled: true }.
+      test('secondary + hedgeOptions empty', () async {
+        var readPreferenceBase =
+            ReadPreference(ReadPreferenceMode.secondary, hedgeOptions: {});
+        MongoDocument document = {keyReadPreference: readPreferenceBase};
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.secondary);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, {});
+      });
+      test('secondary + hedgeOptions', () async {
+        var readPreferenceBase = ReadPreference(ReadPreferenceMode.secondary,
+            hedgeOptions: {'enabled': true});
+        MongoDocument document = {keyReadPreference: readPreferenceBase};
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.secondary);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, {'enabled': true});
+      });
+
+      test('nearest', () async {
+        var readPreferenceBase = ReadPreference(ReadPreferenceMode.nearest);
+        MongoDocument document = {keyReadPreference: readPreferenceBase};
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.nearest);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, {});
+      });
+
+      test('nearest + tagSet', () async {
+        var readPreferenceBase =
+            ReadPreference(ReadPreferenceMode.nearest, tags: [
+          {'region': 'South', 'datacenter': 'A'},
+          {'rack': 'rack-1'},
+          {}
+        ]);
+        MongoDocument document = {keyReadPreference: readPreferenceBase};
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.nearest);
+        expect(readPreference.tags, [
+          {'region': 'South', 'datacenter': 'A'},
+          {'rack': 'rack-1'},
+          {}
+        ]);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, {});
+      });
+      test('nearest + maxStalenessSeconds -error', () async {
+        expect(
+            () => ReadPreference(ReadPreferenceMode.nearest,
+                maxStalenessSeconds: 60),
+            throwsArgumentError);
+      });
+      test('nearest + maxStalenessSeconds', () async {
+        var readPreferenceBase =
+            ReadPreference(ReadPreferenceMode.nearest, maxStalenessSeconds: 90);
+        MongoDocument document = {keyReadPreference: readPreferenceBase};
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.nearest);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, 90);
+        expect(readPreference.hedgeOptions, {});
+      });
+
+      /// Optional. A document that specifies whether to enable the use of hedged reads:
+      ///
+      /// { enabled: <boolean> }
+      ///
+      /// The enabled field defaults to true; i.e. specifying an empty document
+      /// { } is equivalent to specifying { enabled: true }.
+      test('nearest + hedgeOptions empty', () async {
+        var readPreferenceBase =
+            ReadPreference(ReadPreferenceMode.nearest, hedgeOptions: {});
+        MongoDocument document = {keyReadPreference: readPreferenceBase};
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.nearest);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, {});
+      });
+      test('nearest + hedgeOptions', () async {
+        var readPreferenceBase = ReadPreference(ReadPreferenceMode.nearest,
+            hedgeOptions: {'enabled': true});
+        MongoDocument document = {keyReadPreference: readPreferenceBase};
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.nearest);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, {'enabled': true});
+      });
+    });
+
+    group('from Option - options', () {
+      MongoCollection? collection;
+
+      setUp(() async {
+        var collectionName = getRandomCollectionName(usedCollectionNames);
+        collection = db.collection(collectionName);
+        await collection!.insertMany([
+          {
+            '_id': ObjectId.parse('52769ea0f3dc6ead47c9a1b2'),
+            'author': "abc123",
+            'title': "zzz",
+            'tags': ["programming", "database", "mongodb"]
+          }
+        ]);
+      });
+
+      test('primary - mode name', () async {
+        MongoDocument document = {
+          keyReadPreference: ReadPreferenceMode.primary.name
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.primary);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, isNull);
+      });
+      test('primary - mode instance', () async {
+        MongoDocument document = {
+          keyReadPreference: ReadPreferenceMode.primary
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.primary);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, isNull);
+      });
+
+      /// [see](https://www.mongodb.com/docs/manual/reference/method/Mongo.setReadPref/#parameters)
+      test('primary + tagSet', () async {
+        MongoDocument document = {
+          keyReadPreference: ReadPreferenceMode.primary.name,
+          keyReadPreferenceTags: [
+            {'region': 'South', 'datacenter': 'A'},
+            {'rack': 'rack-1'},
+            {}
+          ]
+        };
+
+        expect(() => ReadPreference.fromOptions(document), throwsArgumentError);
+      });
+      test('primary + maxStalenessSeconds', () async {
+        MongoDocument document = {
+          keyReadPreference: ReadPreferenceMode.primary.name,
+          keyMaxStalenessSecond: 90
+        };
+
+        expect(() => ReadPreference.fromOptions(document), throwsArgumentError);
+      });
+
+      /// Optional. A document that specifies whether to enable the use of hedged reads:
+      ///
+      /// { enabled: <boolean> }
+      ///
+      /// The enabled field defaults to true; i.e. specifying an empty document
+      /// { } is equivalent to specifying { enabled: true }.
+      test('primary + hedgeOptions empty', () async {
+        MongoDocument document = {
+          keyReadPreference: ReadPreferenceMode.primary.name,
+          keyHedgeOptions: {}
+        };
+
+        expect(() => ReadPreference.fromOptions(document), throwsArgumentError);
+      });
+      test('primary + hedgeOptions', () async {
+        MongoDocument document = {
+          keyReadPreference: ReadPreferenceMode.primary.name,
+          keyHedgeOptions: {'enabled': true}
+        };
+
+        expect(() => ReadPreference.fromOptions(document), throwsArgumentError);
+      });
+      test('secondary', () async {
+        MongoDocument document = {
+          keyReadPreference: ReadPreferenceMode.secondary.name
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.secondary);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, isNull);
+      });
+      test('secondary + tagSet', () async {
+        MongoDocument document = {
+          keyReadPreference: ReadPreferenceMode.secondary.name,
+          keyReadPreferenceTags: [
+            {'region': 'South', 'datacenter': 'A'},
+            {'rack': 'rack-1'},
+            {}
+          ]
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.secondary);
+        expect(readPreference.tags, [
+          {'region': 'South', 'datacenter': 'A'},
+          {'rack': 'rack-1'},
+          {}
+        ]);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, isNull);
+      });
+      test('secondary + maxStalenessSeconds -error', () async {
+        MongoDocument document = {
+          keyReadPreference: ReadPreferenceMode.secondary.name,
+          keyMaxStalenessSecond: 60
+        };
+
+        expect(() => ReadPreference.fromOptions(document), throwsArgumentError);
+      });
+      test('secondary + maxStalenessSeconds', () async {
+        MongoDocument document = {
+          keyReadPreference: ReadPreferenceMode.secondary.name,
+          keyMaxStalenessSecond: 90
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.secondary);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, 90);
+        expect(readPreference.hedgeOptions, isNull);
+      });
+
+      /// Optional. A document that specifies whether to enable the use of hedged reads:
+      ///
+      /// { enabled: <boolean> }
+      ///
+      /// The enabled field defaults to true; i.e. specifying an empty document
+      /// { } is equivalent to specifying { enabled: true }.
+      test('secondary + hedgeOptions empty', () async {
+        MongoDocument document = {
+          keyReadPreference: ReadPreferenceMode.secondary.name,
+          keyHedgeOptions: {}
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.secondary);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, {});
+      });
+      test('secondary + hedgeOptions', () async {
+        MongoDocument document = {
+          keyReadPreference: ReadPreferenceMode.secondary.name,
+          keyHedgeOptions: {'enabled': true}
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.secondary);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, {'enabled': true});
+      });
+
+      test('nearest', () async {
+        MongoDocument document = {
+          keyReadPreference: ReadPreferenceMode.nearest.name
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.nearest);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, {});
+      });
+
+      test('nearest + tagSet', () async {
+        MongoDocument document = {
+          keyReadPreference: ReadPreferenceMode.nearest.name,
+          keyReadPreferenceTags: [
+            {'region': 'South', 'datacenter': 'A'},
+            {'rack': 'rack-1'},
+            {}
+          ]
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.nearest);
+        expect(readPreference.tags, [
+          {'region': 'South', 'datacenter': 'A'},
+          {'rack': 'rack-1'},
+          {}
+        ]);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, {});
+      });
+      test('nearest + maxStalenessSeconds -error', () async {
+        MongoDocument document = {
+          keyReadPreference: ReadPreferenceMode.nearest.name,
+          keyMaxStalenessSecond: 60
+        };
+
+        expect(() => ReadPreference.fromOptions(document), throwsArgumentError);
+      });
+      test('nearest + maxStalenessSeconds', () async {
+        MongoDocument document = {
+          keyReadPreference: ReadPreferenceMode.nearest.name,
+          keyMaxStalenessSecond: 90
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.nearest);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, 90);
+        expect(readPreference.hedgeOptions, {});
+      });
+
+      /// Optional. A document that specifies whether to enable the use of hedged reads:
+      ///
+      /// { enabled: <boolean> }
+      ///
+      /// The enabled field defaults to true; i.e. specifying an empty document
+      /// { } is equivalent to specifying { enabled: true }.
+      test('nearest + hedgeOptions empty', () async {
+        MongoDocument document = {
+          keyReadPreference: ReadPreferenceMode.nearest.name,
+          keyHedgeOptions: {}
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.nearest);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, {});
+      });
+      test('nearest + hedgeOptions', () async {
+        MongoDocument document = {
+          keyReadPreference: ReadPreferenceMode.nearest.name,
+          keyHedgeOptions: {'enabled': true}
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.nearest);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, {'enabled': true});
+      });
+    });
+
+    group('from Option - document', () {
+      MongoCollection? collection;
+
+      setUp(() async {
+        var collectionName = getRandomCollectionName(usedCollectionNames);
+        collection = db.collection(collectionName);
+        await collection!.insertMany([
+          {
+            '_id': ObjectId.parse('52769ea0f3dc6ead47c9a1b2'),
+            'author': "abc123",
+            'title': "zzz",
+            'tags': ["programming", "database", "mongodb"]
+          }
+        ]);
+      });
+
+      test('primary - mode name', () async {
+        MongoDocument document = {
+          keyReadPreference: {keyMode: ReadPreferenceMode.primary.name}
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.primary);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, isNull);
+      });
+      test('primary - mode instance', () async {
+        MongoDocument document = {
+          keyReadPreference: {keyMode: ReadPreferenceMode.primary}
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.primary);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, isNull);
+      });
+
+      /// [see](https://www.mongodb.com/docs/manual/reference/method/Mongo.setReadPref/#parameters)
+      test('primary + tagSet', () async {
+        MongoDocument document = {
+          keyReadPreference: {
+            keyMode: ReadPreferenceMode.primary.name,
+            keyReadPreferenceTags: [
+              {'region': 'South', 'datacenter': 'A'},
+              {'rack': 'rack-1'},
+              {}
+            ]
+          }
+        };
+
+        expect(() => ReadPreference.fromOptions(document), throwsArgumentError);
+      });
+      test('primary + maxStalenessSeconds', () async {
+        MongoDocument document = {
+          keyReadPreference: {
+            keyMode: ReadPreferenceMode.primary.name,
+            keyMaxStalenessSecond: 90
+          }
+        };
+
+        expect(() => ReadPreference.fromOptions(document), throwsArgumentError);
+      });
+
+      /// Optional. A document that specifies whether to enable the use of hedged reads:
+      ///
+      /// { enabled: <boolean> }
+      ///
+      /// The enabled field defaults to true; i.e. specifying an empty document
+      /// { } is equivalent to specifying { enabled: true }.
+      test('primary + hedgeOptions empty', () async {
+        MongoDocument document = {
+          keyReadPreference: {
+            keyMode: ReadPreferenceMode.primary.name,
+            keyHedgeOptions: {}
+          }
+        };
+
+        expect(() => ReadPreference.fromOptions(document), throwsArgumentError);
+      });
+      test('primary + hedgeOptions', () async {
+        MongoDocument document = {
+          keyReadPreference: {
+            keyMode: ReadPreferenceMode.primary.name,
+            keyHedgeOptions: {'enabled': true}
+          }
+        };
+
+        expect(() => ReadPreference.fromOptions(document), throwsArgumentError);
+      });
+      test('secondary', () async {
+        MongoDocument document = {
+          keyReadPreference: {keyMode: ReadPreferenceMode.secondary.name}
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.secondary);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, isNull);
+      });
+      test('secondary + tagSet', () async {
+        MongoDocument document = {
+          keyReadPreference: {
+            keyMode: ReadPreferenceMode.secondary.name,
+            keyReadPreferenceTags: [
+              {'region': 'South', 'datacenter': 'A'},
+              {'rack': 'rack-1'},
+              {}
+            ]
+          }
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.secondary);
+        expect(readPreference.tags, [
+          {'region': 'South', 'datacenter': 'A'},
+          {'rack': 'rack-1'},
+          {}
+        ]);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, isNull);
+      });
+      test('secondary + maxStalenessSeconds -error', () async {
+        MongoDocument document = {
+          keyReadPreference: {
+            keyMode: ReadPreferenceMode.secondary.name,
+            keyMaxStalenessSecond: 60
+          }
+        };
+
+        expect(() => ReadPreference.fromOptions(document), throwsArgumentError);
+      });
+      test('secondary + maxStalenessSeconds', () async {
+        MongoDocument document = {
+          keyReadPreference: {
+            keyMode: ReadPreferenceMode.secondary.name,
+            keyMaxStalenessSecond: 90
+          }
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.secondary);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, 90);
+        expect(readPreference.hedgeOptions, isNull);
+      });
+
+      /// Optional. A document that specifies whether to enable the use of hedged reads:
+      ///
+      /// { enabled: <boolean> }
+      ///
+      /// The enabled field defaults to true; i.e. specifying an empty document
+      /// { } is equivalent to specifying { enabled: true }.
+      test('secondary + hedgeOptions empty', () async {
+        MongoDocument document = {
+          keyReadPreference: {
+            keyMode: ReadPreferenceMode.secondary.name,
+            keyHedgeOptions: {}
+          }
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.secondary);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, {});
+      });
+      test('secondary + hedgeOptions', () async {
+        MongoDocument document = {
+          keyReadPreference: {
+            keyMode: ReadPreferenceMode.secondary.name,
+            keyHedgeOptions: {'enabled': true}
+          }
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.secondary);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, {'enabled': true});
+      });
+
+      test('nearest', () async {
+        MongoDocument document = {
+          keyReadPreference: {keyMode: ReadPreferenceMode.nearest.name}
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.nearest);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, {});
+      });
+
+      test('nearest + tagSet', () async {
+        MongoDocument document = {
+          keyReadPreference: {
+            keyMode: ReadPreferenceMode.nearest.name,
+            keyReadPreferenceTags: [
+              {'region': 'South', 'datacenter': 'A'},
+              {'rack': 'rack-1'},
+              {}
+            ]
+          }
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.nearest);
+        expect(readPreference.tags, [
+          {'region': 'South', 'datacenter': 'A'},
+          {'rack': 'rack-1'},
+          {}
+        ]);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, {});
+      });
+      test('nearest + maxStalenessSeconds -error', () async {
+        MongoDocument document = {
+          keyReadPreference: {
+            keyMode: ReadPreferenceMode.nearest.name,
+            keyMaxStalenessSecond: 60
+          }
+        };
+
+        expect(() => ReadPreference.fromOptions(document), throwsArgumentError);
+      });
+      test('nearest + maxStalenessSeconds', () async {
+        MongoDocument document = {
+          keyReadPreference: {
+            keyMode: ReadPreferenceMode.nearest.name,
+            keyMaxStalenessSecond: 90
+          }
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.nearest);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, 90);
+        expect(readPreference.hedgeOptions, {});
+      });
+
+      /// Optional. A document that specifies whether to enable the use of hedged reads:
+      ///
+      /// { enabled: <boolean> }
+      ///
+      /// The enabled field defaults to true; i.e. specifying an empty document
+      /// { } is equivalent to specifying { enabled: true }.
+      test('nearest + hedgeOptions empty', () async {
+        MongoDocument document = {
+          keyReadPreference: {
+            keyMode: ReadPreferenceMode.nearest.name,
+            keyHedgeOptions: {}
+          }
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.nearest);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, {});
+      });
+      test('nearest + hedgeOptions', () async {
+        MongoDocument document = {
+          keyReadPreference: {
+            keyMode: ReadPreferenceMode.nearest.name,
+            keyHedgeOptions: {'enabled': true}
+          }
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.nearest);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, {'enabled': true});
+      });
+    });
+
+    group('from Option - mixed', () {
+      MongoCollection? collection;
+
+      setUp(() async {
+        var collectionName = getRandomCollectionName(usedCollectionNames);
+        collection = db.collection(collectionName);
+        await collection!.insertMany([
+          {
+            '_id': ObjectId.parse('52769ea0f3dc6ead47c9a1b2'),
+            'author': "abc123",
+            'title': "zzz",
+            'tags': ["programming", "database", "mongodb"]
+          }
+        ]);
+      });
+
+      test('primary - mode name', () async {
+        MongoDocument document = {
+          keyReadPreference: ReadPreferenceMode.primary.name
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.primary);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, isNull);
+      });
+      test('primary - mode instance', () async {
+        MongoDocument document = {
+          keyReadPreference: ReadPreferenceMode.primary
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.primary);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, isNull);
+      });
+
+      /// [see](https://www.mongodb.com/docs/manual/reference/method/Mongo.setReadPref/#parameters)
+      test('primary + tagSet', () async {
+        MongoDocument document = {
+          keyReadPreference: {
+            keyMode: ReadPreferenceMode.primary.name,
+          },
+          keyReadPreferenceTags: [
+            {'region': 'South', 'datacenter': 'A'},
+            {'rack': 'rack-1'},
+            {}
+          ]
+        };
+
+        expect(() => ReadPreference.fromOptions(document), throwsArgumentError);
+      });
+      test('primary + maxStalenessSeconds', () async {
+        MongoDocument document = {
+          keyReadPreference: {
+            keyMode: ReadPreferenceMode.primary.name,
+          },
+          keyMaxStalenessSecond: 90
+        };
+
+        expect(() => ReadPreference.fromOptions(document), throwsArgumentError);
+      });
+
+      /// Optional. A document that specifies whether to enable the use of hedged reads:
+      ///
+      /// { enabled: <boolean> }
+      ///
+      /// The enabled field defaults to true; i.e. specifying an empty document
+      /// { } is equivalent to specifying { enabled: true }.
+      test('primary + hedgeOptions empty', () async {
+        MongoDocument document = {
+          keyReadPreference: {
+            keyMode: ReadPreferenceMode.primary.name,
+          },
+          keyHedgeOptions: {}
+        };
+
+        expect(() => ReadPreference.fromOptions(document), throwsArgumentError);
+      });
+      test('primary + hedgeOptions', () async {
+        MongoDocument document = {
+          keyReadPreference: {
+            keyMode: ReadPreferenceMode.primary.name,
+          },
+          keyHedgeOptions: {'enabled': true}
+        };
+
+        expect(() => ReadPreference.fromOptions(document), throwsArgumentError);
+      });
+      test('secondary', () async {
+        MongoDocument document = {
+          keyReadPreference: ReadPreferenceMode.secondary.name
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.secondary);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, isNull);
+      });
+      test('secondary + tagSet', () async {
+        MongoDocument document = {
+          keyReadPreference: {
+            keyMode: ReadPreferenceMode.secondary.name,
+          },
+          keyReadPreferenceTags: [
+            {'region': 'South', 'datacenter': 'A'},
+            {'rack': 'rack-1'},
+            {}
+          ]
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.secondary);
+        expect(readPreference.tags, [
+          {'region': 'South', 'datacenter': 'A'},
+          {'rack': 'rack-1'},
+          {}
+        ]);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, isNull);
+      });
+      test('secondary + maxStalenessSeconds -error', () async {
+        MongoDocument document = {
+          keyReadPreference: {
+            keyMode: ReadPreferenceMode.secondary.name,
+          },
+          keyMaxStalenessSecond: 60
+        };
+
+        expect(() => ReadPreference.fromOptions(document), throwsArgumentError);
+      });
+      test('secondary + maxStalenessSeconds', () async {
+        MongoDocument document = {
+          keyReadPreference: {
+            keyMode: ReadPreferenceMode.secondary.name,
+          },
+          keyMaxStalenessSecond: 90
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.secondary);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, 90);
+        expect(readPreference.hedgeOptions, isNull);
+      });
+
+      /// Optional. A document that specifies whether to enable the use of hedged reads:
+      ///
+      /// { enabled: <boolean> }
+      ///
+      /// The enabled field defaults to true; i.e. specifying an empty document
+      /// { } is equivalent to specifying { enabled: true }.
+      test('secondary + hedgeOptions empty', () async {
+        MongoDocument document = {
+          keyReadPreference: {
+            keyMode: ReadPreferenceMode.secondary.name,
+          },
+          keyHedgeOptions: {}
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.secondary);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, {});
+      });
+      test('secondary + hedgeOptions', () async {
+        MongoDocument document = {
+          keyReadPreference: {
+            keyMode: ReadPreferenceMode.secondary.name,
+          },
+          keyHedgeOptions: {'enabled': true}
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.secondary);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, {'enabled': true});
+      });
+
+      test('nearest', () async {
+        MongoDocument document = {
+          keyReadPreference: ReadPreferenceMode.nearest.name
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.nearest);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, {});
+      });
+
+      test('nearest + tagSet', () async {
+        MongoDocument document = {
+          keyReadPreference: {
+            keyMode: ReadPreferenceMode.nearest.name,
+          },
+          keyReadPreferenceTags: [
+            {'region': 'South', 'datacenter': 'A'},
+            {'rack': 'rack-1'},
+            {}
+          ]
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.nearest);
+        expect(readPreference.tags, [
+          {'region': 'South', 'datacenter': 'A'},
+          {'rack': 'rack-1'},
+          {}
+        ]);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, {});
+      });
+      test('nearest + maxStalenessSeconds -error', () async {
+        MongoDocument document = {
+          keyReadPreference: {
+            keyMode: ReadPreferenceMode.nearest.name,
+          },
+          keyMaxStalenessSecond: 60
+        };
+
+        expect(() => ReadPreference.fromOptions(document), throwsArgumentError);
+      });
+      test('nearest + maxStalenessSeconds', () async {
+        MongoDocument document = {
+          keyMaxStalenessSecond: 90,
+          keyReadPreference: {
+            keyMode: ReadPreferenceMode.nearest.name,
+          }
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.nearest);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, 90);
+        expect(readPreference.hedgeOptions, {});
+      });
+
+      /// Optional. A document that specifies whether to enable the use of hedged reads:
+      ///
+      /// { enabled: <boolean> }
+      ///
+      /// The enabled field defaults to true; i.e. specifying an empty document
+      /// { } is equivalent to specifying { enabled: true }.
+      test('nearest + hedgeOptions empty', () async {
+        MongoDocument document = {
+          keyReadPreference: {
+            keyMode: ReadPreferenceMode.nearest.name,
+          },
+          keyHedgeOptions: {}
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.nearest);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, {});
+      });
+      test('nearest + hedgeOptions', () async {
+        MongoDocument document = {
+          keyReadPreference: {
+            keyMode: ReadPreferenceMode.nearest.name,
+          },
+          keyHedgeOptions: {'enabled': true}
+        };
+        var readPreference = ReadPreference.fromOptions(document);
+
+        expect(readPreference, ReadPreference.nearest);
+        expect(readPreference.tags, isNull);
+        expect(readPreference.maxStalenessSeconds, isNull);
+        expect(readPreference.hedgeOptions, {'enabled': true});
       });
     });
   });

@@ -1,8 +1,6 @@
-import 'package:bson/bson.dart';
 import 'package:mongo_db_driver/mongo_db_driver.dart';
 import 'package:mongo_db_driver/src/core/message/mongo_message.dart';
 import 'package:decimal/decimal.dart';
-import 'package:mongo_db_query/mongo_db_query.dart';
 import 'package:test/test.dart';
 import 'package:uuid/uuid.dart';
 

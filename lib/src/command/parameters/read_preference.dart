@@ -73,6 +73,128 @@ class ReadPreference {
     }
   }
 
+  /// We can accept three formats for ReadPreference inside Options:
+  /// - options[keyReadPreference] id ReadPreference
+  ///    an Instance of ReadPreference)
+  /// - options[keyReadPrefernce] is Map (in format:
+  ///    {keyMode: <String>,
+  ///     keyReadPrefernceTags: <List>,
+  ///     keyMaxStalenessSeconds: <int>,
+  ///     keyHedgedOptions:  {'enabled' : true/false}
+  ///    })
+  /// - options[keyReadPreference] is ReadPreferenceMode.
+  ///   In this this case we expect the other options to be inside the options
+  ///   map itself (ex. options[keyReadPreferencTags])
+  ///
+  factory ReadPreference.fromOptions(Options options,
+      {bool? removeFromOriginalMap}) {
+    if (options[keyReadPreference] == null) {
+      throw MongoDartError('ReadPreference mode is needed');
+    }
+    var remove = removeFromOriginalMap ?? false;
+    dynamic readPreference =
+        remove ? options.remove(keyReadPreference) : options[keyReadPreference];
+    var tagsTemp = (remove
+        ? options.remove(keyReadPreferenceTags)
+        : options[keyReadPreferenceTags]);
+    List<TagSet>? tags = tagsTemp == null
+        ? null
+        : <TagSet>[
+            for (var element in tagsTemp) <String, String>{...?element}
+          ];
+    int? maxStalenessSeconds = (remove
+        ? options.remove(keyMaxStalenessSecond)
+        : options[keyMaxStalenessSecond]);
+    var hedgeOptionsTemp =
+        (remove ? options.remove(keyHedgeOptions) : options[keyHedgeOptions]);
+    Map<String, Object>? hedgeOptions =
+        hedgeOptionsTemp == null ? null : <String, Object>{...hedgeOptionsTemp};
+
+    if (readPreference is ReadPreference) {
+      return ReadPreference(readPreference.mode,
+          tags: tags ?? readPreference.tags,
+          maxStalenessSeconds:
+              maxStalenessSeconds ?? readPreference.maxStalenessSeconds,
+          hedgeOptions: hedgeOptions ?? readPreference.hedgeOptions);
+    } else if (readPreference is ReadPreferenceMode) {
+      return ReadPreference(readPreference,
+          tags: tags,
+          maxStalenessSeconds: maxStalenessSeconds,
+          hedgeOptions: hedgeOptions);
+    } else if (readPreference is String) {
+      return ReadPreference(ReadPreferenceMode.fromString(readPreference),
+          tags: tags,
+          maxStalenessSeconds: maxStalenessSeconds,
+          hedgeOptions: hedgeOptions);
+    } else if (readPreference is Map) {
+      var rdMode = readPreference[keyMode];
+      var tagsTemp = readPreference[keyReadPreferenceTags];
+      var hedgeOptionsTemp = readPreference[keyHedgeOptions];
+      if (rdMode is ReadPreferenceMode) {
+        return ReadPreference(rdMode,
+            tags: tags ??
+                (tagsTemp == null
+                    ? null
+                    : <TagSet>[
+                        for (var element in tagsTemp)
+                          <String, String>{...?element}
+                      ]),
+            maxStalenessSeconds:
+                maxStalenessSeconds ?? readPreference[keyMaxStalenessSecond],
+            hedgeOptions: hedgeOptions ??
+                (hedgeOptionsTemp == null
+                    ? null
+                    : <String, Object>{...hedgeOptionsTemp}));
+      } else if (rdMode is String) {
+        return ReadPreference(ReadPreferenceMode.fromString(rdMode),
+            tags: tags ??
+                (tagsTemp == null
+                    ? null
+                    : <TagSet>[
+                        for (var element in tagsTemp)
+                          <String, String>{...?element}
+                      ]),
+            maxStalenessSeconds:
+                maxStalenessSeconds ?? readPreference[keyMaxStalenessSecond],
+            hedgeOptions: hedgeOptions ??
+                (hedgeOptionsTemp == null
+                    ? null
+                    : <String, Object>{...hedgeOptionsTemp}));
+      }
+    }
+/* 
+    if (readPreference is ReadPreferenceMode) {
+      return ReadPreference(readPreference,
+          tags: (remove
+              ? options.remove(keyReadPreferenceTags)
+              : options[keyReadPreferenceTags]) as List<TagSet>?,
+          maxStalenessSeconds: (remove
+              ? options.remove(keyMaxStalenessSecond)
+              : options[keyMaxStalenessSecond]) as int?,
+          hedgeOptions: (remove
+              ? options.remove(keyHedgeOptions)
+              : options[keyHedgeOptions]) as Map<String, Object>?);
+    } else if (readPreference is Map) {
+      var mode = readPreference[keyMode] as String?;
+      if (mode != null) {
+        return ReadPreference(ReadPreferenceMode.fromString(mode),
+            tags: (remove
+                ? readPreference.remove(keyReadPreferenceTags)
+                : readPreference[keyReadPreferenceTags]) as List<TagSet>?,
+            maxStalenessSeconds: (remove
+                ? readPreference.remove(keyMaxStalenessSecond)
+                : readPreference[keyMaxStalenessSecond]) as int?,
+            hedgeOptions: (remove
+                ? readPreference.remove(keyHedgeOptions)
+                : readPreference[keyHedgeOptions]) as Map<String, Object>?);
+      }
+    } else if (options[keyReadPreference] is ReadPreference) {
+      return options[keyReadPreference] as ReadPreference;
+    } */
+    throw UnsupportedError('The "$keyReadPreference" value is of an '
+        'unmanaged type ${options[keyReadPreference].runtimeType}');
+  }
+
   static const secondaryOK = [
     ReadPreferenceMode.primaryPreferred,
     ReadPreferenceMode.secondary,
@@ -161,59 +283,6 @@ class ReadPreference {
   /// first respondent per shard.
   @Deprecated('since 8.0')
   final Map<String, Object>? hedgeOptions;
-
-  /// We can accept three formats for ReadPreference inside Options:
-  /// - options[keyReadPreference] id ReadPreference
-  ///    an Instance of ReadPreference)
-  /// - options[keyReadPrefernce] is Map (in format:
-  ///    {keyMode: <String>,
-  ///     keyReadPrefernceTags: <List>,
-  ///     keyMaxStalenessSeconds: <int>,
-  ///     keyHedgedOptions:  {'enabled' : true/false}
-  ///    })
-  /// - options[keyReadPreference] is ReadPreferenceMode.
-  ///   In this this case we expect the other options to be inside the options
-  ///   map itself (ex. options[keyReadPreferencTags])
-  ///
-  factory ReadPreference.fromOptions(Options options,
-      {bool? removeFromOriginalMap}) {
-    if (options[keyReadPreference] == null) {
-      throw MongoDartError('ReadPreference mode is needed');
-    }
-    var remove = removeFromOriginalMap ?? false;
-    dynamic readPreference =
-        remove ? options.remove(keyReadPreference) : options[keyReadPreference];
-    if (readPreference is ReadPreferenceMode) {
-      return ReadPreference(readPreference,
-          tags: (remove
-              ? options.remove(keyReadPreferenceTags)
-              : options[keyReadPreferenceTags]) as List<TagSet>?,
-          maxStalenessSeconds: (remove
-              ? options.remove(keyMaxStalenessSecond)
-              : options[keyMaxStalenessSecond]) as int?,
-          hedgeOptions: (remove
-              ? options.remove(keyHedgeOptions)
-              : options[keyHedgeOptions]) as Map<String, Object>?);
-    } else if (readPreference is Map) {
-      var mode = readPreference[keyMode] as String?;
-      if (mode != null) {
-        return ReadPreference(ReadPreferenceMode.fromString(mode),
-            tags: (remove
-                ? readPreference.remove(keyReadPreferenceTags)
-                : readPreference[keyReadPreferenceTags]) as List<TagSet>?,
-            maxStalenessSeconds: (remove
-                ? readPreference.remove(keyMaxStalenessSecond)
-                : readPreference[keyMaxStalenessSecond]) as int?,
-            hedgeOptions: (remove
-                ? readPreference.remove(keyHedgeOptions)
-                : readPreference[keyHedgeOptions]) as Map<String, Object>?);
-      }
-    } else if (options[keyReadPreference] is ReadPreference) {
-      return options[keyReadPreference] as ReadPreference;
-    }
-    throw UnsupportedError('The "$keyReadPreference" value is of an '
-        'unmanaged type ${options[keyReadPreference].runtimeType}');
-  }
 
   // TODO check if still needed
   bool get secondaryOk => secondaryOK.contains(mode);

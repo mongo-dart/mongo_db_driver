@@ -1,6 +1,5 @@
 import 'package:decimal/decimal.dart';
-import 'package:mongo_db_driver/src/client/mongo_client.dart';
-import 'package:mongo_db_query/mongo_db_query.dart';
+import 'package:mongo_db_driver/mongo_db_driver.dart';
 
 void main() async {
   var client = MongoClient('mongodb://127.0.0.1/testdb');

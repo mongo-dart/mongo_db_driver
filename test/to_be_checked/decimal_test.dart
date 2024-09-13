@@ -3,7 +3,6 @@ library;
 
 import 'package:decimal/decimal.dart';
 import 'package:mongo_db_driver/mongo_db_driver.dart';
-import 'package:mongo_db_query/mongo_db_query.dart';
 import 'package:test/test.dart';
 import 'package:uuid/uuid.dart';
 
