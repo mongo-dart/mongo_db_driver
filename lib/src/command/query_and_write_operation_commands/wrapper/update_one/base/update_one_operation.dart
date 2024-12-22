@@ -35,6 +35,7 @@ abstract base class UpdateOneOperation extends UpdateOperation {
               session: session,
               updateOneOptions: updateOneOptions?.toUpdateOneV1,
               rawOptions: rawOptions);
+        // ignore: unreachable_switch_default
         default:
           throw MongoDartError(
               'Stable Api ${collection.serverApi!.version} not managed');

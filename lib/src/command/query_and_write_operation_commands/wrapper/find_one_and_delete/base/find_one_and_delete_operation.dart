@@ -52,6 +52,7 @@ abstract base class FindOneAndDeleteOperation extends FindAndModifyOperation {
               findOneAndDeleteOptions:
                   findOneAndDeleteOptions?.toFindOneAndDeleteOptionsV1,
               rawOptions: rawOptions);
+        // ignore: unreachable_switch_default
         default:
           throw MongoDartError(
               'Stable Api ${collection.serverApi!.version} not managed');

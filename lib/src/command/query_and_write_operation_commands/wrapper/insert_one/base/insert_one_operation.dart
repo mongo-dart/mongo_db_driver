@@ -44,6 +44,7 @@ abstract base class InsertOneOperation extends InsertOperation {
               session: session,
               insertOneOptions: insertOneOptions?.toOneV1,
               rawOptions: rawOptions);
+        // ignore: unreachable_switch_default
         default:
           throw MongoDartError(
               'Stable Api ${collection.serverApi!.version} not managed');

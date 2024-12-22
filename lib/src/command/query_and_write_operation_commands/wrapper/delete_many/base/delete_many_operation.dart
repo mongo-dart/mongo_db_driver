@@ -43,6 +43,7 @@ abstract base class DeleteManyOperation extends DeleteOperation {
               session: session,
               deleteManyOptions: deleteManyOptions?.toDeleteManyV1,
               rawOptions: rawOptions);
+        // ignore: unreachable_switch_default
         default:
           throw MongoDartError(
               'Stable Api ${collection.serverApi!.version} not managed');

@@ -1,5 +1,5 @@
 @Timeout(Duration(minutes: 10))
-library database_tests;
+library;
 
 import 'dart:async';
 import 'package:fixnum/fixnum.dart';

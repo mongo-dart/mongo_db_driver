@@ -46,6 +46,7 @@ abstract base class InsertManyOperation extends InsertOperation {
               session: session,
               insertManyOptions: insertManyOptions?.toManyV1,
               rawOptions: rawOptions);
+        // ignore: unreachable_switch_default
         default:
           throw MongoDartError(
               'Stable Api ${collection.serverApi!.version} not managed');

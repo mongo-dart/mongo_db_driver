@@ -39,6 +39,7 @@ base class AbortTransactionCommand extends DbAdminCommandOperation {
               session: session,
               abortTransactionOptions: abortTransactionOptions?.toV1,
               rawOptions: rawOptions);
+        // ignore: unreachable_switch_default
         default:
           throw MongoDartError(
               'Stable Api ${client.serverApi!.version} not managed');

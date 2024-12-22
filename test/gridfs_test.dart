@@ -1,4 +1,4 @@
-library gridfs_tests;
+library;
 
 import 'package:mongo_db_driver/mongo_db_driver.dart';
 import 'dart:io';

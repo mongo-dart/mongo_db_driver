@@ -1,4 +1,4 @@
-library database_tests;
+library;
 
 import 'package:bson/bson.dart';
 import 'dart:io';

@@ -1,4 +1,4 @@
-library packet_converter_test;
+library;
 
 import 'package:mongo_db_driver/src/core/message/handler/packet_converter.dart';
 import 'package:test/test.dart';

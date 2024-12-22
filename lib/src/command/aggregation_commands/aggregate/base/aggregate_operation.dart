@@ -76,6 +76,7 @@ base class AggregateOperation extends CommandOperation {
               aggregateOptionsV1: aggregateOptions?.toV1,
               rawOptions: rawOptions,
               let: let);
+        // ignore: unreachable_switch_default
         default:
           throw MongoDartError(
               'Stable Api ${collection.serverApi!.version} not managed');

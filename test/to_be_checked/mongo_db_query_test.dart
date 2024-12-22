@@ -1,4 +1,4 @@
-library mongo_db_query_test;
+library;
 
 import 'package:test/test.dart';
 import 'package:bson/bson.dart';
