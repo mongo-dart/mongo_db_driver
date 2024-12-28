@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:fixnum/fixnum.dart';
 import 'package:mongo_db_driver/mongo_db_driver.dart';
 
 const dbName = 'mongo-dart-example';
@@ -62,16 +63,16 @@ void main() async {
 
   // Set small chunks
   // This is normally don't needed. The default chunkSize is fine.
-  // But we want to split are small data set into more than one chunks
-  GridFS.defaultChunkSize = 9;
+  // But we want to split a small data set into more than one chunks
+  GridFS.defaultChunkSize = Int32(9);
 
   // assures at least 3 chunks (for our tine test data set)
   var target = GridFS.defaultChunkSize * 3;
   var data = <int>[];
-  while (data.length < target) {
+  while (data.length < target.toInt()) {
     data.addAll(smallData);
   }
-  print('Expected chunks: ${(data.length / GridFS.defaultChunkSize).ceil()}');
+  print('Expected chunks: ${(data.length ~/ GridFS.defaultChunkSize.toInt())}');
   var extraData = <String, dynamic>{
     'test': [1, 2, 3],
     'extraData': 'Test',

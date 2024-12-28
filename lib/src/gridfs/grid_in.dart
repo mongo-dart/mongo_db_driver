@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:bson/bson.dart';
+import 'package:fixnum/fixnum.dart';
 
 import '../core/error/mongo_dart_error.dart';
 import 'chunk_handler.dart';
@@ -11,7 +12,7 @@ class GridIn extends GridFSFile {
   late Stream<Uint8List> input;
   bool savedChunks = false;
   int currentChunkNumber = 0;
-  int totalBytes = 0;
+  Int64 totalBytes = Int64();
 
   //@override
   //String? filename;
@@ -29,14 +30,14 @@ class GridIn extends GridFSFile {
   }
 
   @override
-  Future<Map<String, dynamic>> save([int? chunkSize]) async {
+  Future<Map<String, dynamic>> save([Int32? chunkSize]) async {
     if (!savedChunks) {
       return saveChunks(chunkSize);
     }
     return {'ok': 1.0};
   }
 
-  Future<Map<String, dynamic>> saveChunks([int? chunkSize]) async {
+  Future<Map<String, dynamic>> saveChunks([Int32? chunkSize]) async {
     chunkSize ??= this.chunkSize;
 
     if (savedChunks) {

@@ -1,5 +1,15 @@
 # Changelog Mongo Db Driver
 
+## 0.1.0-1.4.dev
+
+- Update Dependencies
+- Removed Library names (Lint)
+- Changes to Grid Fs to fix problem with files bigger than 2GB.
+  1) Changed length in GridFSFile from int? to Int64
+  2) Changed chunkSize in GridFSFile from int to Int32
+  3) Changed GridFS.defaultChunkSize from int to Int32
+  4) Removed Validate() method from GridFSFile (MD5 no more managed)
+
 ## 0.1.0-1.3.dev
 
 - Fixed bson and mongo_db_query exports

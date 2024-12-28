@@ -1,3 +1,4 @@
+import 'package:fixnum/fixnum.dart';
 import 'package:mongo_db_query/mongo_db_query.dart';
 
 import '../database/database_exp.dart';
@@ -5,8 +6,8 @@ import 'grid_in.dart';
 import 'grid_out.dart';
 
 class GridFS {
-  static int defaultChunkSize = 256 * 1024;
-  static int maxChunkSize = (3.5 * 1000 * 1000).toInt();
+  static Int32 defaultChunkSize = Int32(256 * 1024);
+  static Int32 maxChunkSize = Int32(3500 * 1000);
 
   MongoDatabase database;
   MongoCollection files;
@@ -24,21 +25,12 @@ class GridFS {
       files.find(filter: queryExpression..sortBy({'filename': 1}));
 
   Future<GridOut?> findOne(selector) async {
-    //var completer = Completer<GridOut>();
-    var file = await files.findOne(filter: selector); //.then((file) {
+    var file = await files.findOne(filter: selector);
 
     if (file == null) {
       return null;
     }
-    return GridOut(this, file); //..setGridFS(this);
-    //GridOut? result;
-    //if (file != null) {
-    //  result = GridOut(file);
-    //  result.setGridFS(this);
-    //}
-    //  completer.complete(result);
-    //});
-    //return completer.future;
+    return GridOut(this, file);
   }
 
   Future<GridOut?> getFile(String fileName) async =>
