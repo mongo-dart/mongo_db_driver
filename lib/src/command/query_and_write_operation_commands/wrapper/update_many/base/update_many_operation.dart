@@ -40,6 +40,7 @@ abstract base class UpdateManyOperation extends UpdateOperation {
               ordered: ordered,
               updateManyOptions: updateManyOptions?.toUpdateManyV1,
               rawOptions: rawOptions);
+        // ignore: unreachable_switch_default
         default:
           throw MongoDartError(
               'Stable Api ${collection.serverApi!.version} not managed');

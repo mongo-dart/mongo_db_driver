@@ -1,3 +1,5 @@
+// ignore_for_file: unreachable_switch_default
+
 import 'package:meta/meta.dart';
 import 'package:mongo_db_query/mongo_db_query.dart';
 

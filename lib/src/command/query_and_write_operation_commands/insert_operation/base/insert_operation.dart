@@ -55,6 +55,7 @@ abstract base class InsertOperation extends CommandOperation {
               session: session,
               insertOptions: insertOptions?.toV1,
               rawOptions: rawOptions);
+        // ignore: unreachable_switch_default
         default:
           throw MongoDartError(
               'Stable Api ${collection.serverApi!.version} not managed');

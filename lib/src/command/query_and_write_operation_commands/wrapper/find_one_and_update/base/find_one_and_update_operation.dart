@@ -64,6 +64,7 @@ abstract base class FindOneAndUpdateOperation extends FindAndModifyOperation {
                   findOneAndUpdateOptions?.toFindOneAndUpdateOptionsV1,
               hint: hint,
               rawOptions: rawOptions);
+        // ignore: unreachable_switch_default
         default:
           throw MongoDartError(
               'Stable Api ${collection.serverApi!.version} not managed');

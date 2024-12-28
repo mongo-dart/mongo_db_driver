@@ -42,6 +42,7 @@ abstract base class DeleteOperation extends CommandOperation {
               session: session,
               deleteOptions: deleteOptions?.toV1,
               rawOptions: rawOptions);
+        // ignore: unreachable_switch_default
         default:
           throw MongoDartError(
               'Stable Api ${collection.serverApi!.version} not managed');

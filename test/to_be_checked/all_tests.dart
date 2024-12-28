@@ -1,4 +1,4 @@
-library all_tests;
+library;
 
 import 'database_test.dart' as database;
 import '../gridfs_test.dart' as gridfs;

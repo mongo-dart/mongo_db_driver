@@ -60,6 +60,7 @@ abstract base class FindOneAndReplaceOperation extends FindAndModifyOperation {
                   findOneAndReplaceOptions?.toFindOneAndReplaceOptionsV1,
               hint: hint,
               rawOptions: rawOptions);
+        // ignore: unreachable_switch_default
         default:
           throw MongoDartError(
               'Stable Api ${collection.serverApi!.version} not managed');

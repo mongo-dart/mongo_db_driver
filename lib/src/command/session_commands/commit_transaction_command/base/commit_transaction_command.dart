@@ -1,3 +1,5 @@
+// ignore_for_file: unreachable_switch_default
+
 import 'package:meta/meta.dart';
 import 'package:mongo_db_driver/src/command/base/db_admin_command_operation.dart';
 import '../../../../core/error/mongo_dart_error.dart';

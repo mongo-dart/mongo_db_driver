@@ -1,5 +1,5 @@
 @Timeout(Duration(minutes: 10))
-library crud_test;
+library;
 
 import 'package:mongo_db_driver/mongo_db_driver.dart';
 import 'dart:async';
