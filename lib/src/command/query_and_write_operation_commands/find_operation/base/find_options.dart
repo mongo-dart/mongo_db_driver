@@ -125,7 +125,7 @@ abstract class FindOptions {
   final int? maxTimeMS;
 
   /// Starting in MongoDB 3.6, the readConcern option has the following syntax:
-  /// readConcern: { level: <value> }
+  /// readConcern: { level: -value- }
   /// Possible read concern levels are:
   /// * "local". This is the default read concern level for read operations
   /// against primary and read operations against secondaries when associated
@@ -143,14 +143,14 @@ abstract class FindOptions {
   /// for details.
   /// Starting in MongoDB 4.2, to use the max field, the command must also
   /// use hint unless the specified filter is an equality condition on the
-  /// _id field { _id: <value> }.
+  /// _id field { _id: -value- }.
   final Map<String, Object>? max;
 
   /// The inclusive lower bound for a specific index. See cursor.min()
   /// for details.
   /// Starting in MongoDB 4.2, to use the min field, the command must also
   /// use hint unless the specified filter is an equality condition on the
-  /// _id field { _id: <value> }.
+  /// _id field { _id: -value- }.
   final Map<String, Object>? min;
 
   /// If true, returns only the index keys in the resulting documents.

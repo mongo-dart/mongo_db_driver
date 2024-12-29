@@ -39,7 +39,7 @@ const mongoDbUri = 'mongodb://test:test@$dbAddress:27031/$dbName';
 const mongoDbUri2 = 'mongodb://unicode:übelkübel@$dbAddress:27031/$dbName';
 
 void main() async {
-  Future<String?> getFcv(String uri) async {
+  /*  Future<String?> getFcv(String uri) async {
     var client = MongoClient(uri);
     try {
       await client.connect();
@@ -60,7 +60,7 @@ void main() async {
       throw StateError('Unknown error $e');
     }
   }
-
+ */
   group('Authentication', () {
     var serverRequiresAuth = false;
     var isVer3_6 = false;

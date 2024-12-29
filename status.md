@@ -3,6 +3,7 @@
 ## Stable Api
 
 [Reference][1]
+
 | Command | Developed | Tested  | Notes |
 | :---: | :---: | --- | :---: |
 | abortTransaction | Not developed |  |  |
@@ -37,6 +38,7 @@
 > :warning: **Warning:** Sessions are available only for Replica sets and Sharded Clusters
 
 [Reference][4]
+
 | Topic | Developed | Tested  | Notes |
 | :---: | :---: | --- | :---: |
 | Server Session | :heavy_check_mark: |  |  |
@@ -57,6 +59,7 @@
 ## Commands
 
 [Reference][5]
+
 | Command | Developed | Tested  | Notes |
 | :---: | :---: | --- | :---: |
 | | **Aggregation**  | **Commands** | |
@@ -64,6 +67,10 @@
 | count |:heavy_check_mark: |  |  |
 | distinct | :heavy_check_mark: |  |  |
 | mapReduce | :white_square_button: |  |  |
+
+## Todo
+
+- Read Preference Test - Complete
 
  [1]: https://www.mongodb.com/docs/manual/reference/stable-api-changelog/#std-label-stable-api-changelog
  [4]: https://www.mongodb.com/docs/manual/reference/command/nav-sessions/

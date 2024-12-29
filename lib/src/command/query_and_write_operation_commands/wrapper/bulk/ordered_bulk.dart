@@ -33,8 +33,8 @@ base class OrderedBulk extends Bulk {
 
   /// this contains the original command reference
   /// stored as pairs made of {
-  ///   <startingIndexInsideThe corresponding commands element>:
-  ///       <originaInputIndex>
+  ///   -startingIndexInsideThe corresponding commands element-:
+  ///       -originaInputIndex-
   ///    }
   /// [{0: 0, 1: 1, 3:2}, {0: 3}]
   List<Map<int, int>> commandsOrigin = <Map<int, int>>[];

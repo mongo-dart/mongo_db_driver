@@ -289,7 +289,7 @@ class ConnectionStringOptions {
 
   /// Specify properties for the specified authMechanism as a comma-separated list of colon-separated key-value pairs.
   /// Possible key-value pairs are:
-  /// - SERVICE_NAME:<string>
+  /// - SERVICE_NAME:-string-
   ///     Set the Kerberos service name when connecting to Kerberized MongoDB
   ///     instances. This value must match the service name set on MongoDB
   ///     instances to which you are connecting. Only valid when using the
@@ -307,13 +307,13 @@ class ConnectionStringOptions {
   ///     Defaults to false. Only valid when using the GSSAPI authentication
   ///     mechanism.
   ///
-  /// - SERVICE_REALM:<string>
+  /// - SERVICE_REALM:-string-
   ///     Set the Kerberos realm for the MongoDB service. This may be necessary
   ///     to support cross-realm authentication where the user exists in one
   ///     realm and the service in another. Only valid when using the GSSAPI
   ///     authentication mechanism.
   ///
-  /// - AWS_SESSION_TOKEN:<security_token>
+  /// - AWS_SESSION_TOKEN:-security_token-
   ///     Set the AWS session token for authentication with temporary
   ///     credentials when using an AssumeRole request, or when working
   ///     with AWS resources that specify this value such as Lambda.

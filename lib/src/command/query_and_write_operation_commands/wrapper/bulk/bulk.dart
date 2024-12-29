@@ -69,9 +69,9 @@ abstract base class Bulk extends CommandOperation {
   /// Same as deleteOne but in Map format:
   /// Schema:
   /// { deleteOne : {
-  ///    "filter" : <Map>,
-  ///    "collation": <CollationOptions | Map>,
-  ///    "hint": <String | <Map>                 // Available starting in 4.2.1
+  ///    "filter" : -Map-,
+  ///    "collation": -CollationOptions | Map-,
+  ///    "hint": -String | Map-                 // Available starting in 4.2.1
   ///   }
   /// }
   void deleteOneFromMap(Map<String, Object> docMap, {int? index}) {
@@ -105,9 +105,9 @@ abstract base class Bulk extends CommandOperation {
   /// Same as deleteMany but in Map format:
   /// Schema:
   /// { deleteMany : {
-  ///    "filter" : <Map>,
-  ///    "collation": <CollationOptions | Map>,
-  ///    "hint": <String> | <Map>                // Available starting in 4.2.1
+  ///    "filter" : -Map-,
+  ///    "collation": -CollationOptions | Map-,
+  ///    "hint": -String | Map-                // Available starting in 4.2.1
   ///   }
   /// }
   void deleteManyFromMap(Map<String, Object> docMap, {int? index}) {
@@ -145,11 +145,11 @@ abstract base class Bulk extends CommandOperation {
   /// Schema:
   /// { replaceOne :
   ///    {
-  ///       "filter" : <Map>,
-  ///       "replacement" : <Map>,
-  ///       "upsert" : <bool>,
-  ///       "collation": <CollationOptions | Map>,
-  ///       "hint": <String> | <Map>                // Available starting in 4.2.1
+  ///       "filter" : -Map-,
+  ///       "replacement" : -Map-,
+  ///       "upsert" : -bool-,
+  ///       "collation": -CollationOptions | Map-,
+  ///       "hint": -String | Map-                // Available starting in 4.2.1
   ///    }
   /// }
   void replaceOneFromMap(Map<String, Object> docMap, {int? index}) {
@@ -202,12 +202,12 @@ abstract base class Bulk extends CommandOperation {
   /// Schema:
   /// { updateOne :
   ///    {
-  ///       "filter": <Map>,
-  ///       "update": <Map or pipeline>,     // Changed in 4.2
-  ///       "upsert": <bool>,
-  ///       "collation": <CollationOptions | Map>,
-  ///       "arrayFilters": [ <filterdocument1>, ... ],
-  ///       "hint": <String> | <Map>          // Available starting in 4.2.1
+  ///       "filter": -Map-,
+  ///       "update": -Map or pipeline-,     // Changed in 4.2
+  ///       "upsert": -bool-,
+  ///       "collation": -CollationOptions | Map-,
+  ///       "arrayFilters": [ -filterdocument1-, ... ],
+  ///       "hint": -String | Map-          // Available starting in 4.2.1
   ///    }
   /// }
   void updateOneFromMap(Map<String, Object> docMap, {int? index}) {
@@ -267,12 +267,12 @@ abstract base class Bulk extends CommandOperation {
   /// Schema:
   /// { updateMany :
   ///    {
-  ///       "filter" : <Map>,
-  ///       "update" : <Map or pipeline>,    // Changed in MongoDB 4.2
-  ///       "upsert" : <bool>,
-  ///       "collation": <CollationOptions | Map>,
-  ///       "arrayFilters": [ <filterdocument1>, ... ],
-  ///       "hint": <String> | <Map>         // Available starting in 4.2.1
+  ///       "filter" : -Map-,
+  ///       "update" : -Map or pipeline-,    // Changed in MongoDB 4.2
+  ///       "upsert" : -bool-,
+  ///       "collation": -CollationOptions | Map-,
+  ///       "arrayFilters": [ -filterdocument1-, ... ],
+  ///       "hint": -String | Map-         // Available starting in 4.2.1
   ///    }
   /// }
   void updateManyFromMap(Map<String, Object> docMap, {int? index}) {
@@ -469,7 +469,7 @@ abstract base class Bulk extends CommandOperation {
   /// Split the command if the number of documents exceed the maxWriteBatchSixe
   ///
   /// Here we assume that the command is made this way:
-  /// { <commandType>: <collectionName>, <commandArgument> : <documentsList>,
+  /// { -commandType-: -collectionName-, -commandArgument- : -documentsList-,
   /// ...maybe others}
   List<Command> splitCommands(Command command) {
     var ret = <Command>[];

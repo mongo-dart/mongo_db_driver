@@ -30,8 +30,8 @@ base class UnorderedBulk extends Bulk {
   Command insertCommand = <String, dynamic>{};
 
   /// this contains the original insert command reference
-  /// stored as pairs made of {<originaInputIndex>:
-  ///    <startingIndexInsideThe corresponding commands element>}
+  /// stored as pairs made of {-originaInputIndex-:
+  ///    -startingIndexInsideThe corresponding commands element-}
   /// {0: 0, 1: 1, 3:4}
   Map<int, int> insertCommandsOrigin = <int, int>{};
 
@@ -48,8 +48,8 @@ base class UnorderedBulk extends Bulk {
   Command deleteCommand = <String, dynamic>{};
 
   /// this contains the original delete command reference
-  /// stored as pairs made of {<originaInputIndex>:
-  ///    <startingIndexInsideThe corresponding commands element>}
+  /// stored as pairs made of {-originaInputIndex-:
+  ///    -startingIndexInsideThe corresponding commands element-}
   /// {0: 2}
   Map<int, int> deleteCommandsOrigin = <int, int>{};
 
@@ -66,8 +66,8 @@ base class UnorderedBulk extends Bulk {
   Command updateCommand = <String, dynamic>{};
 
   /// this contains the original update command reference
-  /// stored as pairs made of {<originaInputIndex>:
-  ///    <startingIndexInsideThe corresponding commands element>}
+  /// stored as pairs made of {-originaInputIndex-:
+  ///    -startingIndexInsideThe corresponding commands element-}
   /// {0: 3}
   Map<int, int> updateCommandsOrigin = <int, int>{};
 

@@ -197,7 +197,7 @@ abstract class Topology {
   /// "counter":
   ///
   /// {
-  ///     topologyVersion: {processId: <ObjectId>, counter: <int64>},
+  ///     topologyVersion: {processId: -ObjectId-, counter: -int64-},
   ///     ( ... other fields ...)
   /// }
   ///

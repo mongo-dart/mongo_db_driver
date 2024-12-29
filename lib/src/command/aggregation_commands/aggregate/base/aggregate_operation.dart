@@ -112,7 +112,7 @@ base class AggregateOperation extends CommandOperation {
   ///
   /// To indicate a cursor with the default batch size, specify `cursor: {}`.
   /// To indicate a cursor with a non-default batch size, use
-  /// `cursor: { batchSize: <num> }`.
+  /// `cursor: { batchSize: -num- }`.
   MongoDocument cursor;
 
   /// Optional. Index specification. Specify either the index name
@@ -122,7 +122,7 @@ base class AggregateOperation extends CommandOperation {
   /// **starting in MongoDB 4.2**, with the following exception,
   /// hint is required if the command includes the min and/or max fields;
   /// hint is not required with min and/or max if the filter is an
-  /// equality condition on the _id field { _id: <value> }.
+  /// equality condition on the _id field { _id: -value- }.
   HintUnion? hint;
 
   /// Optional. Specifies a document with a list of variables.
@@ -131,9 +131,9 @@ base class AggregateOperation extends CommandOperation {
   /// ``` dart
   /// The document syntax is:
   /// {
-  ///   <variable_name_1>: <expression_1>,
+  ///   -variable_name_1-: -expression_1-,
   ///   ...,
-  ///   <variable_name_n>: <expression_n>
+  ///   -variable_name_n-: -expression_n-
   /// }
   /// ```
   /// The variable is set to the value returned by the expression, and cannot
@@ -141,7 +141,7 @@ base class AggregateOperation extends CommandOperation {
   ///
   /// To access the value of a variable in the command, use the double dollar
   /// sign prefix ($$) together with your variable name in the form
-  /// $$<variable_name>. For example: $$targetTotal.
+  /// `$$<variable_name>`. For example: $$targetTotal.
   ///
   /// **Note**
   ///

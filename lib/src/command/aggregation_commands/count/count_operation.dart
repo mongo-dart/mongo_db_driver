@@ -41,7 +41,7 @@ base class CountOperation extends CommandOperation {
   /// **starting in MongoDB 4.2**, with the following exception,
   /// hint is required if the command includes the min and/or max fields;
   /// hint is not required with min and/or max if the filter is an
-  /// equality condition on the _id field { _id: <value> }.
+  /// equality condition on the _id field { _id: -value- }.
   HintUnion? hint;
 
   @override

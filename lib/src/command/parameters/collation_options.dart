@@ -114,15 +114,15 @@ class CollationOptions {
 
   /// A constructor that accepts a Map with the following schema:
   /// {
-  ///   locale: <String>,
-  ///   caseLevel: <bool>,
-  ///   caseFirst: <String>,
-  ///   strength: <int>,
-  ///   numericOrdering: <bool>,
-  ///   alternate: <String>,
-  ///   maxVariable: <String>,
-  ///   backwards: <bool>
-  ///   normalization: <bool>
+  ///   locale: -String-,
+  ///   caseLevel: -bool-,
+  ///   caseFirst: -String-,
+  ///   strength: -int-,
+  ///   numericOrdering: -bool-,
+  ///   alternate: -String-,
+  ///   maxVariable: -String-,
+  ///   backwards: -bool-
+  ///   normalization: -bool-
   /// }
   factory CollationOptions.fromMap(Map<String, Object> collationMap) {
     if (collationMap[keyLocale] is! String) {

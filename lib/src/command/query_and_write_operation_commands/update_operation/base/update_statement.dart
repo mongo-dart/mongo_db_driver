@@ -52,7 +52,7 @@ class UpdateStatement {
   ///
   /// The value can be either:
   /// - A Map that contains update operator expressions,
-  /// - A replacement document with only <field1>: <value1> pairs, or
+  /// - A replacement document with only -field1-: -value1- pairs, or
   /// - Starting in MongoDB 4.2, an aggregation pipeline.
   ///   * `$addFields` and its alias `$set`
   ///   * `$project` and its alias `$unset`

@@ -23,7 +23,7 @@ import 'kill_cursors_result.dart';
 /// The command accepts the following fields:
 /// * collection 	[MongoCollection]
 ///   - The collection over which the cursor is operating.
-/// * cursorIds List<int>
+/// * cursorIds `List<int>`
 ///   -	The cursor ids list to be closed.
 /// * killCursorsOptions [KillCursorsOptions] - Optional
 ///   - a set of optional values for the command

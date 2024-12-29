@@ -146,10 +146,10 @@ base class FindAndModifyOperation extends CommandOperation {
   ///
   /// - If passed a document with update operator expressions,
   /// findAndModify performs the specified modification.
-  /// - If passed a replacement document { <field1>: <value1>, ...},
+  /// - If passed a replacement document { -field1-: -value1-, ...},
   /// the findAndModify performs a replacement.
   /// - starting in MongoDB 4.2, if passed an aggregation pipeline
-  /// [ <stage1>, <stage2>, ... ], findAndModify modifies the document
+  /// [ -stage1-, -stage2-, ... ], findAndModify modifies the document
   /// per the pipeline. The pipeline can consist of the following stages:
   ///   * $addFields and its alias $set
   ///   * $project and its alias $unset
@@ -166,7 +166,7 @@ base class FindAndModifyOperation extends CommandOperation {
   bool returnNew;
 
   /// A subset of fields to return. The fields document specifies an inclusion
-  /// of a field with 1, as in: fields: { <field1>: 1, <field2>: 1, ... }.
+  /// of a field with 1, as in: fields: { -field1-: 1, -field2-: 1, ... }.
   /// See [Projection](https://docs.mongodb.com/manual/reference/method/db.collection.find/#find-projection).
   ///
   /// Starting in MongoDB 4.2 (and 4.0.12+, 3.6.14+, and 3.4.23+),
@@ -248,7 +248,7 @@ base class FindAndModifyOperation extends CommandOperation {
   /// **starting in MongoDB 4.2**, with the following exception,
   /// hint is required if the command includes the min and/or max fields;
   /// hint is not required with min and/or max if the filter is an
-  /// equality condition on the _id field { _id: <value> }.
+  /// equality condition on the _id field { _id: -value- }.
   HintUnion? hint;
 
   @override

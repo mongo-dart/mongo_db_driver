@@ -75,7 +75,7 @@ class AggregateOptions {
   bool bypassDocumentValidation;
 
   /// Starting in MongoDB 3.6, the readConcern option has the following syntax:
-  /// readConcern: { level: <value> }
+  /// readConcern: { level: -value- }
   /// Possible read concern levels are:
   /// - "local". This is the default read concern level for read operations
   /// against primary and read operations against secondaries when associated

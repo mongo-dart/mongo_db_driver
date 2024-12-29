@@ -77,9 +77,9 @@ class ReadPreference {
   /// - options[keyReadPreference] id ReadPreference
   ///    an Instance of ReadPreference)
   /// - options[keyReadPrefernce] is Map (in format:
-  ///    {keyMode: <String>,
-  ///     keyReadPrefernceTags: <List>,
-  ///     keyMaxStalenessSeconds: <int>,
+  ///    {keyMode: -String-,
+  ///     keyReadPrefernceTags: -List-,
+  ///     keyMaxStalenessSeconds: -int-,
   ///     keyHedgedOptions:  {'enabled' : true/false}
   ///    })
   /// - options[keyReadPreference] is ReadPreferenceMode.
@@ -241,13 +241,13 @@ class ReadPreference {
   /// contains the tag name and value pairs. The value of the tags must be a
   /// string.
   ///
-  /// { "<tag1>": "<string1>", "<tag2>": "<string2>",... }
+  /// { "-tag1-": "-string1-", "-tag2-": "-string2-",... }
   ///
   /// Then, you can include a tag set list in the read preference to target
   /// tagged members. A tag set list is an array of tag sets, where each tag
   /// set contains one or more tag/value pairs.
   ///
-  /// [ { "<tag1>": "<string1>", "<tag2>": "<string2>",... }, ... ]
+  /// [ { "-tag1-": "-string1-", "-tag2-": "-string2-",... }, ... ]
   ///
   /// To find replica set members, MongoDB tries each document in succession
   /// until a match is found.

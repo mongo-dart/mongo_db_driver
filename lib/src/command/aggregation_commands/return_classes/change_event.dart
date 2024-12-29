@@ -11,7 +11,7 @@ class ChangeEvent {
   /// Metadata related to the operation. Acts as the resumeToken for the
   /// resumeAfter parameter when resuming a change stream.
   /// `{
-  ///   "_data" : <BinData|hex string>
+  ///   "_data" : -BinData|hex string-
   /// }`
   ///
   /// The _data type depends on the MongoDB versions and, in some cases,

@@ -9,11 +9,11 @@ final W primaryAcknowledged = W(1);
 ///   Type: document
 ///    A document used to define a custom write concern through the use of members[n].tags. The custom write concern can provide data-center awareness.
 ///    { getLastErrorModes: {
-///       <name of write concern> : { <tag1>: <number>, .... },
+///       -name of write concern- : { -tag1-: -number-, .... },
 ///       ...
 ///    } }
 ///
-/// The <number> refers to the number of different tag values required to
+/// The -number- refers to the number of different tag values required to
 ///   satisfy the write concern. For example, the following
 /// settings.getLastErrorModes defines a write concern named datacenter
 /// that requires the write to propagate to two members whose dc tag values

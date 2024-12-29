@@ -14,12 +14,12 @@ var _command = <String, dynamic>{keyHello: 1};
 /// `db.runCommand( { hello: 1 } )`
 ///
 /// The hello command accepts optional fields saslSupportedMechs:
-/// <db.user> to return an additional field hello.saslSupportedMechs
-/// in its result and comment <String> to add a log comment associated
+/// -db.user- to return an additional field hello.saslSupportedMechs
+/// in its result and comment -String- to add a log comment associated
 /// with the command.
 ///
-/// `db.runCommand( { hello: 1, saslSupportedMechs: "<db.username>",
-/// comment: <String> } )`
+/// `db.runCommand( { hello: 1, saslSupportedMechs: "-db.username-",
+/// comment: -String- } )`
 base class HelloCommand extends ServerCommand {
   HelloCommand(this.server,
       {MongoDatabase? db,
