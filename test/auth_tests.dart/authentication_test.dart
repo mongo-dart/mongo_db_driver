@@ -158,6 +158,14 @@ void main() async {
           expect(db.server.isAuthenticated, isTrue);
           await db.collection('test').find().toList();
           await client.close();
+
+          client = MongoClient(
+              '$mongoDbUri3?authMechanism=${ScramSha256Authenticator.name}');
+          await client.connect();
+          db = client.db();
+          expect(db.server.isAuthenticated, isTrue);
+          await db.collection('test').find().toList();
+          await client.close();
         }
       });
       test(
