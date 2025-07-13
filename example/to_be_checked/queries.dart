@@ -61,6 +61,30 @@ void main() async {
   print(
       "Filtered by (my_field gt 995 or my_field lt 10) and str_field like '99' ");
   // ************************
+  print('---');
+  await coll
+      .find(
+          filter: where
+            ..$gt('my_field', 995)
+            ..$or
+            ..$lt('my_field', 10)
+            ..$and
+            ..$regex('str_field', 'Str', caseInsensitive: false))
+      .forEach((v) => print(v));
+  print(
+      "Filtered by (my_field gt 995 or my_field lt 10) and str_field like 'Str' caseInsensitive false");
+  print('---');
+  await coll
+      .find(
+          filter: where
+            ..$gt('my_field', 995)
+            ..$or
+            ..$lt('my_field', 10)
+            ..$and
+            ..$regex('str_field', 'Str', caseInsensitive: true))
+      .forEach((v) => print(v));
+  print(
+      "Filtered by (my_field gt 995 or my_field lt 10) and str_field like 'Str' caseInsensitive true");
   await coll
       .find(
           filter: where

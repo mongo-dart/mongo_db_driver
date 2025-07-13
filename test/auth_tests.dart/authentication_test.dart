@@ -37,6 +37,7 @@ const dbAddress = '127.0.0.1';
 
 const mongoDbUri = 'mongodb://test:test@$dbAddress:27031/$dbName';
 const mongoDbUri2 = 'mongodb://unicode:übelkübel@$dbAddress:27031/$dbName';
+const mongoDbUri3 = 'mongodb://special:1234AbcD##@$dbAddress:27031/$dbName';
 
 void main() async {
   /*  Future<String?> getFcv(String uri) async {
@@ -121,6 +122,14 @@ void main() async {
           await client.connect();
           db = client.db();
 
+          expect(db.server.isAuthenticated, isTrue);
+          await db.collection('test').find().toList();
+          await client.close();
+
+          client = MongoClient(
+              '$mongoDbUri3?authMechanism=${ScramSha256Authenticator.name}');
+          await client.connect();
+          db = client.db();
           expect(db.server.isAuthenticated, isTrue);
           await db.collection('test').find().toList();
           await client.close();
