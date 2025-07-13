@@ -71,6 +71,10 @@
 ## Todo
 
 - Read Preference Test - Complete
+- Read Concern Test - From scratch
+- Write Concern Test - From scratch
+
+- Error Hierachy - Update error classes
 
  [1]: https://www.mongodb.com/docs/manual/reference/stable-api-changelog/#std-label-stable-api-changelog
  [4]: https://www.mongodb.com/docs/manual/reference/command/nav-sessions/

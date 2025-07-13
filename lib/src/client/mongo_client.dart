@@ -35,6 +35,21 @@ class Auth {
   String? password;
 }
 
+// Reserved chars in URL: $ : / ? # [ ] @
+const _dollar = '%24';
+const _colon = '%3A';
+const _slash = '%2F';
+const _questionMark = '%3F';
+const _hash = '%23';
+const _openSquareBracket = '%5B';
+const _closeSquareBracket = '%5D';
+const _atSign = '%40';
+
+String encodeUserinfo(String url) {
+  Uri.encodeFull(uri)
+  return url;
+}
+
 class MongoClient {
   // This url can be informed both with the Standard
   /// Connection String Format (`mongodb://`) or with the DNS Seedlist

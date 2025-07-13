@@ -1,5 +1,9 @@
 # Changelog Mongo Db Driver
 
+## 0.1.0-1.5.dev
+
+- Updated error hierarchy (from type_utils).
+
 ## 0.1.0-1.4.dev
 
 - Update Dependencies

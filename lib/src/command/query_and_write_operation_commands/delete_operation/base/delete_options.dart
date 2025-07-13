@@ -63,6 +63,6 @@ abstract class DeleteOptions {
         if (writeConcern != null)
           keyWriteConcern: writeConcern!.asMap(db.server.serverStatus),
         if (!ordered) keyOrdered: ordered,
-        if (comment != null) keyComment: comment!
+        if (comment != null) keyComment: comment
       };
 }
