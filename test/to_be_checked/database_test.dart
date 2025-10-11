@@ -41,8 +41,10 @@ Future testOperationNotInOpenState() async {
   var client = MongoClient(defaultUri);
   var dbCreate = client.db();
   var coll = dbCreate.collection('test-error');
-  expect(() async => await coll.findOneAndUpdate({'value': 1}, {'value': 1}),
-      throwsMongoDartError);
+  expect(
+    () async => await coll.findOneAndUpdate({'value': 1}, {'value': 1}),
+    throwsMongoDartError,
+  );
 
   client = MongoClient(defaultUri);
   await client.connect();
@@ -50,8 +52,10 @@ Future testOperationNotInOpenState() async {
   coll = dbCreate.collection('test-error');
   await client.close();
 
-  expect(() async => await coll.findOneAndUpdate({'value': 1}, {'value': 1}),
-      throwsMongoDartError);
+  expect(
+    () async => await coll.findOneAndUpdate({'value': 1}, {'value': 1}),
+    throwsMongoDartError,
+  );
 }
 
 /* 
@@ -93,7 +97,7 @@ Future testGetCollectionInfos() async {
   var collection = db.collection(collectionName);
 
   await collection.insertMany([
-    {'a': 1}
+    {'a': 1},
   ]);
   var collectionInfos = await db.getCollectionInfos({'name': collectionName});
 
@@ -107,7 +111,7 @@ Future testRemove() async {
   var collection = db.collection(collectionName);
 
   await collection.insertMany([
-    {'a': 1}
+    {'a': 1},
   ]);
 
   var collectionInfos = await db.getCollectionInfos({'name': collectionName});
@@ -136,8 +140,9 @@ Future testRunCommand() async {
     var ret = await db.runCommand({'ping': 1});
     expect(ret[keyOk], 1.0);
 
-    var ret2 =
-        await CommandOperation(db, {'ping': 1}, <String, Object>{}).process();
+    var ret2 = await CommandOperation(db, {
+      'ping': 1,
+    }, <String, Object>{}).process();
     expect(ret2[keyOk], 1.0);
 
     ret2 = await PingCommand(db.mongoClient).process();
@@ -163,7 +168,7 @@ Future testGetNonce() async {
 
 Future getBuildInfo() async {
   // Todo to be checked
-/*   var result = await db.getBuildInfo();
+  /*   var result = await db.getBuildInfo();
   expect(result['ok'], 1); */
 }
 
@@ -183,10 +188,14 @@ Future<void> testServerStatus() async {
     var storageEngineMap = dbStatus['storageEngine'];
     if (storageEngineMap != null && storageEngineMap['name'] == 'wiredTiger') {
       expect(
-          storageEngineMap['persistent'], db.server.serverStatus.isPersistent);
+        storageEngineMap['persistent'],
+        db.server.serverStatus.isPersistent,
+      );
       if (dbStatus['version'].compareTo('4.0') > 0) {
-        expect(dbStatus['wiredTiger']['log']['maximum log file size'] > 0,
-            db.server.serverStatus.isJournaled);
+        expect(
+          dbStatus['wiredTiger']['log']['maximum log file size'] > 0,
+          db.server.serverStatus.isJournaled,
+        );
       }
     }
   }
@@ -223,7 +232,7 @@ Future testFindEachWithThenClause() async {
   await collection.insertMany([
     {'name': 'Vadim', 'score': 4},
     {'name': 'Daniil', 'score': 4},
-    {'name': 'Nick', 'score': 5}
+    {'name': 'Nick', 'score': 5},
   ]);
 
   await for (var document in collection.find()) {
@@ -248,7 +257,7 @@ Future testDateTime() async {
     {'day': 6, 'posted_on': DateTime.utc(2013, 1, 6)},
     {'day': 7, 'posted_on': DateTime.utc(2013, 1, 7)},
     {'day': 8, 'posted_on': DateTime.utc(2013, 1, 8)},
-    {'day': 9, 'posted_on': DateTime.utc(2013, 1, 9)}
+    {'day': 9, 'posted_on': DateTime.utc(2013, 1, 9)},
   ]);
 
   var result = await collection
@@ -267,7 +276,7 @@ void testFindEach() async {
   await collection.insertMany([
     {'name': 'Vadim', 'score': 4},
     {'name': 'Daniil', 'score': 4},
-    {'name': 'Nick', 'score': 5}
+    {'name': 'Nick', 'score': 5},
   ]);
 
   await for (var document in collection.find()) {
@@ -288,7 +297,7 @@ Future testFindStream() async {
   await collection.insertMany([
     {'name': 'Vadim', 'score': 4},
     {'name': 'Daniil', 'score': 4},
-    {'name': 'Nick', 'score': 5}
+    {'name': 'Nick', 'score': 5},
   ]);
 
   await for (var document in collection.find()) {
@@ -314,7 +323,7 @@ Future testSaveWithIntegerId() async {
     {'_id': 1, 'name': 'a', 'value': 10},
     {'_id': 2, 'name': 'b', 'value': 20},
     {'_id': 3, 'name': 'c', 'value': 30},
-    {'_id': 4, 'name': 'd', 'value': 40}
+    {'_id': 4, 'name': 'd', 'value': 40},
   ];
 
   await collection.insertMany(toInsert);
@@ -336,7 +345,8 @@ Future testSaveWithIntegerId() async {
 
   expect(result['value'], 2);
 
-  result = await collection.findOne(filter: where..$eq('_id', 3)) ??
+  result =
+      await collection.findOne(filter: where..$eq('_id', 3)) ??
       <String, dynamic>{};
   expect(result, isNotNull);
 
@@ -344,7 +354,8 @@ Future testSaveWithIntegerId() async {
 
   final notThere = {'_id': 5, 'name': 'd', 'value': 50};
   await collection.insertOne(notThere);
-  result = await collection.findOne(filter: where..$eq('_id', 5)) ??
+  result =
+      await collection.findOne(filter: where..$eq('_id', 5)) ??
       <String, dynamic>{};
   expect(result, isNotNull);
 
@@ -359,7 +370,7 @@ Future testSaveWithObjectId() async {
     {'name': 'a', 'value': 10},
     {'name': 'b', 'value': 20},
     {'name': 'c', 'value': 30},
-    {'name': 'd', 'value': 40}
+    {'name': 'd', 'value': 40},
   ];
 
   await collection.insertMany(toInsert);
@@ -396,7 +407,7 @@ Future testInsertWithObjectId() async {
   var objectToSave = <String, dynamic>{
     '_id': ObjectId(),
     'name': 'a',
-    'value': 10
+    'value': 10,
   };
   id = objectToSave['_id'];
   await collection.insertOne(objectToSave);
@@ -451,7 +462,7 @@ Future testAggregate() async {
     'game': 'At the Gates of Loyang',
     'player': 'Dallas',
     'rating': 1,
-    'v': 1
+    'v': 1,
   });
 
   // Avg 3 with 1 rating
@@ -462,14 +473,30 @@ Future testAggregate() async {
   toInsert.add({'game': 'Fresco', 'player': 'Dallas', 'rating': 1, 'v': 1});
 
   // Avg 3.5 with 4 ratings
-  toInsert
-      .add({'game': 'Ticket To Ride', 'player': 'Paul', 'rating': 4, 'v': 1});
-  toInsert
-      .add({'game': 'Ticket To Ride', 'player': 'Erin', 'rating': 5, 'v': 1});
-  toInsert
-      .add({'game': 'Ticket To Ride', 'player': 'Dallas', 'rating': 4, 'v': 1});
-  toInsert.add(
-      {'game': 'Ticket To Ride', 'player': 'Anthony', 'rating': 2, 'v': 1});
+  toInsert.add({
+    'game': 'Ticket To Ride',
+    'player': 'Paul',
+    'rating': 4,
+    'v': 1,
+  });
+  toInsert.add({
+    'game': 'Ticket To Ride',
+    'player': 'Erin',
+    'rating': 5,
+    'v': 1,
+  });
+  toInsert.add({
+    'game': 'Ticket To Ride',
+    'player': 'Dallas',
+    'rating': 4,
+    'v': 1,
+  });
+  toInsert.add({
+    'game': 'Ticket To Ride',
+    'player': 'Anthony',
+    'rating': 2,
+    'v': 1,
+  });
 
   // Avg 4.5 with 4 ratings (counting only highest v)
   toInsert.add({'game': 'Dominion', 'player': 'Paul', 'rating': 5, 'v': 2});
@@ -485,7 +512,7 @@ Future testAggregate() async {
 
   // Avg player ratings
   // Dallas = 3, Anthony 3.5, Paul = 4, Erin = 4.25
-/* We want equivalent of this when used on the mongo shell.
+  /* We want equivalent of this when used on the mongo shell.
  * (Should be able to just copy and paste below once test is run and failed once)
 db.runCommand(
 { aggregate : "testAggregate", pipeline : [
@@ -502,17 +529,17 @@ db.runCommand(
   var p1 = {
     '\$group': {
       '_id': {'game': '\$game', 'player': '\$player'},
-      'rating': {'\$sum': '\$rating'}
-    }
+      'rating': {'\$sum': '\$rating'},
+    },
   };
   var p2 = {
     '\$group': {
       '_id': '\$_id.game',
-      'avgRating': {'\$avg': '\$rating'}
-    }
+      'avgRating': {'\$avg': '\$rating'},
+    },
   };
   var p3 = {
-    '\$sort': {'_id': 1}
+    '\$sort': {'_id': 1},
   };
 
   pipeline.add(p1);
@@ -544,33 +571,57 @@ Future testAggregateWithCursor() async {
       'game': 'At the Gates of Loyang',
       'player': 'Dallas',
       'rating': 1,
-      'v': 1
+      'v': 1,
     });
 
     // Avg 3 with 1 rating
-    toInsert
-        .add({'game': 'Age of Steam', 'player': 'Paul', 'rating': 3, 'v': 1});
+    toInsert.add({
+      'game': 'Age of Steam',
+      'player': 'Paul',
+      'rating': 3,
+      'v': 1,
+    });
 
     // Avg 2 with 2 ratings
     toInsert.add({'game': 'Fresco', 'player': 'Erin', 'rating': 3, 'v': 1});
     toInsert.add({'game': 'Fresco', 'player': 'Dallas', 'rating': 1, 'v': 1});
 
     // Avg 3.5 with 4 ratings
-    toInsert
-        .add({'game': 'Ticket To Ride', 'player': 'Paul', 'rating': 4, 'v': 1});
-    toInsert
-        .add({'game': 'Ticket To Ride', 'player': 'Erin', 'rating': 5, 'v': 1});
-    toInsert.add(
-        {'game': 'Ticket To Ride', 'player': 'Dallas', 'rating': 4, 'v': 1});
-    toInsert.add(
-        {'game': 'Ticket To Ride', 'player': 'Anthony', 'rating': 2, 'v': 1});
+    toInsert.add({
+      'game': 'Ticket To Ride',
+      'player': 'Paul',
+      'rating': 4,
+      'v': 1,
+    });
+    toInsert.add({
+      'game': 'Ticket To Ride',
+      'player': 'Erin',
+      'rating': 5,
+      'v': 1,
+    });
+    toInsert.add({
+      'game': 'Ticket To Ride',
+      'player': 'Dallas',
+      'rating': 4,
+      'v': 1,
+    });
+    toInsert.add({
+      'game': 'Ticket To Ride',
+      'player': 'Anthony',
+      'rating': 2,
+      'v': 1,
+    });
 
     // Avg 4.5 with 4 ratings (counting only highest v)
     toInsert.add({'game': 'Dominion', 'player': 'Paul', 'rating': 5, 'v': 2});
     toInsert.add({'game': 'Dominion', 'player': 'Erin', 'rating': 4, 'v': 1});
     toInsert.add({'game': 'Dominion', 'player': 'Dallas', 'rating': 4, 'v': 1});
-    toInsert
-        .add({'game': 'Dominion', 'player': 'Anthony', 'rating': 5, 'v': 1});
+    toInsert.add({
+      'game': 'Dominion',
+      'player': 'Anthony',
+      'rating': 5,
+      'v': 1,
+    });
 
     // Avg 5 with 2 ratings
     toInsert.add({'game': 'Pandemic', 'player': 'Erin', 'rating': 5, 'v': 1});
@@ -580,7 +631,7 @@ Future testAggregateWithCursor() async {
 
     // Avg player ratings
     // Dallas = 3, Anthony 3.5, Paul = 4, Erin = 4.25
-/* We want equivalent of this when used on the mongo shell.
+    /* We want equivalent of this when used on the mongo shell.
  * (Should be able to just copy and paste below once test is run and failed once)
 db.runCommand(
 { aggregate : "testAggregate", pipeline : [
@@ -597,17 +648,17 @@ db.runCommand(
     var p1 = {
       '\$group': {
         '_id': {'game': '\$game', 'player': '\$player'},
-        'rating': {'\$sum': '\$rating'}
-      }
+        'rating': {'\$sum': '\$rating'},
+      },
     };
     var p2 = {
       '\$group': {
         '_id': '\$_id.game',
-        'avgRating': {'\$avg': '\$rating'}
-      }
+        'avgRating': {'\$avg': '\$rating'},
+      },
     };
     var p3 = {
-      '\$sort': {'_id': 1}
+      '\$sort': {'_id': 1},
     };
 
     pipeline.add(p1);
@@ -743,9 +794,10 @@ Future testSkip() async {
   await insertManyDocuments(collection, 600);
 
   var result = await collection.findOne(
-      filter: where
-        ..sortBy('a')
-        ..skip(300));
+    filter: where
+      ..sortBy('a')
+      ..skip(300),
+  );
   expect(result, isNotNull);
   if (result == null) {
     return;
@@ -758,8 +810,10 @@ Future testUpdateWithUpsert() async {
   var collectionName = getRandomCollectionName();
   var collection = db.collection(collectionName);
 
-  var (result, _, _, _) =
-      await collection.insertOne({'name': 'a', 'value': 10});
+  var (result, _, _, _) = await collection.insertOne({
+    'name': 'a',
+    'value': 10,
+  });
   expect(result.isSuccess, true);
 
   var results = await collection.find(filter: {'name': 'a'}).toList();
@@ -768,10 +822,11 @@ Future testUpdateWithUpsert() async {
   expect(results.first['value'], 10);
 
   var objectUpdate = {
-    r'$set': {'value': 20}
+    r'$set': {'value': 20},
   };
-  var (resultUpdate, _) =
-      await collection.updateOne({'name': 'a'}, objectUpdate);
+  var (resultUpdate, _) = await collection.updateOne({
+    'name': 'a',
+  }, objectUpdate);
   expect(resultUpdate.isSuccess, true);
   expect(resultUpdate.nModified, 1);
 
@@ -787,7 +842,7 @@ Future testUpdateWithMultiUpdate() async {
   var (result, _, _, _) = await collection.insertMany([
     {'key': 'a', 'value': 'initial_value1'},
     {'key': 'a', 'value': 'initial_value2'},
-    {'key': 'b', 'value': 'initial_value_b'}
+    {'key': 'b', 'value': 'initial_value_b'},
   ]);
   expect(result.isSuccess, true);
 
@@ -796,13 +851,16 @@ Future testUpdateWithMultiUpdate() async {
   expect(results.first['key'], 'a');
   expect(results.first['value'], 'initial_value1');
 
-  var (resultUpd, _) = await collection.updateOne(where..$eq('key', 'a'),
-      modify..$set('value', 'value_modified_for_only_one_with_default'));
+  var (resultUpd, _) = await collection.updateOne(
+    where..$eq('key', 'a'),
+    modify..$set('value', 'value_modified_for_only_one_with_default'),
+  );
   expect(resultUpd.isSuccess, true);
   expect(resultUpd.nModified, 1);
 
-  results = await collection.find(
-      filter: {'value': 'value_modified_for_only_one_with_default'}).toList();
+  results = await collection
+      .find(filter: {'value': 'value_modified_for_only_one_with_default'})
+      .toList();
   expect(results.length, 1);
 
   (resultUpd, _) = await collection.updateOne(
@@ -812,13 +870,17 @@ Future testUpdateWithMultiUpdate() async {
   expect(resultUpd.isSuccess, true);
   expect(resultUpd.nModified, 1);
 
-  results = await collection.find(filter: {
-    'value': 'value_modified_for_only_one_with_multiupdate_false'
-  }).toList();
+  results = await collection
+      .find(
+        filter: {'value': 'value_modified_for_only_one_with_multiupdate_false'},
+      )
+      .toList();
   expect(results.length, 1);
 
   (resultUpd, _) = await collection.updateMany(
-      where..$eq('key', 'a'), modify..$set('value', 'new_value'));
+    where..$eq('key', 'a'),
+    modify..$set('value', 'new_value'),
+  );
   expect(resultUpd.isSuccess, true);
   expect(resultUpd.nModified, 2);
 
@@ -856,7 +918,9 @@ Future testLimitWithSortByAndSkip() async {
 }
 
 Future<InsertManyDocumentRec> insertManyDocuments(
-    MongoCollection collection, int numberOfRecords) async {
+  MongoCollection collection,
+  int numberOfRecords,
+) async {
   var toInsert = <Map<String, dynamic>>[];
   for (var n = 0; n < numberOfRecords; n++) {
     toInsert.add({'a': n});
@@ -872,11 +936,7 @@ Future testLimit() async {
   var counter = 0;
   await insertManyDocuments(collection, 30000);
 
-  var operation = FindOperation(
-    collection,
-    QueryUnion({}),
-    limit: 10,
-  );
+  var operation = FindOperation(collection, QueryUnion({}), limit: 10);
 
   var modernCursor = Cursor(operation, db.server);
   await modernCursor.stream.forEach((e) => counter++);
@@ -890,8 +950,10 @@ Future<Cursor> testCursorCreation() async {
   var collectionName = getRandomCollectionName();
   var collection = db.collection(collectionName);
 
-  var cursor =
-      Cursor(FindOperation(collection, QueryUnion({'ping': 1})), db.server);
+  var cursor = Cursor(
+    FindOperation(collection, QueryUnion({'ping': 1})),
+    db.server,
+  );
 
   expect(cursor, isNotNull);
 
@@ -904,8 +966,10 @@ Future testCursorClosing() async {
 
   await insertManyDocuments(collection, 10000);
 
-  var modernCursor =
-      Cursor(FindOperation(collection, QueryUnion({})), db.server);
+  var modernCursor = Cursor(
+    FindOperation(collection, QueryUnion({})),
+    db.server,
+  );
 
   //expect(modernCursor.state, State.init);
 
@@ -930,14 +994,18 @@ Future testCursorClosing() async {
 Future testPingRaw() async {
   var collection = db.collection(r'$cmd');
   var modernCursor = Cursor(
-      FindOperation(collection, QueryUnion({'ping': 1}), limit: 1), db.server);
+    FindOperation(collection, QueryUnion({'ping': 1}), limit: 1),
+    db.server,
+  );
   await modernCursor.nextObject();
 }
 
 Future testNextObject() async {
   var collection = db.collection(r'$cmd');
   var modernCursor = Cursor(
-      FindOperation(collection, QueryUnion({'ping': 1}), limit: 1), db.server);
+    FindOperation(collection, QueryUnion({'ping': 1}), limit: 1),
+    db.server,
+  );
 
   var result = await modernCursor.nextObject();
 
@@ -950,11 +1018,13 @@ Future testNextObjectToEnd() async {
   await collection.insertMany([
     {'a': 1},
     {'a': 2},
-    {'a': 3}
+    {'a': 3},
   ]);
 
-  var modernCursor =
-      Cursor(FindOperation(collection, QueryUnion({}), limit: 10), db.server);
+  var modernCursor = Cursor(
+    FindOperation(collection, QueryUnion({}), limit: 10),
+    db.server,
+  );
 
   var result = await modernCursor.nextObject();
   expect(result, isNotNull);
@@ -972,9 +1042,14 @@ Future testCursorWithOpenServerCursor() async {
 
   await insertManyDocuments(collection, 1000);
   var modernCursor = Cursor(
-      FindOperation(collection, QueryUnion({}),
-          limit: 10, findOptions: FindOptions(batchSize: 5)),
-      db.server);
+    FindOperation(
+      collection,
+      QueryUnion({}),
+      limit: 10,
+      findOptions: FindOptions(batchSize: 5),
+    ),
+    db.server,
+  );
 
   await modernCursor.nextObject();
   await modernCursor.nextObject();
@@ -987,8 +1062,10 @@ Future testCursorGetMore() async {
   var collection = db.collection(collectionName);
 
   var count = 0;
-  var modernCursor =
-      Cursor(FindOperation(collection, QueryUnion({}), limit: 10), db.server);
+  var modernCursor = Cursor(
+    FindOperation(collection, QueryUnion({}), limit: 10),
+    db.server,
+  );
 
   count = await modernCursor.stream.length;
 
@@ -1101,7 +1178,7 @@ Future testIndexCreation() async {
   for (var n = 0; n < 6; n++) {
     toInsert.add({
       'a': n,
-      'embedded': {'b': n, 'c': n * 10}
+      'embedded': {'b': n, 'c': n * 10},
     });
   }
   await collection.insertMany(toInsert);
@@ -1110,15 +1187,18 @@ Future testIndexCreation() async {
     var res = await collection.createIndex(key: 'a', unique: true);
     expect(res['ok'], 1.0);
 
-    res = await collection
-        .createIndex(keys: {'a': -1, 'embedded.c': 1}, sparse: true);
+    res = await collection.createIndex(
+      keys: {'a': -1, 'embedded.c': 1},
+      sparse: true,
+    );
     expect(res['ok'], 1.0);
 
-    res = await collection.createIndex(keys: {
-      'a': -1
-    }, partialFilterExpression: {
-      'embedded.c': {r'$exists': true}
-    });
+    res = await collection.createIndex(
+      keys: {'a': -1},
+      partialFilterExpression: {
+        'embedded.c': {r'$exists': true},
+      },
+    );
     expect(res['ok'], 1.0);
 
     var indexes = await collection.listIndexes().toList();
@@ -1145,18 +1225,21 @@ Future testIndexCreation() async {
   res = await db.createIndex(collectionName, keys: {'a': -1, 'embedded.c': 1});
   expect(res['ok'], 1.0);
 
-  res = await db.createIndex(collectionName, keys: {
-    'a': -1
-  }, partialFilterExpression: {
-    'embedded.c': {r'$exists': true}
-  });
+  res = await db.createIndex(
+    collectionName,
+    keys: {'a': -1},
+    partialFilterExpression: {
+      'embedded.c': {r'$exists': true},
+    },
+  );
   expect(res['ok'], 1.0);
 
   var indexes = await collection.getIndexes();
   expect(indexes.length, 4);
 
-  res = (await db.ensureIndex(collectionName, keys: {'a': -1, 'embedded.c': 1}))
-      as Map<String, dynamic>;
+  res =
+      (await db.ensureIndex(collectionName, keys: {'a': -1, 'embedded.c': 1}))
+          as Map<String, dynamic>;
   expect(res['ok'], 1.0);
 }
 
@@ -1169,14 +1252,18 @@ Future testIndexCreationOnCollection() async {
     for (var n = 0; n < 6; n++) {
       toInsert.add({
         'a': n,
-        'embedded': {'b': n, 'c': n * 10}
+        'embedded': {'b': n, 'c': n * 10},
       });
     }
     await collection.insertMany(toInsert);
 
-    /* var resInsert = */ await collection.insertOne({'a': 200},
-        insertOneOptions:
-            InsertOneOptions(writeConcern: WriteConcern.unacknowledged));
+    /* var resInsert = */
+    await collection.insertOne(
+      {'a': 200},
+      insertOneOptions: InsertOneOptions(
+        writeConcern: WriteConcern.unacknowledged,
+      ),
+    );
 
     // Todo correct
     //expect(resInsert['ok'], 1.0);
@@ -1184,15 +1271,18 @@ Future testIndexCreationOnCollection() async {
     var res = await collection.createIndex(key: 'a', unique: true);
     expect(res['ok'], 1.0);
 
-    res = await collection
-        .createIndex(keys: {'a': -1, 'embedded.c': 1}, sparse: true);
+    res = await collection.createIndex(
+      keys: {'a': -1, 'embedded.c': 1},
+      sparse: true,
+    );
     expect(res['ok'], 1.0);
 
-    res = await collection.createIndex(keys: {
-      'a': -1
-    }, partialFilterExpression: {
-      'embedded.c': {r'$exists': true}
-    });
+    res = await collection.createIndex(
+      keys: {'a': -1},
+      partialFilterExpression: {
+        'embedded.c': {r'$exists': true},
+      },
+    );
     expect(res['ok'], 1.0);
 
     var indexes = await collection.getIndexes();
@@ -1216,14 +1306,16 @@ Future testEnsureIndexWithIndexCreation() async {
   for (var n = 0; n < 6; n++) {
     toInsert.add({
       'a': n,
-      'embedded': {'b': n, 'c': n * 10}
+      'embedded': {'b': n, 'c': n * 10},
     });
   }
 
   await collection.insertMany(toInsert);
 
-  var result =
-      await db.ensureIndex(collectionName, keys: {'a': -1, 'embedded.c': 1});
+  var result = await db.ensureIndex(
+    collectionName,
+    keys: {'a': -1, 'embedded.c': 1},
+  );
   expect(result['ok'], 1.0);
   expect(result['err'], isNull);
 }
@@ -1248,8 +1340,10 @@ Future testIndexCreationErrorHandling() async {
   } on TestFailure {
     rethrow;
   } on Map catch (e) {
-    expect(e[keyErrmsg] ?? e['err'],
-        predicate((String msg) => msg.contains('duplicate key error')));
+    expect(
+      e[keyErrmsg] ?? e['err'],
+      predicate((String msg) => msg.contains('duplicate key error')),
+    );
   }
 }
 
@@ -1261,7 +1355,7 @@ Future testTextIndex() async {
   for (var n = 0; n < 6; n++) {
     toInsert.add({
       'a': n,
-      'embedded': {'b': n, 'c': n * 10}
+      'embedded': {'b': n, 'c': n * 10},
     });
   }
   await collection.insertMany([
@@ -1271,22 +1365,30 @@ Future testTextIndex() async {
     {
       '_id': 4,
       'name': 'Clothes Clothes Clothes',
-      'description': 'Discount clothing'
+      'description': 'Discount clothing',
     },
-    {'_id': 5, 'name': 'Java Shopping', 'description': 'Indonesian goods'}
+    {'_id': 5, 'name': 'Java Shopping', 'description': 'Indonesian goods'},
   ]);
 
-  var res = await collection
-      .createIndex(keys: {'name': 'text', 'description': 'text'});
+  var res = await collection.createIndex(
+    keys: {'name': 'text', 'description': 'text'},
+  );
   expect(res['ok'], 1.0);
 
-  var result = await collection.find(filter: {
-    r'$text': {r'$search': 'java coffee shop'}
-  }).toList();
+  var result = await collection
+      .find(
+        filter: {
+          r'$text': {r'$search': 'java coffee shop'},
+        },
+      )
+      .toList();
   expect(result.length, 3);
-  expect(result.every((element) {
-    return (element['_id'] as num).remainder(2) == 1;
-  }), isTrue);
+  expect(
+    result.every((element) {
+      return (element['_id'] as num).remainder(2) == 1;
+    }),
+    isTrue,
+  );
 }
 
 Future testTtlIndex() async {
@@ -1295,8 +1397,13 @@ Future testTtlIndex() async {
 
   // Here the CreateIndexOptions is set to null, but you can pass other
   // parameters if needed
-  var indexOperation = CreateIndexOperation(db, collection, 'closingDate', null,
-      rawOptions: {'expireAfterSeconds': 1});
+  var indexOperation = CreateIndexOperation(
+    db,
+    collection,
+    'closingDate',
+    null,
+    rawOptions: {'expireAfterSeconds': 1},
+  );
   var res = await indexOperation.process();
   expect(res['ok'], 1.0);
 
@@ -1305,16 +1412,16 @@ Future testTtlIndex() async {
       '_id': 1,
       'name': 'Java Hut',
       'description': 'Coffee and cakes',
-      'closingDate': DateTime(2000)
+      'closingDate': DateTime(2000),
     },
     {'_id': 2, 'name': 'Burger Buns', 'description': 'Gourmet hamburgers'},
     {'_id': 3, 'name': 'Coffee Shop', 'description': 'Just coffee'},
     {
       '_id': 4,
       'name': 'Clothes Clothes Clothes',
-      'description': 'Discount clothing'
+      'description': 'Discount clothing',
     },
-    {'_id': 5, 'name': 'Java Shopping', 'description': 'Indonesian goods'}
+    {'_id': 5, 'name': 'Java Shopping', 'description': 'Indonesian goods'},
   ]);
 
   // The cleanup on the server runs every 60 seconds, plus the time to build
@@ -1333,15 +1440,18 @@ Future testDropIndexCreationOnCollection() async {
     var res = await collection.createIndex(key: 'a', unique: true);
     expect(res['ok'], 1.0);
 
-    res = await collection
-        .createIndex(keys: {'a': -1, 'embedded.c': 1}, sparse: true);
+    res = await collection.createIndex(
+      keys: {'a': -1, 'embedded.c': 1},
+      sparse: true,
+    );
     expect(res['ok'], 1.0);
 
-    res = await collection.createIndex(keys: {
-      'a': -1
-    }, partialFilterExpression: {
-      'embedded.c': {r'$exists': true}
-    });
+    res = await collection.createIndex(
+      keys: {'a': -1},
+      partialFilterExpression: {
+        'embedded.c': {r'$exists': true},
+      },
+    );
     expect(res['ok'], 1.0);
 
     var indexes = await collection.listIndexes().toList();
@@ -1366,25 +1476,27 @@ Future testSafeModeUpdate() async {
   for (var n = 0; n < 6; n++) {
     await collection.insertOne({
       'a': n,
-      'embedded': {'b': n, 'c': n * 10}
+      'embedded': {'b': n, 'c': n * 10},
     });
   }
 
   if (db.server.serverCapabilities.supportsOpMsg) {
-    var (result, _) = await collection.updateOne({
-      'a': 200
-    }, {
-      r'$set': {'a': 100}
-    });
+    var (result, _) = await collection.updateOne(
+      {'a': 200},
+      {
+        r'$set': {'a': 100},
+      },
+    );
     expect(result.isSuccess, true);
     expect(result.nModified, 0);
     expect(result.nMatched, 0);
 
-    (result, _) = await collection.updateOne({
-      'a': 3
-    }, {
-      r'$set': {'a': 100}
-    });
+    (result, _) = await collection.updateOne(
+      {'a': 3},
+      {
+        r'$set': {'a': 100},
+      },
+    );
     expect(result.isSuccess, true);
     expect(result.nModified, 1);
     expect(result.nMatched, 1);
@@ -1406,13 +1518,14 @@ Future testFindWithFieldsClause() async {
   await collection.insertMany([
     {'name': 'Vadim', 'score': 4},
     {'name': 'Daniil', 'score': 4},
-    {'name': 'Nick', 'score': 5}
+    {'name': 'Nick', 'score': 5},
   ]);
 
   var result = await collection.findOne(
-      filter: where
-        ..$eq('name', 'Vadim')
-        ..selectFields(['score']));
+    filter: where
+      ..$eq('name', 'Vadim')
+      ..selectFields(['score']),
+  );
   expect(result, isNotNull);
   if (result == null) {
     return;
@@ -1435,18 +1548,23 @@ Future testFindAndModify() async {
   ]);
 
   (_, result) = await collection.findOneAndUpdate(
-      where..$eq('name', 'Vadim'), modify..$inc('score', 10),
-      fields: (ProjectionExpression()
-            ..includeField('score')
-            ..excludeField('_id'))
-          .build());
+    where..$eq('name', 'Vadim'),
+    modify..$inc('score', 10),
+    fields:
+        (ProjectionExpression()
+              ..includeField('score')
+              ..excludeField('_id'))
+            .build(),
+  );
   expect(result['value']['_id'], isNull);
   expect(result['value']['name'], isNull);
   expect(result['value']['score'], 4);
 
   (_, result) = await collection.findOneAndUpdate(
-      where..$eq('name', 'Daniil'), modify..$inc('score', 3),
-      returnNew: true);
+    where..$eq('name', 'Daniil'),
+    modify..$inc('score', 3),
+    returnNew: true,
+  );
   expect(result['value']['_id'], isNotNull);
   expect(result['value']['name'], 'Daniil');
   expect(result['value']['score'], 7);
@@ -1457,23 +1575,32 @@ Future testFindAndModify() async {
   expect(result['value']['score'], 5);
 
   (_, result) = await collection.findOneAndUpdate(
-      where..$eq('name', 'Unknown'), modify..$inc('score', 3));
+    where..$eq('name', 'Unknown'),
+    modify..$inc('score', 3),
+  );
   expect(result['value'], isNull);
 
   (_, result) = await collection.findOneAndUpdate(
-      where..$eq('name', 'Unknown'), modify..$inc('score', 3),
-      returnNew: true);
+    where..$eq('name', 'Unknown'),
+    modify..$inc('score', 3),
+    returnNew: true,
+  );
   expect(result['value'], isNull);
 
   (_, result) = await collection.findOneAndUpdate(
-      where..sortBy('score'), modify..$inc('score', 100),
-      returnNew: true);
+    where..sortBy('score'),
+    modify..$inc('score', 100),
+    returnNew: true,
+  );
   expect(result['value']['name'], 'Alice');
   expect(result['value']['score'], 101);
 
   (_, result) = await collection.findOneAndUpdate(
-      where..$eq('name', 'New Comer'), modify..$inc('score', 100),
-      returnNew: true, upsert: true);
+    where..$eq('name', 'New Comer'),
+    modify..$inc('score', 100),
+    returnNew: true,
+    upsert: true,
+  );
   expect(result['value']['name'], 'New Comer');
   expect(result['value']['score'], 100);
 }
@@ -1491,9 +1618,10 @@ Future testSimpleQuery() async {
 
   var result = await collection
       .find(
-          filter: where
-            ..$gt('my_field', 5)
-            ..sortBy('my_field'))
+        filter: where
+          ..$gt('my_field', 5)
+          ..sortBy('my_field'),
+      )
       .toList();
   expect(result.length, 4);
   expect(result[0]['my_field'], 6);
@@ -1529,20 +1657,22 @@ Future testCompoundQuery() async {
 
   var result = await collection
       .find(
-          filter: where
-            ..$gt('my_field', 8)
-            ..$or
-            ..$lt('my_field', 2))
+        filter: where
+          ..$gt('my_field', 8)
+          ..$or
+          ..$lt('my_field', 2),
+      )
       .toList();
   expect(result.length, 3);
 
   var result1 = await collection.findOne(
-      filter: where
-        ..$gt('my_field', 8)
-        ..$or
-        ..$lt('my_field', 2)
-        ..$and
-        ..$eq('str_field', 'str_1'));
+    filter: where
+      ..$gt('my_field', 8)
+      ..$or
+      ..$lt('my_field', 2)
+      ..$and
+      ..$eq('str_field', 'str_1'),
+  );
   expect(result1, isNotNull);
   expect(result1?['my_field'], 1);
 }
@@ -1553,12 +1683,16 @@ Future testFieldLevelUpdateSimple() async {
 
   ObjectId id;
   if (db.server.serverCapabilities.supportsOpMsg) {
-    var (resultInsert, _, _, _) =
-        await collection.insertOne({'name': 'a', 'value': 10});
+    var (resultInsert, _, _, _) = await collection.insertOne({
+      'name': 'a',
+      'value': 10,
+    });
     expect(resultInsert.nInserted, 1);
   } else {
-    var (_, resultInsert, _, _) =
-        await collection.insertOne({'name': 'a', 'value': 10});
+    var (_, resultInsert, _, _) = await collection.insertOne({
+      'name': 'a',
+      'value': 10,
+    });
     expect(resultInsert['n'], 0);
   }
 
@@ -1567,13 +1701,17 @@ Future testFieldLevelUpdateSimple() async {
 
   id = result?['_id'] as ObjectId;
   if (db.server.serverCapabilities.supportsOpMsg) {
-    var (writeResult, _) =
-        await collection.updateOne(where..id(id), modify..$set('name', 'BBB'));
+    var (writeResult, _) = await collection.updateOne(
+      where..id(id),
+      modify..$set('name', 'BBB'),
+    );
     expect(writeResult.isSuccess, true);
     expect(writeResult.nModified, 1);
   } else {
-    var (res, _) =
-        await collection.updateOne(where..id(id), modify..$set('name', 'BBB'));
+    var (res, _) = await collection.updateOne(
+      where..id(id),
+      modify..$set('name', 'BBB'),
+    );
     expect(res.nModified, 1);
     expect(res.nMatched, 1);
   }
@@ -1596,8 +1734,10 @@ Future testUpdateOnClosedConnection() async {
   var collection = db.collection(collectionName);
 
   await client.close();
-  expect(() async => await collection.insertOne({'test': 'test'}),
-      throwsMongoDartError);
+  expect(
+    () async => await collection.insertOne({'test': 'test'}),
+    throwsMongoDartError,
+  );
 }
 
 Future testReopeningDb() async {
@@ -1627,35 +1767,46 @@ Future testDbOpenWhileStateIsOpening() {
 
   var client = MongoClient(defaultUri);
   return Future.sync(() {
-    client.connect().then((_) {
-      return client.db().collection(collectionName).findOne();
-    }).then((res) {
-      expect(res, isNull);
-      client.close();
-    });
-    client.connect().then((_) {
-      return client.db().collection(collectionName).findOne();
-    }).then((res) {
-      expect(res, isNull);
-    }).catchError((e) {
-      expect(e is MongoDartError, isTrue);
-      //expect(db.state == State.opening, isTrue);
-    });
+    client
+        .connect()
+        .then((_) {
+          return client.db().collection(collectionName).findOne();
+        })
+        .then((res) {
+          expect(res, isNull);
+          client.close();
+        });
+    client
+        .connect()
+        .then((_) {
+          return client.db().collection(collectionName).findOne();
+        })
+        .then((res) {
+          expect(res, isNull);
+        })
+        .catchError((e) {
+          expect(e is MongoDartError, isTrue);
+          //expect(db.state == State.opening, isTrue);
+        });
   });
 }
 
 void testInvalidIndexCreationErrorHandling() {
   var collectionName = getRandomCollectionName();
 
-  expect(() async => db.createIndex(collectionName /*, key: 'a'*/),
-      throwsA((e) => e is ArgumentError));
+  expect(
+    () async => db.createIndex(collectionName /*, key: 'a'*/),
+    throwsA((e) => e is ArgumentError),
+  );
 }
 
 void testInvalidIndexCreationErrorHandling1() {
   var collectionName = getRandomCollectionName();
 
-  expect(() async => db.createIndex(collectionName, key: 'a', keys: {'a': -1}),
-      throwsA((e) => e is ArgumentError));
+  expect(
+    () async => db.createIndex(collectionName, key: 'a', keys: {'a': -1}),
+    throwsA((e) => e is ArgumentError),
+  );
 }
 
 Future testFindOneWhileStateIsOpening() async {
@@ -1664,12 +1815,16 @@ Future testFindOneWhileStateIsOpening() async {
   var client = MongoClient(defaultUri);
   return Future.sync(() async {
     // ignore: unawaited_futures
-    client.connect().then((_) {
-      return client.db().collection(collectionName).findOne();
-    }).then((res) {
-      expect(res, isNull);
-      client.close();
-    });
+    client
+        .connect()
+        .then((_) {
+          return client.db().collection(collectionName).findOne();
+          // ignore: unawaited_futures
+        })
+        .then((res) {
+          expect(res, isNull);
+          client.close();
+        });
 
     try {
       await client.db().collection(collectionName).findOne();
@@ -1772,13 +1927,17 @@ void main() async {
       test('testIndexCreation', testIndexCreation);
       test('testIndexCreationOnCollection', testIndexCreationOnCollection);
       test(
-          'testEnsureIndexWithIndexCreation', testEnsureIndexWithIndexCreation);
+        'testEnsureIndexWithIndexCreation',
+        testEnsureIndexWithIndexCreation,
+      );
       test('testIndexCreationErrorHandling', testIndexCreationErrorHandling);
       test('Text index', testTextIndex);
       test('Ttl index', testTtlIndex);
 
-      test('testDropIndexCreationOnCollection',
-          testDropIndexCreationOnCollection);
+      test(
+        'testDropIndexCreationOnCollection',
+        testDropIndexCreationOnCollection,
+      );
     });
 
     group('Field level update tests:', () {
@@ -1786,8 +1945,11 @@ void main() async {
     });
 
     group('Aggregate:', () {
-      test('testAggregate', testAggregate,
-          skip: 'As of MongoDB 3.6, cursor is *required* for aggregate.');
+      test(
+        'testAggregate',
+        testAggregate,
+        skip: 'As of MongoDB 3.6, cursor is *required* for aggregate.',
+      );
       test('testAggregateWithCursor', testAggregateWithCursor);
       /*   test(
           'testAggregateToStream - if server older then version 2.6 test would be skipped',
@@ -1824,22 +1986,27 @@ void main() async {
     test('testUpdateOnClosedConnection', testUpdateOnClosedConnection);
     test('testReopeningDb', testReopeningDb);
     test('testDbNotOpen', testDbNotOpen);
-    test('testInvalidIndexCreationErrorHandling',
-        testInvalidIndexCreationErrorHandling /*,
+    test(
+      'testInvalidIndexCreationErrorHandling',
+      testInvalidIndexCreationErrorHandling /*,
         skip:
             'It seems to be perfectly valid code. '
                 'No source for expected exception. '
-                'TODO remeber how this test was created in the first plave'*/
-        );
-    test('testInvalidIndexCreationErrorHandling1',
-        testInvalidIndexCreationErrorHandling1);
+                'TODO remeber how this test was created in the first plave'*/,
+    );
+    test(
+      'testInvalidIndexCreationErrorHandling1',
+      testInvalidIndexCreationErrorHandling1,
+    );
   });
 
   tearDownAll(() async {
     await client.connect();
     db = client.db();
-    await Future.forEach(usedCollectionNames,
-        (String collectionName) => db.collection(collectionName).drop());
+    await Future.forEach(
+      usedCollectionNames,
+      (String collectionName) => db.collection(collectionName).drop(),
+    );
     await client.close();
   });
 }

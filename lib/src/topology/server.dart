@@ -33,12 +33,15 @@ enum ServerType {
   rsOther,
   rsGhost,
   loadBalancer,
-  unknown
+  unknown,
 }
 
 class Server {
-  Server(this.mongoClient, this.serverConfig,
-      ConnectionPoolSettings poolSettings) {
+  Server(
+    this.mongoClient,
+    this.serverConfig,
+    ConnectionPoolSettings poolSettings,
+  ) {
     connectionPool = ConnectionPool(this, poolSettings);
   }
 
@@ -96,9 +99,10 @@ class Server {
     }
     state = ServerState.connected;
     await _runHello();
-    await ServerStatusCommand(mongoClient,
-            serverStatusOptions: ServerStatusOptions.instance)
-        .updateServerStatus(this);
+    await ServerStatusCommand(
+      mongoClient,
+      serverStatusOptions: ServerStatusOptions.instance,
+    ).updateServerStatus(this);
   }
 
   Future<void> close() async {
@@ -106,8 +110,11 @@ class Server {
     return;
   }
 
-  Future<MongoDocument> executeCommand(Command command, OperationBase operation,
-      {ConnectionBase? connection}) async {
+  Future<MongoDocument> executeCommand(
+    Command command,
+    OperationBase operation, {
+    ConnectionBase? connection,
+  }) async {
     if (state != ServerState.connected) {
       throw MongoDartError('Server is not connected. $state');
     } //var isImplicitSession = session == null;
@@ -116,18 +123,22 @@ class Server {
     } else {
       if (connection.server != this) {
         throw MongoDartError(
-            'Connection received is not for the required server');
+          'Connection received is not for the required server',
+        );
       }
     }
 
     if (mongoClient.isAuthenticationRequired &&
         operation.requiresAuthentication &&
         !connection.isAuthenticated) {
-      await _authenticate(mongoClient.clientAuth?.userName,
-          mongoClient.clientAuth?.password, connection,
-          session: operation.session,
-          authScheme: mongoClient.authenticationScheme,
-          authDb: mongoClient.defaultAuthDbName);
+      await _authenticate(
+        mongoClient.clientAuth?.userName,
+        mongoClient.clientAuth?.password,
+        connection,
+        session: operation.session,
+        authScheme: mongoClient.authenticationScheme,
+        authDb: mongoClient.defaultAuthDbName,
+      );
     }
 
     operation.session.prepareCommand(command);
@@ -137,8 +148,9 @@ class Server {
       await operation.session.endSession();
     }
 
-    var section = response.sections.firstWhere((Section section) =>
-        section.payloadType == MongoMessage.basePayloadType);
+    var section = response.sections.firstWhere(
+      (Section section) => section.payloadType == MongoMessage.basePayloadType,
+    );
     return section.payload.content;
   }
 
@@ -147,8 +159,11 @@ class Server {
   Future<void> _runHello() async {
     Map<String, dynamic> result = {keyOk: 0.0};
     try {
-      var helloCommand =
-          HelloCommand(this, username: mongoClient.clientAuth?.userName);
+      var helloCommand = HelloCommand(
+        this,
+        username: mongoClient.clientAuth?.userName,
+        clientMetadata: mongoClient.clientMetadata,
+      );
       var actualTimeMS = DateTime.now().millisecondsSinceEpoch;
       try {
         result = await helloCommand.process();
@@ -201,8 +216,14 @@ class Server {
     String? authDb,
   }) async {
     var connection = await connectionPool.getAvailableConnection();
-    return _authenticate(userName, password, connection,
-        session: session, authScheme: authScheme, authDb: authDb);
+    return _authenticate(
+      userName,
+      password,
+      connection,
+      session: session,
+      authScheme: authScheme,
+      authDb: authDb,
+    );
   }
 
   /// For internal use, allows to specify a connection
@@ -232,7 +253,10 @@ class Server {
     }
 
     var authenticator = Authenticator.create(
-        mongoClient.authenticationScheme!, connection, credential);
+      mongoClient.authenticationScheme!,
+      connection,
+      credential,
+    );
 
     await authenticator.authenticate(this, session: session);
 
@@ -243,33 +267,36 @@ class Server {
   }
 
   ServerDescription get serverDescription {
-    return ServerDescription(serverConfig.hostUrl,
-        options: ServerDescriptionOptions()
-          ..error = lastExecutionError
-          ..roundTripTime = lastHelloExecutionMS
-          ..minRoundTripTime = last10HelloExecutionsMS
-              .reduce((value, element) => min(value, element))
-          ..loadBalanced = MongoClientOptions().loadBalanced,
-        type: serverType,
-        hosts: hello?.hosts,
-        arbiters: hello?.arbiters,
-        passives: hello?.passives,
-        tags: hello?.tags,
-        topologyVersion: hello?.topologyVersion,
-        minWireVersion: hello?.minWireVersion,
-        maxWireVersion: hello?.maxWireVersion,
-        lastWrite: hello?.lastWrite,
-        me: hello?.me,
-        primary: hello?.primary,
-        setName: hello?.setName,
-        setVersion: hello?.setVersion,
-        electionId: hello?.electionId,
-        logicalSessionTimeoutMinutes: hello?.logicalSessionTimeoutMinutes,
-        operationTime: hello?.operationTime,
-        $clusterTime: hello?.$clusterTime);
+    return ServerDescription(
+      serverConfig.hostUrl,
+      options: ServerDescriptionOptions()
+        ..error = lastExecutionError
+        ..roundTripTime = lastHelloExecutionMS
+        ..minRoundTripTime = last10HelloExecutionsMS.reduce(
+          (value, element) => min(value, element),
+        )
+        ..loadBalanced = MongoClientOptions().loadBalanced,
+      type: serverType,
+      hosts: hello?.hosts,
+      arbiters: hello?.arbiters,
+      passives: hello?.passives,
+      tags: hello?.tags,
+      topologyVersion: hello?.topologyVersion,
+      minWireVersion: hello?.minWireVersion,
+      maxWireVersion: hello?.maxWireVersion,
+      lastWrite: hello?.lastWrite,
+      me: hello?.me,
+      primary: hello?.primary,
+      setName: hello?.setName,
+      setVersion: hello?.setVersion,
+      electionId: hello?.electionId,
+      logicalSessionTimeoutMinutes: hello?.logicalSessionTimeoutMinutes,
+      operationTime: hello?.operationTime,
+      $clusterTime: hello?.$clusterTime,
+    );
   }
 
-// Parses a `hello` message and determines the server type
+  // Parses a `hello` message and determines the server type
   ServerType get serverType {
     if (mongoClient.mongoClientOptions.loadBalanced) {
       return ServerType.loadBalancer;

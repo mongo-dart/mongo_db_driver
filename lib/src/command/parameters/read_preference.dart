@@ -37,39 +37,49 @@ var _readPrefernceKeys = [
   keyReadPreference,
   keyReadPreferenceTags,
   keyMaxStalenessSecond,
-  keyHedgeOptions
+  keyHedgeOptions,
 ];
 
 /// The **ReadPreference** class is a class that represents a MongoDB
 /// ReadPreference and is used to construct connections.
 /// see https://docs.mongodb.com/manual/core/read-preference/
 class ReadPreference {
-  ReadPreference(this.mode,
-      {this.tags,
-      this.maxStalenessSeconds,
-      @Deprecated('since 8.0') Map<String, Object>? hedgeOptions})
-      : hedgeOptions = hedgeOptions ??
-            (mode == ReadPreferenceMode.nearest ? <String, Object>{} : null) {
+  ReadPreference(
+    this.mode, {
+    this.tags,
+    this.maxStalenessSeconds,
+    @Deprecated('since 8.0') Map<String, Object>? hedgeOptions,
+  }) : hedgeOptions =
+           hedgeOptions ??
+           (mode == ReadPreferenceMode.nearest ? <String, Object>{} : null) {
     if (mode == ReadPreferenceMode.primary) {
       if (tags != null && tags!.isNotEmpty) {
         if (tags!.length > 1 || tags!.first.isNotEmpty) {
-          throw ArgumentError('Read Preference Constructor - '
-              'primary cannot be combined with tags');
+          throw ArgumentError(
+            'Read Preference Constructor - '
+            'primary cannot be combined with tags',
+          );
         }
       }
       if (maxStalenessSeconds != null) {
-        throw ArgumentError('Read Preference Constructor - '
-            'primary cannot be combined with maxStalenessSeconds');
+        throw ArgumentError(
+          'Read Preference Constructor - '
+          'primary cannot be combined with maxStalenessSeconds',
+        );
       }
       if (hedgeOptions != null) {
-        throw ArgumentError('Read Preference Constructor - '
-            'primary cannot set hedge options');
+        throw ArgumentError(
+          'Read Preference Constructor - '
+          'primary cannot set hedge options',
+        );
       }
     }
     // https://www.mongodb.com/docs/manual/core/read-preference-staleness/
     if (maxStalenessSeconds != null && maxStalenessSeconds! < 90) {
-      throw ArgumentError('Read Preference Constructor - '
-          'maxStalenessSeconds must be at least 90 seconds');
+      throw ArgumentError(
+        'Read Preference Constructor - '
+        'maxStalenessSeconds must be at least 90 seconds',
+      );
     }
   }
 
@@ -86,83 +96,102 @@ class ReadPreference {
   ///   In this this case we expect the other options to be inside the options
   ///   map itself (ex. options[keyReadPreferencTags])
   ///
-  factory ReadPreference.fromOptions(Options options,
-      {bool? removeFromOriginalMap}) {
+  factory ReadPreference.fromOptions(
+    Options options, {
+    bool? removeFromOriginalMap,
+  }) {
     if (options[keyReadPreference] == null) {
       throw MongoDartError('ReadPreference mode is needed');
     }
     var remove = removeFromOriginalMap ?? false;
-    dynamic readPreference =
-        remove ? options.remove(keyReadPreference) : options[keyReadPreference];
+    dynamic readPreference = remove
+        ? options.remove(keyReadPreference)
+        : options[keyReadPreference];
     var tagsTemp = (remove
         ? options.remove(keyReadPreferenceTags)
         : options[keyReadPreferenceTags]);
     List<TagSet>? tags = tagsTemp == null
         ? null
         : <TagSet>[
-            for (var element in tagsTemp) <String, String>{...?element}
+            for (var element in tagsTemp) <String, String>{...?element},
           ];
     int? maxStalenessSeconds = (remove
         ? options.remove(keyMaxStalenessSecond)
         : options[keyMaxStalenessSecond]);
-    var hedgeOptionsTemp =
-        (remove ? options.remove(keyHedgeOptions) : options[keyHedgeOptions]);
-    Map<String, Object>? hedgeOptions =
-        hedgeOptionsTemp == null ? null : <String, Object>{...hedgeOptionsTemp};
+    var hedgeOptionsTemp = (remove
+        ? options.remove(keyHedgeOptions)
+        : options[keyHedgeOptions]);
+    Map<String, Object>? hedgeOptions = hedgeOptionsTemp == null
+        ? null
+        : <String, Object>{...hedgeOptionsTemp};
 
     if (readPreference is ReadPreference) {
-      return ReadPreference(readPreference.mode,
-          tags: tags ?? readPreference.tags,
-          maxStalenessSeconds:
-              maxStalenessSeconds ?? readPreference.maxStalenessSeconds,
-          hedgeOptions: hedgeOptions ?? readPreference.hedgeOptions);
+      return ReadPreference(
+        readPreference.mode,
+        tags: tags ?? readPreference.tags,
+        maxStalenessSeconds:
+            maxStalenessSeconds ?? readPreference.maxStalenessSeconds,
+        hedgeOptions: hedgeOptions ?? readPreference.hedgeOptions,
+      );
     } else if (readPreference is ReadPreferenceMode) {
-      return ReadPreference(readPreference,
-          tags: tags,
-          maxStalenessSeconds: maxStalenessSeconds,
-          hedgeOptions: hedgeOptions);
+      return ReadPreference(
+        readPreference,
+        tags: tags,
+        maxStalenessSeconds: maxStalenessSeconds,
+        hedgeOptions: hedgeOptions,
+      );
     } else if (readPreference is String) {
-      return ReadPreference(ReadPreferenceMode.fromString(readPreference),
-          tags: tags,
-          maxStalenessSeconds: maxStalenessSeconds,
-          hedgeOptions: hedgeOptions);
+      return ReadPreference(
+        ReadPreferenceMode.fromString(readPreference),
+        tags: tags,
+        maxStalenessSeconds: maxStalenessSeconds,
+        hedgeOptions: hedgeOptions,
+      );
     } else if (readPreference is Map) {
       var rdMode = readPreference[keyMode];
       var tagsTemp = readPreference[keyReadPreferenceTags];
       var hedgeOptionsTemp = readPreference[keyHedgeOptions];
       if (rdMode is ReadPreferenceMode) {
-        return ReadPreference(rdMode,
-            tags: tags ??
-                (tagsTemp == null
-                    ? null
-                    : <TagSet>[
-                        for (var element in tagsTemp)
-                          <String, String>{...?element}
-                      ]),
-            maxStalenessSeconds:
-                maxStalenessSeconds ?? readPreference[keyMaxStalenessSecond],
-            hedgeOptions: hedgeOptions ??
-                (hedgeOptionsTemp == null
-                    ? null
-                    : <String, Object>{...hedgeOptionsTemp}));
+        return ReadPreference(
+          rdMode,
+          tags:
+              tags ??
+              (tagsTemp == null
+                  ? null
+                  : <TagSet>[
+                      for (var element in tagsTemp)
+                        <String, String>{...?element},
+                    ]),
+          maxStalenessSeconds:
+              maxStalenessSeconds ?? readPreference[keyMaxStalenessSecond],
+          hedgeOptions:
+              hedgeOptions ??
+              (hedgeOptionsTemp == null
+                  ? null
+                  : <String, Object>{...hedgeOptionsTemp}),
+        );
       } else if (rdMode is String) {
-        return ReadPreference(ReadPreferenceMode.fromString(rdMode),
-            tags: tags ??
-                (tagsTemp == null
-                    ? null
-                    : <TagSet>[
-                        for (var element in tagsTemp)
-                          <String, String>{...?element}
-                      ]),
-            maxStalenessSeconds:
-                maxStalenessSeconds ?? readPreference[keyMaxStalenessSecond],
-            hedgeOptions: hedgeOptions ??
-                (hedgeOptionsTemp == null
-                    ? null
-                    : <String, Object>{...hedgeOptionsTemp}));
+        return ReadPreference(
+          ReadPreferenceMode.fromString(rdMode),
+          tags:
+              tags ??
+              (tagsTemp == null
+                  ? null
+                  : <TagSet>[
+                      for (var element in tagsTemp)
+                        <String, String>{...?element},
+                    ]),
+          maxStalenessSeconds:
+              maxStalenessSeconds ?? readPreference[keyMaxStalenessSecond],
+          hedgeOptions:
+              hedgeOptions ??
+              (hedgeOptionsTemp == null
+                  ? null
+                  : <String, Object>{...hedgeOptionsTemp}),
+        );
       }
     }
-/* 
+    /* 
     if (readPreference is ReadPreferenceMode) {
       return ReadPreference(readPreference,
           tags: (remove
@@ -191,32 +220,40 @@ class ReadPreference {
     } else if (options[keyReadPreference] is ReadPreference) {
       return options[keyReadPreference] as ReadPreference;
     } */
-    throw UnsupportedError('The "$keyReadPreference" value is of an '
-        'unmanaged type ${options[keyReadPreference].runtimeType}');
+    throw UnsupportedError(
+      'The "$keyReadPreference" value is of an '
+      'unmanaged type ${options[keyReadPreference].runtimeType}',
+    );
   }
 
   static const secondaryOK = [
     ReadPreferenceMode.primaryPreferred,
     ReadPreferenceMode.secondary,
     ReadPreferenceMode.secondaryPreferred,
-    ReadPreferenceMode.nearest
+    ReadPreferenceMode.nearest,
   ];
 
   static ReadPreference primary = ReadPreference(ReadPreferenceMode.primary);
-  static ReadPreference primaryPreferred =
-      ReadPreference(ReadPreferenceMode.primaryPreferred);
-  static ReadPreference secondary =
-      ReadPreference(ReadPreferenceMode.secondary);
-  static ReadPreference secondaryPreferred =
-      ReadPreference(ReadPreferenceMode.secondaryPreferred);
-  static ReadPreference nearest = ReadPreference(ReadPreferenceMode.nearest,
-      hedgeOptions: {keyEnabled: true});
+  static ReadPreference primaryPreferred = ReadPreference(
+    ReadPreferenceMode.primaryPreferred,
+  );
+  static ReadPreference secondary = ReadPreference(
+    ReadPreferenceMode.secondary,
+  );
+  static ReadPreference secondaryPreferred = ReadPreference(
+    ReadPreferenceMode.secondaryPreferred,
+  );
+  static ReadPreference nearest = ReadPreference(
+    ReadPreferenceMode.nearest,
+    hedgeOptions: {keyEnabled: true},
+  );
 
   /// Default choice as per
   /// [specifications](https://github.com/mongodb/specifications/blob/master/source/server-selection/server-selection.rst#components-of-a-read-preference)
   static ReadPreference preferenceDefault = ReadPreference(
-      ReadPreferenceMode.primary,
-      tags: <Map<String, String>>[<String, String>{}]);
+    ReadPreferenceMode.primary,
+    tags: <Map<String, String>>[<String, String>{}],
+  );
 
   static int? getMaxStalenessSeconds(Map<String, Object>? options) {
     if (options == null) {
@@ -306,8 +343,8 @@ class ReadPreference {
             if (tags != null) keyTags: tags,
             if (maxStalenessSeconds != null)
               keyMaxStalenessSecond: maxStalenessSeconds,
-            if (hedgeOptions != null) keyHedgeOptions: hedgeOptions
-          }
+            if (hedgeOptions != null) keyHedgeOptions: hedgeOptions,
+          },
         };
       case TopologyType.replicaSetNoPrimary:
       case TopologyType.replicaSetWithPrimary:
@@ -317,7 +354,7 @@ class ReadPreference {
             if (tags != null) keyTags: tags,
             if (maxStalenessSeconds != null)
               keyMaxStalenessSecond: maxStalenessSeconds,
-          }
+          },
         };
     }
   }
@@ -336,8 +373,11 @@ class ReadPreference {
 /// read preference.
 /// options The options passed into the method,
 /// potentially containing a read preference
-ReadPreference? resolveReadPreference(parent,
-    {Options? options, bool? inheritReadPreference = true}) {
+ReadPreference? resolveReadPreference(
+  dynamic parent, {
+  Options? options,
+  bool? inheritReadPreference = true,
+}) {
   options ??= <String, dynamic>{};
   inheritReadPreference ??= true;
 
@@ -353,11 +393,13 @@ ReadPreference? resolveReadPreference(parent,
 
   if (inheritReadPreference) {
     if (parent is MongoCollection) {
-      inheritedReadPreference = parent.readPreference ??
+      inheritedReadPreference =
+          parent.readPreference ??
           parent.db.readPreference ??
           parent.db.mongoClient.mongoClientOptions.readPreference;
     } else if (parent is MongoDatabase) {
-      inheritedReadPreference = parent.readPreference ??
+      inheritedReadPreference =
+          parent.readPreference ??
           parent.mongoClient.mongoClientOptions.readPreference;
     } else if (parent is MongoClient) {
       inheritedReadPreference = parent.mongoClientOptions.readPreference;

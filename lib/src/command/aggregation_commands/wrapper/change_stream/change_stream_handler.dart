@@ -4,15 +4,17 @@ import 'package:mongo_db_driver/src/command/aggregation_commands/return_classes/
 
 class ChangeStreamHandler {
   void handleData(
-          Map<String, dynamic> streamData, EventSink<ChangeEvent> sink) =>
-      sink.add(ChangeEvent.fromMap(streamData));
+    Map<String, dynamic> streamData,
+    EventSink<ChangeEvent> sink,
+  ) => sink.add(ChangeEvent.fromMap(streamData));
 
   void handleDone(EventSink<ChangeEvent> sink) => sink.close();
-  void handleError(error, stacktrace, sink) => sink.addError(error);
+  void handleError(dynamic error, stacktrace, sink) => sink.addError(error);
 
   StreamTransformer<Map<String, dynamic>, ChangeEvent> get transformer =>
       StreamTransformer<Map<String, dynamic>, ChangeEvent>.fromHandlers(
-          handleData: handleData,
-          handleError: handleError,
-          handleDone: handleDone);
+        handleData: handleData,
+        handleError: handleError,
+        handleDone: handleDone,
+      );
 }

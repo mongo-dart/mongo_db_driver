@@ -14,7 +14,9 @@ import '../client/mongo_client_options.dart';
 ///
 /// Decodes the parameters and updates te received MongoClientOptionsInstance
 Future<ClientAuth> decodeUrlParameters(
-    Uri uri, MongoClientOptions options) async {
+  Uri uri,
+  MongoClientOptions options,
+) async {
   if (options.tlsAllowInvalidCertificates ||
       options.tlsCAFile != null ||
       options.tlsCertificateKeyFile != null) {
@@ -23,7 +25,8 @@ Future<ClientAuth> decodeUrlParameters(
 
   if (uri.scheme != 'mongodb') {
     throw MongoDartError(
-        'Invalid scheme in uri: ${uri.toString()} ${uri.scheme}');
+      'Invalid scheme in uri: ${uri.toString()} ${uri.scheme}',
+    );
   }
 
   String? localAuthDbName;
@@ -103,7 +106,7 @@ Future<ClientAuth> decodeUrlParameters(
           options.connectionPoolSettings.maxPoolSize != 0 &&
                   options.connectionPoolSettings.maxPoolSize < intValue
               ? options.connectionPoolSettings.minPoolSize =
-                  options.connectionPoolSettings.maxPoolSize
+                    options.connectionPoolSettings.maxPoolSize
               : options.connectionPoolSettings.minPoolSize = intValue;
         }
         break;
@@ -126,24 +129,30 @@ Future<ClientAuth> decodeUrlParameters(
         }
         break;
       case ConnectionStringOptions.readPreference:
-        if (ReadPreferenceMode.values
-            .any((element) => element.toString() == value)) {
-          var mode = ReadPreferenceMode.values
-              .firstWhere((element) => element.toString() == value);
+        if (ReadPreferenceMode.values.any(
+          (element) => element.toString() == value,
+        )) {
+          var mode = ReadPreferenceMode.values.firstWhere(
+            (element) => element.toString() == value,
+          );
           if (localReadPreference == null) {
             localReadPreference = ReadPreference(mode);
           } else {
             ReadPreference readPref = localReadPreference!;
             if (readPref.mode != mode) {
-              localReadPreference = ReadPreference(mode,
-                  tags: readPref.tags,
-                  maxStalenessSeconds: readPref.maxStalenessSeconds,
-                  hedgeOptions: readPref.hedgeOptions);
+              localReadPreference = ReadPreference(
+                mode,
+                tags: readPref.tags,
+                maxStalenessSeconds: readPref.maxStalenessSeconds,
+                hedgeOptions: readPref.hedgeOptions,
+              );
             }
           }
         } else {
-          throw MongoDartError('The ${ConnectionStringOptions.readPreference} '
-              'parameter contains the wrong value $value');
+          throw MongoDartError(
+            'The ${ConnectionStringOptions.readPreference} '
+            'parameter contains the wrong value $value',
+          );
         }
         break;
       case ConnectionStringOptions.maxStalenessSeconds:
@@ -152,30 +161,36 @@ Future<ClientAuth> decodeUrlParameters(
           throw ArgumentError('maxStalenessSeconds must be a positive integer');
         }
         localReadPreference = ReadPreference(
-            localReadPreference?.mode ?? ReadPreferenceMode.primary,
-            tags: localReadPreference?.tags,
-            maxStalenessSeconds: locMaxStalenessSecond,
-            hedgeOptions: localReadPreference?.hedgeOptions);
+          localReadPreference?.mode ?? ReadPreferenceMode.primary,
+          tags: localReadPreference?.tags,
+          maxStalenessSeconds: locMaxStalenessSecond,
+          hedgeOptions: localReadPreference?.hedgeOptions,
+        );
         break;
       case ConnectionStringOptions.readPreferenceTags:
         localReadPreference = ReadPreference(
-            localReadPreference?.mode ?? ReadPreferenceMode.primary,
-            tags: localReadPreference?.tags ?? <TagSet>[],
-            maxStalenessSeconds: localReadPreference?.maxStalenessSeconds,
-            hedgeOptions: localReadPreference?.hedgeOptions);
+          localReadPreference?.mode ?? ReadPreferenceMode.primary,
+          tags: localReadPreference?.tags ?? <TagSet>[],
+          maxStalenessSeconds: localReadPreference?.maxStalenessSeconds,
+          hedgeOptions: localReadPreference?.hedgeOptions,
+        );
         TagSet newTagSet = <String, String>{};
         if (value.isNotEmpty) {
           var pairs = value.split(',');
 
           for (var element in pairs) {
             if (element.isEmpty) {
-              throw ArgumentError('The value "$element" is not a valid '
-                  '${ConnectionStringOptions.readPreferenceTags} parameter');
+              throw ArgumentError(
+                'The value "$element" is not a valid '
+                '${ConnectionStringOptions.readPreferenceTags} parameter',
+              );
             }
             var keyValue = element.split(':');
             if (keyValue.length != 2) {
-              throw ArgumentError('The value "$element" is not a valid '
-                  '${ConnectionStringOptions.readPreferenceTags} parameter');
+              throw ArgumentError(
+                'The value "$element" is not a valid '
+                '${ConnectionStringOptions.readPreferenceTags} parameter',
+              );
             }
             newTagSet[keyValue.first] = keyValue.last;
           }
@@ -194,8 +209,9 @@ Future<ClientAuth> decodeUrlParameters(
   }
   Uint8List? tlsCertificateKeyFileContent;
   if (options.tlsCertificateKeyFile != null) {
-    tlsCertificateKeyFileContent =
-        await File(options.tlsCertificateKeyFile!).readAsBytes();
+    tlsCertificateKeyFileContent = await File(
+      options.tlsCertificateKeyFile!,
+    ).readAsBytes();
   }
   if (options.tlsCertificateKeyFilePassword != null &&
       options.tlsCertificateKeyFile == null) {
@@ -203,11 +219,12 @@ Future<ClientAuth> decodeUrlParameters(
   }
 
   var clientAuth = ClientAuth(
-      isSecure: options.tls,
-      tlsAllowInvalidCertificates: options.tlsAllowInvalidCertificates,
-      tlsCAFileContent: tlsCAFileContent,
-      tlsCertificateKeyFileContent: tlsCertificateKeyFileContent,
-      tlsCertificateKeyFilePassword: options.tlsCertificateKeyFilePassword);
+    isSecure: options.tls,
+    tlsAllowInvalidCertificates: options.tlsAllowInvalidCertificates,
+    tlsCAFileContent: tlsCAFileContent,
+    tlsCertificateKeyFileContent: tlsCertificateKeyFileContent,
+    tlsCertificateKeyFilePassword: options.tlsCertificateKeyFilePassword,
+  );
 
   if (uri.userInfo.isNotEmpty) {
     var userInfo = uri.userInfo.split(':');

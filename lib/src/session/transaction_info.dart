@@ -9,7 +9,7 @@ enum TransactionState {
   inProgress,
   committed,
   committedEmpty,
-  aborted
+  aborted,
 }
 
 /// This is an internal object, used to collect info and state related to
@@ -19,7 +19,7 @@ enum TransactionState {
 /// cannot get confused.
 class TransactionInfo {
   TransactionInfo({TransactionOptions? options})
-      : options = options ?? TransactionOptions();
+    : options = options ?? TransactionOptions();
   TransactionOptions options;
   TransactionState state = TransactionState.none;
   Server? _pinnedServer;
@@ -36,7 +36,7 @@ class TransactionInfo {
       state == TransactionState.committedEmpty ||
       state == TransactionState.aborted;
 
-  void pinServer(server) {
+  void pinServer(dynamic server) {
     if (isActive) {
       _pinnedServer = server;
     }

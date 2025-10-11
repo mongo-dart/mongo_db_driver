@@ -6,9 +6,12 @@ import '../core/error/mongo_dart_error.dart';
 import 'abstract/topology.dart';
 
 class ReplicaSet extends Topology {
-  ReplicaSet(super.mongoClient, super.hostsSeedList,
-      {super.detectedServers, TopologyType? topologyType})
-      : super.protected(type: topologyType ?? TopologyType.replicaSetNoPrimary);
+  ReplicaSet(
+    super.mongoClient,
+    super.hostsSeedList, {
+    super.detectedServers,
+    TopologyType? topologyType,
+  }) : super.protected(type: topologyType ?? TopologyType.replicaSetNoPrimary);
 
   Set<Server> secondaries = <Server>{};
 
@@ -47,7 +50,9 @@ class ReplicaSet extends Topology {
   @override
   @protected
   Future<Set<Server>> addOtherServers(
-      Server server, Set<Server> additionalServers) async {
+    Server server,
+    Set<Server> additionalServers,
+  ) async {
     var addedServers = <Server>{};
 
     /// An RSGhost server has no hosts list nor setName. Therefore the client
@@ -69,10 +74,15 @@ class ReplicaSet extends Topology {
         if (additionalServers.any((element) => element.url == url)) {
           continue;
         }
-        var serverConfig =
-            await parseUri(Uri.parse('mongodb://$url'), mongoClientOptions);
-        var server = Server(mongoClient, serverConfig,
-            mongoClientOptions.connectionPoolSettings);
+        var serverConfig = await parseUri(
+          Uri.parse('mongodb://$url'),
+          mongoClientOptions,
+        );
+        var server = Server(
+          mongoClient,
+          serverConfig,
+          mongoClientOptions.connectionPoolSettings,
+        );
         addedServers.add(server);
       }
     }
@@ -92,7 +102,7 @@ class ReplicaSet extends Topology {
   /// clients that connect to the former primary may observe stale data
   /// despite having requested read preference primary, and new writes to the
   /// former primary will eventually roll back.
-  updateServerClassification() {
+  void updateServerClassification() {
     primary = null;
     secondaries.clear();
     for (Server server in servers) {
@@ -124,7 +134,7 @@ class ReplicaSet extends Topology {
     return secondaries.isNotEmpty
         ? secondaries.first
         : (acceptAlsoPrimary && primary != null
-            ? primary!
-            : throw MongoDartError('No server detected'));
+              ? primary!
+              : throw MongoDartError('No server detected'));
   }
 }

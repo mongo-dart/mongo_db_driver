@@ -1,4 +1,4 @@
-import 'package:mongo_db_driver/src/command/base/operation_base.dart';
+/* import 'package:mongo_db_driver/src/command/base/operation_base.dart';
 import 'package:mongo_db_driver/src/utils/map_keys.dart';
 
 /// Hello command options;
@@ -11,3 +11,4 @@ class HelloOptions {
         if (comment != null) keyComment: comment!,
       };
 }
+ */

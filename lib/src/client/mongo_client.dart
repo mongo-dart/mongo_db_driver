@@ -21,6 +21,8 @@ import '../utils/decode_dns_seed_list.dart';
 import '../utils/decode_url_parameters.dart';
 import '../utils/split_hosts.dart';
 
+const String defaultApplicationName = "MongoDb Driver";
+
 abstract class DriverInfo {
   String? name;
   String? version;
@@ -36,6 +38,7 @@ class Auth {
 }
 
 // Reserved chars in URL: $ : / ? # [ ] @
+/*
 const _dollar = '%24';
 const _colon = '%3A';
 const _slash = '%2F';
@@ -48,7 +51,7 @@ const _atSign = '%40';
 String encodeUserinfo(String url) {
   Uri.encodeFull(uri)
   return url;
-}
+} */
 
 class MongoClient {
   // This url can be informed both with the Standard
@@ -61,15 +64,18 @@ class MongoClient {
   /// mongodb+srv://[username:password@]host1[:port1]
   ///      [/[databaseName][?options]]
   /// More info are available [here](https://docs.mongodb.com/manual/reference/connection-string/)
-  MongoClient(this.url,
-      {MongoClientOptions? mongoClientOptions,
-      MongoClientDebugOptions? debugOptions}) {
+  MongoClient(
+    this.url, {
+    MongoClientOptions? mongoClientOptions,
+    MongoClientDebugOptions? debugOptions,
+  }) {
     this.mongoClientOptions = mongoClientOptions ?? MongoClientOptions();
     this.debugOptions = debugOptions ?? MongoClientDebugOptions();
     var uri = Uri.parse(url);
     if (uri.scheme != 'mongodb' && uri.scheme != 'mongodb+srv') {
       throw MongoDartError(
-          'The only valid schemas for Db are: "mongodb" and "mongodb+srv".');
+        'The only valid schemas for Db are: "mongodb" and "mongodb+srv".',
+      );
     }
     serverSessionPool = ServerSessionPool(this);
 
@@ -107,6 +113,8 @@ class MongoClient {
 
   Set<MongoDatabase> databases = <MongoDatabase>{};
 
+  ClientMetadata? clientMetadata;
+
   AuthenticationScheme? get authenticationScheme =>
       mongoClientOptions.authenticationMechanism;
 
@@ -142,19 +150,23 @@ class MongoClient {
     } else {
       hostsSeedList.addAll(splitHosts(url));
     }
-    tempSeedList
-        .addAll([for (var element in hostsSeedList) Uri.parse(element)]);
+    tempSeedList.addAll([
+      for (var element in hostsSeedList) Uri.parse(element),
+    ]);
     // The host part of the server names must be normalized in lowercases
     // https://github.com/mongodb/specifications/blob/master/source/server-discovery-and-monitoring/server-discovery-and-monitoring.md#initial-servers
     for (Uri serverUri in tempSeedList) {
-      seedServers.add(Uri(
+      seedServers.add(
+        Uri(
           scheme: serverUri.scheme,
           userInfo: serverUri.userInfo,
           host: serverUri.host.toLowerCase(),
           port: serverUri.port,
           pathSegments: serverUri.pathSegments,
           queryParameters: serverUri.queryParameters,
-          fragment: serverUri.fragment));
+          fragment: serverUri.fragment,
+        ),
+      );
     }
 
     if (seedServers.isEmpty) {
@@ -171,13 +183,20 @@ class MongoClient {
     if (mongoClientOptions.loadBalanced &&
         (mongoClientOptions.directConnection ||
             mongoClientOptions.replicaSet != null)) {
-      throw MongoDartError('Load Balanced option cannot '
-          'be used with direct Connection or Replica Set');
+      throw MongoDartError(
+        'Load Balanced option cannot '
+        'be used with direct Connection or Replica Set',
+      );
     }
 
-    clientAuth =
-        await decodeUrlParameters(seedServers.first, mongoClientOptions);
+    clientAuth = await decodeUrlParameters(
+      seedServers.first,
+      mongoClientOptions,
+    );
     defaultDatabaseName = mongoClientOptions.defaultDbName ?? defMongoDbName;
+    clientMetadata = ClientMetadata(
+      ApplicationMetadata(mongoClientOptions.appName ?? defaultApplicationName),
+    );
 
     TopologyType? type;
 
@@ -259,24 +278,34 @@ class MongoClient {
   /// In the conection parameters you have not to set
   /// X509 if you want to use this delayed auth function.
 
-  Future<bool> authenticateX509({ClientSession? session}) async =>
-      authenticate(null, null,
-          authScheme: AuthenticationScheme.X509,
-          authDb: r'$external',
-          session: session);
+  Future<bool> authenticateX509({ClientSession? session}) async => authenticate(
+    null,
+    null,
+    authScheme: AuthenticationScheme.X509,
+    authDb: r'$external',
+    session: session,
+  );
 
-  Future<bool> authenticate(String? userName, String? password,
-      {ClientSession? session,
-      AuthenticationScheme? authScheme,
-      String? authDb}) async {
+  Future<bool> authenticate(
+    String? userName,
+    String? password, {
+    ClientSession? session,
+    AuthenticationScheme? authScheme,
+    String? authDb,
+  }) async {
     if (topology == null) {
       return false;
     }
     var server = topology!.getServer();
     var retValue = false;
     try {
-      retValue = await server.authenticate(userName, password,
-          session: session, authScheme: authScheme, authDb: authDb);
+      retValue = await server.authenticate(
+        userName,
+        password,
+        session: session,
+        authScheme: authScheme,
+        authDb: authDb,
+      );
     } catch (e) {
       /// Atlas does not currently support SHA_256
       if (e is MongoDartError &&
@@ -285,15 +314,20 @@ class MongoClient {
           e.message.contains('SCRAM-SHA-256') &&
           mongoClientOptions.authenticationMechanism ==
               AuthenticationScheme.SCRAM_SHA_256) {
-        log.warning(() => 'Atlas connection: SCRAM_SHA_256 not available, '
-            'downgrading to SCRAM_SHA_1');
+        log.warning(
+          () =>
+              'Atlas connection: SCRAM_SHA_256 not available, '
+              'downgrading to SCRAM_SHA_1',
+        );
         mongoClientOptions.authenticationMechanism =
             AuthenticationScheme.SCRAM_SHA_1;
         try {
           await authenticate(clientAuth?.userName!, clientAuth?.password ?? '');
           log.fine(
-              () => 'mongoClient.mongoClientOptions.authenticationMechanism: '
-                  'client authenticated');
+            () =>
+                'mongoClient.mongoClientOptions.authenticationMechanism: '
+                'client authenticated',
+          );
           return false;
         } catch (e) {
           rethrow;
@@ -306,12 +340,17 @@ class MongoClient {
   }
 
   /// Runs a database command
-  Future<MongoDocument> adminCommand(Command command,
-          {ClientSession? session}) =>
-      DbAdminCommandOperation(this, command,
-          session: session, options: <String, dynamic>{}).process();
+  Future<MongoDocument> adminCommand(
+    Command command, {
+    ClientSession? session,
+  }) => DbAdminCommandOperation(
+    this,
+    command,
+    session: session,
+    options: <String, dynamic>{},
+  ).process();
 
-/* 
+  /* 
   void selectAuthenticationMechanism(String authenticationSchemeName) {
     if (authenticationSchemeName == ScramSha1Authenticator.name) {
       authenticationScheme = AuthenticationScheme.SCRAM_SHA_1;
@@ -324,14 +363,17 @@ class MongoClient {
           'not supported : $authenticationSchemeName');
     }
   } */
-  Future<Map<String, dynamic>> listDatabases(
-      {ClientSession? session,
-      ListDatabasesOptions? listDatabasesOptions,
-      Map<String, Object>? rawOptions}) async {
-    var command = ListDatabasesCommand(this,
-        session: session,
-        listDatabasesOptions: listDatabasesOptions,
-        rawOptions: rawOptions);
+  Future<Map<String, dynamic>> listDatabases({
+    ClientSession? session,
+    ListDatabasesOptions? listDatabasesOptions,
+    Map<String, Object>? rawOptions,
+  }) async {
+    var command = ListDatabasesCommand(
+      this,
+      session: session,
+      listDatabasesOptions: listDatabasesOptions,
+      rawOptions: rawOptions,
+    );
     return command.process();
   }
 }

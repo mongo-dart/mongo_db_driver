@@ -15,16 +15,16 @@ class GridFS {
   String bucketName;
 
   GridFS(this.database, [String collection = 'fs'])
-      : files = database.collection('$collection.files'),
-        chunks = database.collection('$collection.chunks'),
-        bucketName = collection;
+    : files = database.collection('$collection.files'),
+      chunks = database.collection('$collection.chunks'),
+      bucketName = collection;
 
   // T O D O (tsander): Ensure index.
 
   Stream<Map<String, dynamic>> getFileList(QueryExpression queryExpression) =>
       files.find(filter: queryExpression..sortBy({'filename': 1}));
 
-  Future<GridOut?> findOne(selector) async {
+  Future<GridOut?> findOne(dynamic selector) async {
     var file = await files.findOne(filter: selector);
 
     if (file == null) {
@@ -36,9 +36,11 @@ class GridFS {
   Future<GridOut?> getFile(String fileName) async =>
       findOne(where..$eq('filename', fileName));
 
-  GridIn createFile(Stream<List<int>> input, String filename,
-          [Map<String, dynamic>? extraData]) =>
-      GridIn(this, filename, input, extraData);
+  GridIn createFile(
+    Stream<List<int>> input,
+    String filename, [
+    Map<String, dynamic>? extraData,
+  ]) => GridIn(this, filename, input, extraData);
 
   /// **Beware!** This method removes all the documents in this bucket
   Future<void> clearBucket() async {

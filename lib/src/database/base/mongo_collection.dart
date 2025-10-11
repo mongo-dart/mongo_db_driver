@@ -32,7 +32,8 @@ abstract class MongoCollection {
           return MongoCollectionV1(db, collectionName);
         default:
           throw MongoDartError(
-              'Stable Api ${db.serverApi!.version} not managed');
+            'Stable Api ${db.serverApi!.version} not managed',
+          );
       }
     }
     return MongoCollectionOpen(db, collectionName);
@@ -56,98 +57,121 @@ abstract class MongoCollection {
 
   /// Insert one document into this collection
   /// Returns a WriteResult object
-  Future<InsertOneDocumentRec> insertOne(MongoDocument document,
-      {ClientSession? session,
-      InsertOneOptions? insertOneOptions,
-      Options? rawOptions});
+  Future<InsertOneDocumentRec> insertOne(
+    MongoDocument document, {
+    ClientSession? session,
+    InsertOneOptions? insertOneOptions,
+    Options? rawOptions,
+  });
 
   /// Insert many document into this collection
   /// Returns a BulkWriteResult object
-  Future<InsertManyDocumentRec> insertMany(List<MongoDocument> documents,
-      {ClientSession? session,
-      InsertManyOptions? insertManyOptions,
-      Options? rawOptions});
+  Future<InsertManyDocumentRec> insertMany(
+    List<MongoDocument> documents, {
+    ClientSession? session,
+    InsertManyOptions? insertManyOptions,
+    Options? rawOptions,
+  });
 
   /// Update one document into this collection
-  Future<UpdateOneDocumentRec> updateOne(filter, update,
-      {bool? upsert,
-      WriteConcern? writeConcern,
-      CollationOptions? collation,
-      ClientSession? session,
-      List<dynamic>? arrayFilters,
-      HintUnion? hint,
-      UpdateOneOptions? updateOneOptions,
-      Options? rawOptions});
+  Future<UpdateOneDocumentRec> updateOne(
+    dynamic filter,
+    update, {
+    bool? upsert,
+    WriteConcern? writeConcern,
+    CollationOptions? collation,
+    ClientSession? session,
+    List<dynamic>? arrayFilters,
+    HintUnion? hint,
+    UpdateOneOptions? updateOneOptions,
+    Options? rawOptions,
+  });
 
   /// Replace one document into this collection
-  Future<ReplaceOneDocumentRec> replaceOne(filter, MongoDocument update,
-      {bool? upsert,
-      WriteConcern? writeConcern,
-      CollationOptions? collation,
-      HintUnion? hint,
-      ClientSession? session,
-      ReplaceOneOptions? replaceOneOptions,
-      Options? rawOptions});
+  Future<ReplaceOneDocumentRec> replaceOne(
+    dynamic filter,
+    MongoDocument update, {
+    bool? upsert,
+    WriteConcern? writeConcern,
+    CollationOptions? collation,
+    HintUnion? hint,
+    ClientSession? session,
+    ReplaceOneOptions? replaceOneOptions,
+    Options? rawOptions,
+  });
 
   /// Updates many documents into this collection
-  Future<UpdateManyDocumentRec> updateMany(selector, update,
-      {bool? upsert,
-      WriteConcern? writeConcern,
-      CollationOptions? collation,
-      ClientSession? session,
-      UpdateManyOptions? updateManyOptions,
-      Options? rawOptions,
-      List<dynamic>? arrayFilters,
-      HintUnion? hint});
+  Future<UpdateManyDocumentRec> updateMany(
+    dynamic selector,
+    update, {
+    bool? upsert,
+    WriteConcern? writeConcern,
+    CollationOptions? collation,
+    ClientSession? session,
+    UpdateManyOptions? updateManyOptions,
+    Options? rawOptions,
+    List<dynamic>? arrayFilters,
+    HintUnion? hint,
+  });
 
   /// Deletes one document into this collection
-  Future<DeleteOneDocumentRec> deleteOne(selector,
-      {WriteConcern? writeConcern,
-      CollationOptions? collation,
-      ClientSession? session,
-      DeleteOneOptions? deleteOneOptions,
-      Options? rawOptions,
-      HintUnion? hint});
+  Future<DeleteOneDocumentRec> deleteOne(
+    dynamic selector, {
+    WriteConcern? writeConcern,
+    CollationOptions? collation,
+    ClientSession? session,
+    DeleteOneOptions? deleteOneOptions,
+    Options? rawOptions,
+    HintUnion? hint,
+  });
 
   /// Deletes many documents into this collection
-  Future<DeleteManyDocumentRec> deleteMany(
-      {selector,
-      WriteConcern? writeConcern,
-      CollationOptions? collation,
-      ClientSession? session,
-      DeleteManyOptions? deleteManyOptions,
-      Options? rawOptions,
-      HintUnion? hint});
+  Future<DeleteManyDocumentRec> deleteMany({
+    dynamic selector,
+    WriteConcern? writeConcern,
+    CollationOptions? collation,
+    ClientSession? session,
+    DeleteManyOptions? deleteManyOptions,
+    Options? rawOptions,
+    HintUnion? hint,
+  });
 
-  Future<FindOneAndDeleteDocumentRec> findOneAndDelete(query,
-      {ProjectionDocument? fields,
-      sort,
-      ClientSession? session,
-      HintUnion? hint,
-      FindOneAndDeleteOptions? findOneAndDeleteOptions,
-      Options? rawOptions});
+  Future<FindOneAndDeleteDocumentRec> findOneAndDelete(
+    dynamic query, {
+    ProjectionDocument? fields,
+    sort,
+    ClientSession? session,
+    HintUnion? hint,
+    FindOneAndDeleteOptions? findOneAndDeleteOptions,
+    Options? rawOptions,
+  });
 
   Future<FindOneAndReplaceDocumentRec> findOneAndReplace(
-      query, MongoDocument replacement,
-      {ProjectionDocument? fields,
-      sort,
-      bool? upsert,
-      bool? returnNew,
-      ClientSession? session,
-      HintUnion? hint,
-      FindOneAndReplaceOptions? findOneAndReplaceOptions,
-      Options? rawOptions});
+    dynamic query,
+    MongoDocument replacement, {
+    ProjectionDocument? fields,
+    sort,
+    bool? upsert,
+    bool? returnNew,
+    ClientSession? session,
+    HintUnion? hint,
+    FindOneAndReplaceOptions? findOneAndReplaceOptions,
+    Options? rawOptions,
+  });
 
-  Future<FindOneAndUpdateDocumentRec> findOneAndUpdate(query, update,
-      {ProjectionDocument? fields,
-      sort,
-      bool? upsert,
-      bool? returnNew,
-      List<ArrayFilter>? arrayFilters,
-      ClientSession? session,
-      HintUnion? hint,
-      FindOneAndUpdateOptions? findOneAndUpdateOptions,
-      Options? rawOptions});
+  Future<FindOneAndUpdateDocumentRec> findOneAndUpdate(
+    dynamic query,
+    update, {
+    ProjectionDocument? fields,
+    sort,
+    bool? upsert,
+    bool? returnNew,
+    List<ArrayFilter>? arrayFilters,
+    ClientSession? session,
+    HintUnion? hint,
+    FindOneAndUpdateOptions? findOneAndUpdateOptions,
+    Options? rawOptions,
+  });
 
   /// Returns one document that satisfies the specified query criteria on
   /// the collection or view. If multiple documents satisfy the query,
@@ -161,15 +185,16 @@ abstract class MongoCollection {
   /// This version has more parameters, and it is essentially a wrapper
   /// araound the find method with a fixed limit set to 1 that returns
   /// a document instead of a stream.
-  Future<Map<String, dynamic>?> findOne(
-      {dynamic filter,
-      dynamic projection,
-      dynamic sort,
-      int? skip,
-      ClientSession? session,
-      dynamic hint,
-      FindOptions? findOptions,
-      Options? rawOptions});
+  Future<Map<String, dynamic>?> findOne({
+    dynamic filter,
+    dynamic projection,
+    dynamic sort,
+    int? skip,
+    ClientSession? session,
+    dynamic hint,
+    FindOptions? findOptions,
+    Options? rawOptions,
+  });
 
   /// Behaves like the find method, but allows to define a global
   /// query object containing all the specifications for the query
@@ -183,20 +208,23 @@ abstract class MongoCollection {
 
   /// Selects documents in a collection or view and returns a stream
   /// of the selected documents.
-  Stream<Map<String, dynamic>> find(
-      {dynamic filter,
-      dynamic projection,
-      dynamic sort,
-      int? skip,
-      int? limit,
-      ClientSession? session,
-      dynamic hint,
-      FindOptions? findOptions,
-      Options? rawOptions});
+  Stream<Map<String, dynamic>> find({
+    dynamic filter,
+    dynamic projection,
+    dynamic sort,
+    int? skip,
+    int? limit,
+    ClientSession? session,
+    dynamic hint,
+    FindOptions? findOptions,
+    Options? rawOptions,
+  });
 
   @protected
   ProjectionUnion? detectProjectUnion(
-      projection, QueryExpression? queryExpression) {
+    dynamic projection,
+    QueryExpression? queryExpression,
+  ) {
     ProjectionUnion? uProjection;
     if (projection != null) {
       if (projection is ProjectionUnion) {
@@ -213,7 +241,7 @@ abstract class MongoCollection {
   }
 
   @protected
-  SortUnion? detectSortUnion(sort, QueryExpression? queryExpression) {
+  SortUnion? detectSortUnion(dynamic sort, QueryExpression? queryExpression) {
     SortUnion? uSort;
     if (sort != null) {
       if (sort is SortUnion) {
@@ -238,23 +266,25 @@ abstract class MongoCollection {
   ///
   /// The pipeline can be either an `AggregationPipelineBuilder` or a
   /// List of Maps (`List<Map<String, Object>>`)
-  Stream<Map<String, dynamic>> aggregateToStream(dynamic pipeline,
-          {bool? explain,
-          Map<String, Object>? cursor,
-          HintUnion? hint,
-          ClientSession? session,
-          AggregateOptions? aggregateOptions,
-          Map<String, Object>? rawOptions,
-          MongoDocument? let}) =>
-      aggregate(pipeline,
-              explain: explain,
-              cursor: cursor,
-              hint: hint,
-              session: session,
-              aggregateOptions: aggregateOptions,
-              rawOptions: rawOptions,
-              let: let)
-          .stream;
+  Stream<Map<String, dynamic>> aggregateToStream(
+    dynamic pipeline, {
+    bool? explain,
+    Map<String, Object>? cursor,
+    HintUnion? hint,
+    ClientSession? session,
+    AggregateOptions? aggregateOptions,
+    Map<String, Object>? rawOptions,
+    MongoDocument? let,
+  }) => aggregate(
+    pipeline,
+    explain: explain,
+    cursor: cursor,
+    hint: hint,
+    session: session,
+    aggregateOptions: aggregateOptions,
+    rawOptions: rawOptions,
+    let: let,
+  ).stream;
 
   /// This method returns a cursor that can be read or transformed into
   /// a stream with `stream` (for a stream you can directly call
@@ -262,46 +292,55 @@ abstract class MongoCollection {
   ///
   /// The pipeline can be either an `AggregationPipelineBuilder` or a
   /// List of Maps (`List<Map<String, Object>>`)
-  Cursor aggregate(dynamic pipeline,
-      {bool? explain,
-      Map<String, Object>? cursor,
-      HintUnion? hint,
-      ClientSession? session,
-      AggregateOptions? aggregateOptions,
-      Map<String, Object>? rawOptions,
-      MongoDocument? let});
+  Cursor aggregate(
+    dynamic pipeline, {
+    bool? explain,
+    Map<String, Object>? cursor,
+    HintUnion? hint,
+    ClientSession? session,
+    AggregateOptions? aggregateOptions,
+    Map<String, Object>? rawOptions,
+    MongoDocument? let,
+  });
 
   // **************************************************
   //              Drop Collection
   // **************************************************
 
-  Future<bool> drop(
-          {ClientSession? session,
-          DropOptions? dropOptions,
-          Map<String, Object>? rawOptions}) =>
-      db.drop(collectionName,
-          session: session, dropOptions: dropOptions, rawOptions: rawOptions);
+  Future<bool> drop({
+    ClientSession? session,
+    DropOptions? dropOptions,
+    Map<String, Object>? rawOptions,
+  }) => db.drop(
+    collectionName,
+    session: session,
+    dropOptions: dropOptions,
+    rawOptions: rawOptions,
+  );
 
   // **************************************************
   //                   Count
   // **************************************************
 
-  Future<CountResult> count(
-      {QueryExpression? selector,
-      Map<String, dynamic>? filter,
-      int? limit,
-      int? skip,
-      CollationOptions? collation,
-      HintUnion? hint,
-      CountOptions? countOptions,
-      Map<String, Object>? rawOptions}) async {
-    var countOperation = CountOperation(this,
-        query: filter ?? selector?.rawFilter,
-        skip: skip,
-        limit: limit,
-        hint: hint,
-        countOptions: countOptions,
-        rawOptions: rawOptions);
+  Future<CountResult> count({
+    QueryExpression? selector,
+    Map<String, dynamic>? filter,
+    int? limit,
+    int? skip,
+    CollationOptions? collation,
+    HintUnion? hint,
+    CountOptions? countOptions,
+    Map<String, Object>? rawOptions,
+  }) async {
+    var countOperation = CountOperation(
+      this,
+      query: filter ?? selector?.rawFilter,
+      skip: skip,
+      limit: limit,
+      hint: hint,
+      countOptions: countOptions,
+      rawOptions: rawOptions,
+    );
     return countOperation.executeDocument(db.server);
   }
 
@@ -309,65 +348,83 @@ abstract class MongoCollection {
   //                     Watch
   // **************************************************
 
-  Stream<ChangeEvent> watch(Object pipeline,
-          {int? batchSize,
-          HintUnion? hint,
-          ChangeStreamOptions? changeStreamOptions,
-          Map<String, Object>? rawOptions}) =>
-      watchCursor(pipeline,
-              batchSize: batchSize,
-              hint: hint,
-              changeStreamOptions: changeStreamOptions,
-              rawOptions: rawOptions)
-          .changeStream;
+  Stream<ChangeEvent> watch(
+    Object pipeline, {
+    int? batchSize,
+    HintUnion? hint,
+    ChangeStreamOptions? changeStreamOptions,
+    Map<String, Object>? rawOptions,
+  }) => watchCursor(
+    pipeline,
+    batchSize: batchSize,
+    hint: hint,
+    changeStreamOptions: changeStreamOptions,
+    rawOptions: rawOptions,
+  ).changeStream;
 
-  Cursor watchCursor(Object pipeline,
-          {int? batchSize,
-          HintUnion? hint,
-          ChangeStreamOptions? changeStreamOptions,
-          Map<String, Object>? rawOptions}) =>
-      Cursor(
-          ChangeStreamOperation(pipeline,
-              collection: this,
-              hint: hint,
-              changeStreamOptions: changeStreamOptions,
-              rawOptions: rawOptions),
-          db.server);
+  Cursor watchCursor(
+    Object pipeline, {
+    int? batchSize,
+    HintUnion? hint,
+    ChangeStreamOptions? changeStreamOptions,
+    Map<String, Object>? rawOptions,
+  }) => Cursor(
+    ChangeStreamOperation(
+      pipeline,
+      collection: this,
+      hint: hint,
+      changeStreamOptions: changeStreamOptions,
+      rawOptions: rawOptions,
+    ),
+    db.server,
+  );
 
   // **************************************************
   //                   Distinct
   // **************************************************
 
   /// Utility method for preparing a DistinctOperation
-  DistinctOperation _prepareDistinct(String field,
-          {query,
-          DistinctOptions? distinctOptions,
-          Map<String, Object>? rawOptions}) =>
-      DistinctOperation(this, field,
-          query: extractfilterMap(query),
-          distinctOptions: distinctOptions,
-          rawOptions: rawOptions);
+  DistinctOperation _prepareDistinct(
+    String field, {
+    query,
+    DistinctOptions? distinctOptions,
+    Map<String, Object>? rawOptions,
+  }) => DistinctOperation(
+    this,
+    field,
+    query: extractfilterMap(query),
+    distinctOptions: distinctOptions,
+    rawOptions: rawOptions,
+  );
 
   /// Executes a Distinct command on this collection.
   /// Retuns a DistinctResult class.
-  Future<DistinctResult> distinct(String field,
-          {ClientSession? session,
-          query,
-          DistinctOptions? distinctOptions,
-          Map<String, Object>? rawOptions}) async =>
-      _prepareDistinct(field, query: query, distinctOptions: distinctOptions)
-          .executeDocument(session: session);
+  Future<DistinctResult> distinct(
+    String field, {
+    ClientSession? session,
+    query,
+    DistinctOptions? distinctOptions,
+    Map<String, Object>? rawOptions,
+  }) async => _prepareDistinct(
+    field,
+    query: query,
+    distinctOptions: distinctOptions,
+  ).executeDocument(session: session);
 
   /// Executes a Distinct command on this collection.
   /// Retuns a Map like received from the server.
   /// Used for compatibility with the legacy method
-  Future<Map<String, dynamic>> distinctMap(String field,
-          {ClientSession? session,
-          query,
-          DistinctOptions? distinctOptions,
-          Map<String, Object>? rawOptions}) async =>
-      _prepareDistinct(field, query: query, distinctOptions: distinctOptions)
-          .process();
+  Future<Map<String, dynamic>> distinctMap(
+    String field, {
+    ClientSession? session,
+    query,
+    DistinctOptions? distinctOptions,
+    Map<String, Object>? rawOptions,
+  }) async => _prepareDistinct(
+    field,
+    query: query,
+    distinctOptions: distinctOptions,
+  ).process();
 
   /// Analogue of mongodb shell method `db.collection.getIndexes()`
   /// Returns an array that holds a list of documents that identify and describe
@@ -418,27 +475,34 @@ abstract class MongoCollection {
   /// "writtenTo" -> null,
   /// "err" -> null,
   /// "ok" -> 1.0}
-  Future<Map<String, dynamic>> createIndex(
-      {ClientSession? session,
-      String? key,
-      Map<String, dynamic>? keys,
-      bool? unique,
-      bool? sparse,
-      bool? background,
-      bool? dropDups,
-      Map<String, dynamic>? partialFilterExpression,
-      String? name}) async {
-    var indexOptions = CreateIndexOptions(this,
-        uniqueIndex: unique == true,
-        sparseIndex: sparse == true,
-        background: background == true,
-        dropDuplicatedEntries: dropDups == true,
-        partialFilterExpression: partialFilterExpression,
-        indexName: name);
+  Future<Map<String, dynamic>> createIndex({
+    ClientSession? session,
+    String? key,
+    Map<String, dynamic>? keys,
+    bool? unique,
+    bool? sparse,
+    bool? background,
+    bool? dropDups,
+    Map<String, dynamic>? partialFilterExpression,
+    String? name,
+  }) async {
+    var indexOptions = CreateIndexOptions(
+      this,
+      uniqueIndex: unique == true,
+      sparseIndex: sparse == true,
+      background: background == true,
+      dropDuplicatedEntries: dropDups == true,
+      partialFilterExpression: partialFilterExpression,
+      indexName: name,
+    );
 
     var indexOperation = CreateIndexOperation(
-        db, this, _setKeys(key, keys), indexOptions,
-        session: session);
+      db,
+      this,
+      _setKeys(key, keys),
+      indexOptions,
+      session: session,
+    );
 
     var res = await indexOperation.process();
     if (res[keyOk] == 0.0) {
@@ -450,35 +514,55 @@ abstract class MongoCollection {
     return res;
   }
 
-  Stream<Map<String, dynamic>> listIndexes(
-      {int? batchSize, String? comment, Map<String, Object>? rawOptions}) {
-    var indexOptions =
-        ListIndexesOptions(batchSize: batchSize, comment: comment);
+  Stream<Map<String, dynamic>> listIndexes({
+    int? batchSize,
+    String? comment,
+    Map<String, Object>? rawOptions,
+  }) {
+    var indexOptions = ListIndexesOptions(
+      batchSize: batchSize,
+      comment: comment,
+    );
 
-    var command = ListIndexesCommand(db, this,
-        listIndexesOptions: indexOptions, rawOptions: rawOptions);
+    var command = ListIndexesCommand(
+      db,
+      this,
+      listIndexesOptions: indexOptions,
+      rawOptions: rawOptions,
+    );
 
     return Cursor(command, db.server).stream;
   }
 
-  Future<Map<String, dynamic>> dropIndexes(Object index,
-      {ClientSession? session,
-      WriteConcern? writeConcern,
-      String? comment,
-      Map<String, Object>? rawOptions}) {
-    var indexOptions =
-        DropIndexesOptions(writeConcern: writeConcern, comment: comment);
+  Future<Map<String, dynamic>> dropIndexes(
+    Object index, {
+    ClientSession? session,
+    WriteConcern? writeConcern,
+    String? comment,
+    Map<String, Object>? rawOptions,
+  }) {
+    var indexOptions = DropIndexesOptions(
+      writeConcern: writeConcern,
+      comment: comment,
+    );
 
-    var command = DropIndexesCommand(db, this, index,
-        dropIndexesOptions: indexOptions,
-        rawOptions: rawOptions,
-        session: session);
+    var command = DropIndexesCommand(
+      db,
+      this,
+      index,
+      dropIndexesOptions: indexOptions,
+      rawOptions: rawOptions,
+      session: session,
+    );
 
     return command.process();
   }
 
-  Future<BulkDocumentRec> bulkWrite(List<Map<String, Object>> documents,
-      {bool ordered = true, WriteConcern? writeConcern}) async {
+  Future<BulkDocumentRec> bulkWrite(
+    List<Map<String, Object>> documents, {
+    bool ordered = true,
+    WriteConcern? writeConcern,
+  }) async {
     Bulk bulk;
     if (ordered) {
       bulk = OrderedBulk(this, writeConcern: writeConcern);
@@ -494,26 +578,32 @@ abstract class MongoCollection {
       var key = document.keys.first;
       var testMap = document[key];
       if (testMap is! Map<String, Object>) {
-        throw MongoDartError('The "$key" element at index '
-            '$index must contain a Map');
+        throw MongoDartError(
+          'The "$key" element at index '
+          '$index must contain a Map',
+        );
       }
       var docMap = testMap;
 
       switch (key) {
         case bulkInsertOne:
           if (docMap[bulkDocument] is! Map<String, dynamic>) {
-            throw MongoDartError('The "$bulkDocument" key of the '
-                '"$bulkInsertOne" element at index $index must '
-                'contain a Map');
+            throw MongoDartError(
+              'The "$bulkDocument" key of the '
+              '"$bulkInsertOne" element at index $index must '
+              'contain a Map',
+            );
           }
           bulk.insertOne(docMap[bulkDocument] as Map<String, dynamic>);
 
           break;
         case bulkInsertMany:
           if (docMap[bulkDocuments] is! List<Map<String, dynamic>>) {
-            throw MongoDartError('The "$bulkDocuments" key of the '
-                '"$bulkInsertMany" element at index $index must '
-                'contain a List of Maps');
+            throw MongoDartError(
+              'The "$bulkDocuments" key of the '
+              '"$bulkInsertMany" element at index $index must '
+              'contain a List of Maps',
+            );
           }
           bulk.insertMany(docMap[bulkDocuments] as List<Map<String, dynamic>>);
           break;

@@ -2,7 +2,7 @@ import 'package:mongo_db_query/mongo_db_query.dart';
 
 import '../client/client_exp.dart' show MongoDartError;
 
-Map<String, dynamic> extractfilterMap(filter) {
+Map<String, dynamic> extractfilterMap(dynamic filter) {
   if (filter == null) {
     return <String, dynamic>{};
   }
@@ -12,5 +12,6 @@ Map<String, dynamic> extractfilterMap(filter) {
     return <String, dynamic>{...filter};
   }
   throw MongoDartError(
-      'Filter can only be a Map or a QueryExpression instance');
+    'Filter can only be a Map or a QueryExpression instance',
+  );
 }

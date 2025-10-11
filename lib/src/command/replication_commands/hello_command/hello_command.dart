@@ -4,8 +4,9 @@ import '../../../database/base/mongo_database.dart';
 import '../../../topology/server.dart';
 import '../../../utils/map_keys.dart';
 import '../../base/server_command.dart';
-import 'hello_options.dart';
+//import 'hello_options.dart';
 import 'hello_result.dart';
+import 'client_metadata.dart';
 
 var _command = <String, dynamic>{keyHello: 1};
 
@@ -21,22 +22,28 @@ var _command = <String, dynamic>{keyHello: 1};
 /// `db.runCommand( { hello: 1, saslSupportedMechs: "-db.username-",
 /// comment: -String- } )`
 base class HelloCommand extends ServerCommand {
-  HelloCommand(this.server,
-      {MongoDatabase? db,
-      String? username,
-      super.session,
-      HelloOptions? helloOptions,
-      Map<String, Object>? rawOptions})
-      : super(
-          server.mongoClient,
-          {
-            ..._command,
-            key$Db: db?.databaseName ?? 'admin',
-            if (filled(username))
-              keySaslSupportedMechs: '${db?.databaseName ?? 'admin'}.$username'
-          },
-          options: <String, dynamic>{...?helloOptions?.options, ...?rawOptions},
-        ) {
+  HelloCommand(
+    this.server, {
+    MongoDatabase? db,
+    String? username,
+    ClientMetadata? clientMetadata,
+
+    super.session,
+    //HelloOptions? helloOptions,
+    Map<String, Object>? rawOptions,
+  }) : super(
+         server.mongoClient,
+         {
+           ..._command,
+           key$Db: db?.databaseName ?? 'admin',
+           if (filled(username))
+             keySaslSupportedMechs: '${db?.databaseName ?? 'admin'}.$username',
+         },
+         options: <String, dynamic>{
+           /* ...?helloOptions?.options, */ ...?clientMetadata?.options,
+           ...?rawOptions,
+         },
+       ) {
     requiresAuthentication = false;
   }
 

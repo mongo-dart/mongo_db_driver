@@ -12,23 +12,25 @@ class ClientMetadata {
   ClientMetadata(this.application);
 
   Map<String, Object> get options => <String, Object>{
-        keyClient: {
-          keyDriver: driver.asMap(),
-          keyOs: os.asMap(),
-          keyPlatform: platform,
-          keyApplication: application.asMap(),
-        }
-      };
+    keyClient: {
+      keyDriver: driver.asMap(),
+      keyOs: os.asMap(),
+      keyPlatform: platform,
+      keyApplication: application.asMap(),
+    },
+  };
 }
 
 /// Information about the driver itself.
+// TODO to be updated at each Version change
 class DriverMetadata {
-  final String name = mongoDartName;
-  final String version = mongoDartVersion;
+  static const String name = 'mongodb_driver';
+  static const String version = '0.1.0';
 
-  Map<String, Object> asMap() {
-    return <String, Object>{keyName: name, keyVersion: version};
-  }
+  Map<String, Object> asMap() => <String, Object>{
+    keyName: name,
+    keyVersion: version,
+  };
 }
 
 /// Information about the operating system.
@@ -51,7 +53,7 @@ class ApplicationMetadata {
   final String name;
 
   ApplicationMetadata(String name)
-      : name = name.length > 128 ? name.substring(0, 128) : name;
+    : name = name.length > 128 ? name.substring(0, 128) : name;
 
   Map<String, Object> asMap() {
     return <String, Object>{keyName: name};

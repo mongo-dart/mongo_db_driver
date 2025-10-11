@@ -4,30 +4,33 @@ import 'package:type_utils/union.dart';
 
 import '../../../../core/error/mongo_dart_error.dart';
 
-class UpdateUnion extends HugeUnionType<
-    UpdateDocument,
-    MongoDocument,
-    List<Map<String, dynamic>>,
-    UpdateExpression,
-    AggregationPipelineBuilder,
-    UpdateSpec,
-    Never,
-    Never,
-    Never> {
-  UpdateUnion(value) : super(transformValue(value)) {
+class UpdateUnion
+    extends
+        HugeUnionType<
+          UpdateDocument,
+          MongoDocument,
+          List<Map<String, dynamic>>,
+          UpdateExpression,
+          AggregationPipelineBuilder,
+          UpdateSpec,
+          Never,
+          Never,
+          Never
+        > {
+  UpdateUnion(dynamic value) : super(transformValue(value)) {
     if (isNull) {
       print(value.runtimeType);
       throw MongoDartError('The update Union cannpt be null');
     }
   }
 
-  static dynamic transformValue(value) {
+  static dynamic transformValue(dynamic value) {
     if (value is List) {
       if (value is List<Map<String, dynamic>>) {
         return value;
       }
       List<Map<String, dynamic>> lud = <Map<String, dynamic>>[
-        for (var element in value) <String, dynamic>{...?element}
+        for (var element in value) <String, dynamic>{...?element},
       ];
       return lud;
     }
@@ -50,6 +53,7 @@ class UpdateUnion extends HugeUnionType<
     }
 
     throw MongoDartError(
-        'Unexpected value type ${value.runtimeType} in UpdateSpecs');
+      'Unexpected value type ${value.runtimeType} in UpdateSpecs',
+    );
   }
 }

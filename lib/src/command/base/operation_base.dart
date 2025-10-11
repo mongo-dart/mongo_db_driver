@@ -7,12 +7,7 @@ import '../../session/client_session.dart';
 import '../../topology/abstract/topology.dart';
 import '../../topology/server.dart';
 
-enum Aspect {
-  readOperation,
-  noInheritOptions,
-  writeOperation,
-  retryable,
-}
+enum Aspect { readOperation, noInheritOptions, writeOperation, retryable }
 
 typedef Options = Map<String, dynamic>;
 typedef Command = Map<String, dynamic>;
@@ -21,13 +16,17 @@ abstract base class OperationBase {
   Options options;
   final Set<Aspect> _aspects;
 
-  OperationBase(this.mongoClient,
-      {Options? options, ClientSession? session, dynamic aspects})
-      // Leaves the orginal Options document untouched
-      : options = <String, dynamic>{...?options},
-        isImplicitSession = session == null,
-        _aspects = defineAspects(aspects),
-        session = session ?? ClientSession(mongoClient);
+  OperationBase(
+    this.mongoClient, {
+    Options? options,
+    ClientSession? session,
+    dynamic aspects,
+  })
+    // Leaves the orginal Options document untouched
+    : options = <String, dynamic>{...?options},
+       isImplicitSession = session == null,
+       _aspects = defineAspects(aspects),
+       session = session ?? ClientSession(mongoClient);
 
   bool isImplicitSession;
   final ClientSession session;
@@ -52,7 +51,7 @@ abstract base class OperationBase {
 
   //void clearSession() => options.remove(keySession);
 
-  static Set<Aspect> defineAspects(aspects) {
+  static Set<Aspect> defineAspects(dynamic aspects) {
     if (aspects is Aspect) {
       return {aspects};
     } else if (aspects is List<Aspect>) {

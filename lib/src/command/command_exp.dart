@@ -104,8 +104,9 @@ export 'query_and_write_operation_commands/wrapper/replace_one/base/replace_one_
 export 'query_and_write_operation_commands/wrapper/insert_many/base/insert_many_options.dart';
 
 export 'replication_commands/hello_command/hello_command.dart';
-export 'replication_commands/hello_command/hello_options.dart';
+//export 'replication_commands/hello_command/hello_options.dart';
 export 'replication_commands/hello_command/hello_result.dart';
+export 'replication_commands/hello_command/client_metadata.dart';
 
 export 'parameters/collation_options.dart';
 export 'parameters/read_preference.dart';

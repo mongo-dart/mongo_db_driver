@@ -32,7 +32,8 @@ class MongoDatabase {
           return MongoDatabaseV1(mongoClient, databaseName);
         default:
           throw MongoDartError(
-              'Stable Api ${mongoClient.serverApi!.version} not managed');
+            'Stable Api ${mongoClient.serverApi!.version} not managed',
+          );
       }
     }
     return MongoDatabaseOpen(mongoClient, databaseName);
@@ -67,8 +68,12 @@ class MongoDatabase {
 
   /// Runs a database command
   Future<MongoDocument> runCommand(Command command, {ClientSession? session}) =>
-      CommandOperation(this, command, <String, dynamic>{}, session: session)
-          .process();
+      CommandOperation(
+        this,
+        command,
+        <String, dynamic>{},
+        session: session,
+      ).process();
 
   /// Creates a collection object
   MongoCollection collection(String collectionName) =>
@@ -84,22 +89,35 @@ class MongoDatabase {
   // ********************    C O M M A N D S   **************************
   // ********************************************************************
 
-  Future<bool> drop(String collectionName,
-      {ClientSession? session,
-      DropOptions? dropOptions,
-      Map<String, Object>? rawOptions}) async {
-    var result = await dropCollection(collectionName,
-        session: session, dropOptions: dropOptions, rawOptions: rawOptions);
+  Future<bool> drop(
+    String collectionName, {
+    ClientSession? session,
+    DropOptions? dropOptions,
+    Map<String, Object>? rawOptions,
+  }) async {
+    var result = await dropCollection(
+      collectionName,
+      session: session,
+      dropOptions: dropOptions,
+      rawOptions: rawOptions,
+    );
     return result[keyOk] == 1.0;
   }
 
   /// This method drops a collection
-  Future<Map<String, dynamic>> dropCollection(String collectionName,
-      {ClientSession? session,
-      DropOptions? dropOptions,
-      Map<String, Object>? rawOptions}) async {
-    var command = DropCommand(this, collectionName,
-        session: session, dropOptions: dropOptions, rawOptions: rawOptions);
+  Future<Map<String, dynamic>> dropCollection(
+    String collectionName, {
+    ClientSession? session,
+    DropOptions? dropOptions,
+    Map<String, Object>? rawOptions,
+  }) async {
+    var command = DropCommand(
+      this,
+      collectionName,
+      session: session,
+      dropOptions: dropOptions,
+      rawOptions: rawOptions,
+    );
     return command.process();
   }
 
@@ -113,37 +131,42 @@ class MongoDatabase {
   /// The difference with the Drop Database command is that this
   /// version returns the server response,
   /// while the other only a boolean.
-  Future<Map<String, dynamic>> dropDb(
-      {ClientSession? session,
-      DropDatabaseOptions? dropOptions,
-      Map<String, Object>? rawOptions}) async {
-    var command = DropDatabaseCommand(this,
-        session: session,
-        dropDatabaseOptions: dropOptions,
-        rawOptions: rawOptions);
+  Future<Map<String, dynamic>> dropDb({
+    ClientSession? session,
+    DropDatabaseOptions? dropOptions,
+    Map<String, Object>? rawOptions,
+  }) async {
+    var command = DropDatabaseCommand(
+      this,
+      session: session,
+      dropDatabaseOptions: dropOptions,
+      rawOptions: rawOptions,
+    );
     return command.process();
   }
 
-  Future<List<Map<String, dynamic>>> getCollectionInfos(
-          [Map<String, dynamic> filter = const {}]) async =>
-      listCollections(filter: filter).toList();
+  Future<List<Map<String, dynamic>>> getCollectionInfos([
+    Map<String, dynamic> filter = const {},
+  ]) async => listCollections(filter: filter).toList();
 
-  Future<List<String?>> getCollectionNames(
-      [Map<String, dynamic> filter = const {}]) async {
+  Future<List<String?>> getCollectionNames([
+    Map<String, dynamic> filter = const {},
+  ]) async {
     var ret = await listCollections().toList();
 
     return [
       for (var element in ret)
         for (var nameKey in element.keys)
-          if (nameKey == keyName) element[keyName]
+          if (nameKey == keyName) element[keyName],
     ];
   }
 
   MongoDatabase getSibling(String dbName) => mongoClient.db(dbName: dbName);
 
   // Todo - Check Srvers Pool
-  List<String> get uriList =>
-      [for (var element in topology.seedList) element.toString()];
+  List<String> get uriList => [
+    for (var element in topology.seedList) element.toString(),
+  ];
 
   // TODO session needed ?
   /// Ping command
@@ -184,7 +207,7 @@ class MongoDatabase {
     throw MongoDartError('No More used');
   } */
 
-  bool documentIsNotAnError(firstRepliedDocument) =>
+  bool documentIsNotAnError(dynamic firstRepliedDocument) =>
       firstRepliedDocument['ok'] == 1.0 && firstRepliedDocument['err'] == null;
 
   /*  @Deprecated('Deprecated since version 4.0.')
@@ -222,24 +245,27 @@ class MongoDatabase {
     return name;
   }
 
-  Future<Map<String, dynamic>> createIndex(String collectionName,
-      {String? key,
-      Map<String, dynamic>? keys,
-      bool? unique,
-      bool? sparse,
-      bool? background,
-      bool? dropDups,
-      Map<String, dynamic>? partialFilterExpression,
-      String? name}) {
+  Future<Map<String, dynamic>> createIndex(
+    String collectionName, {
+    String? key,
+    Map<String, dynamic>? keys,
+    bool? unique,
+    bool? sparse,
+    bool? background,
+    bool? dropDups,
+    Map<String, dynamic>? partialFilterExpression,
+    String? name,
+  }) {
     return collection(collectionName).createIndex(
-        key: key,
-        keys: keys,
-        unique: unique,
-        sparse: sparse,
-        background: background,
-        dropDups: dropDups,
-        partialFilterExpression: partialFilterExpression,
-        name: name);
+      key: key,
+      keys: keys,
+      unique: unique,
+      sparse: sparse,
+      background: background,
+      dropDups: dropDups,
+      partialFilterExpression: partialFilterExpression,
+      name: name,
+    );
   }
 
   Map<String, dynamic> _setKeys(String? key, Map<String, dynamic>? keys) {
@@ -259,15 +285,17 @@ class MongoDatabase {
     return keys;
   }
 
-  Future ensureIndex(String collectionName,
-      {String? key,
-      Map<String, dynamic>? keys,
-      bool? unique,
-      bool? sparse,
-      bool? background,
-      bool? dropDups,
-      Map<String, dynamic>? partialFilterExpression,
-      String? name}) async {
+  Future ensureIndex(
+    String collectionName, {
+    String? key,
+    Map<String, dynamic>? keys,
+    bool? unique,
+    bool? sparse,
+    bool? background,
+    bool? dropDups,
+    Map<String, dynamic>? partialFilterExpression,
+    String? name,
+  }) async {
     keys = _setKeys(key, keys);
     var indexInfos = await collection(collectionName).getIndexes();
 
@@ -280,14 +308,16 @@ class MongoDatabase {
       return {'ok': 1.0, 'result': 'index preexists'};
     }
 
-    var createdIndex = await createIndex(collectionName,
-        keys: keys,
-        unique: unique,
-        sparse: sparse,
-        background: background,
-        dropDups: dropDups,
-        partialFilterExpression: partialFilterExpression,
-        name: name);
+    var createdIndex = await createIndex(
+      collectionName,
+      keys: keys,
+      unique: unique,
+      sparse: sparse,
+      background: background,
+      dropDups: dropDups,
+      partialFilterExpression: partialFilterExpression,
+      name: name,
+    );
 
     return createdIndex;
   }
@@ -300,49 +330,71 @@ class MongoDatabase {
   /// connection.
   ///
   /// Only works from version 3.6
-  Future<Map<String, dynamic>> serverStatus(
-      {ClientSession? session, Map<String, Object>? options}) async {
-    var operation = ServerStatusCommand(mongoClient,
-        session: session, serverStatusOptions: ServerStatusOptions.instance);
+  Future<Map<String, dynamic>> serverStatus({
+    ClientSession? session,
+    Map<String, Object>? options,
+  }) async {
+    var operation = ServerStatusCommand(
+      mongoClient,
+      session: session,
+      serverStatusOptions: ServerStatusOptions.instance,
+    );
     return operation.process();
   }
 
   /// This method explicitly creates a collection
-  Future<Map<String, dynamic>> createCollection(String name,
-      {ClientSession? session,
-      CreateCollectionOptions? createCollectionOptions,
-      Map<String, Object>? rawOptions}) async {
-    var command = CreateCollectionCommand(this, name,
-        createCollectionOptions: createCollectionOptions,
-        rawOptions: rawOptions);
+  Future<Map<String, dynamic>> createCollection(
+    String name, {
+    ClientSession? session,
+    CreateCollectionOptions? createCollectionOptions,
+    Map<String, Object>? rawOptions,
+  }) async {
+    var command = CreateCollectionCommand(
+      this,
+      name,
+      createCollectionOptions: createCollectionOptions,
+      rawOptions: rawOptions,
+    );
     return command.process();
   }
 
   /// This method retuns a stream cursor to get a list of the collections
   /// for this DB.
   ///
-  Stream<Map<String, dynamic>> listCollections(
-      {QueryExpression? selector,
-      Map<String, dynamic>? filter,
-      ListCollectionsOptions? findOptions,
-      Map<String, Object>? rawOptions}) {
-    var command = ListCollectionsCommand(this,
-        filter: filter ??
-            (selector?.rawFilter == null ? null : selector!.rawFilter),
-        listCollectionsOptions: findOptions,
-        rawOptions: rawOptions);
+  Stream<Map<String, dynamic>> listCollections({
+    QueryExpression? selector,
+    Map<String, dynamic>? filter,
+    ListCollectionsOptions? findOptions,
+    Map<String, Object>? rawOptions,
+  }) {
+    var command = ListCollectionsCommand(
+      this,
+      filter:
+          filter ?? (selector?.rawFilter == null ? null : selector!.rawFilter),
+      listCollectionsOptions: findOptions,
+      rawOptions: rawOptions,
+    );
 
     return Cursor(command, server).stream;
   }
 
   /// This method creates a view
   Future<Map<String, dynamic>> createView(
-      String view, String source, List pipeline,
-      {ClientSession? session,
-      CreateViewOptions? createViewOptions,
-      Map<String, Object>? rawOptions}) async {
-    var command = CreateViewCommand(this, view, source, pipeline,
-        createViewOptions: createViewOptions, rawOptions: rawOptions);
+    String view,
+    String source,
+    List pipeline, {
+    ClientSession? session,
+    CreateViewOptions? createViewOptions,
+    Map<String, Object>? rawOptions,
+  }) async {
+    var command = CreateViewCommand(
+      this,
+      view,
+      source,
+      pipeline,
+      createViewOptions: createViewOptions,
+      rawOptions: rawOptions,
+    );
     return command.process();
   }
 
@@ -355,21 +407,23 @@ class MongoDatabase {
   ///
   /// The pipeline can be either an `AggregationPipelineBuilder` or a
   /// List of Maps (`List<Map<String, Object>>`)
-  Stream<Map<String, dynamic>> aggregateToStream(dynamic pipeline,
-          {bool? explain,
-          Map<String, Object>? cursor,
-          HintUnion? hint,
-          ClientSession? session,
-          AggregateOptions? aggregateOptions,
-          Map<String, Object>? rawOptions}) =>
-      aggregate(pipeline,
-              explain: explain,
-              cursor: cursor,
-              hint: hint,
-              session: session,
-              aggregateOptions: aggregateOptions,
-              rawOptions: rawOptions)
-          .stream;
+  Stream<Map<String, dynamic>> aggregateToStream(
+    dynamic pipeline, {
+    bool? explain,
+    Map<String, Object>? cursor,
+    HintUnion? hint,
+    ClientSession? session,
+    AggregateOptions? aggregateOptions,
+    Map<String, Object>? rawOptions,
+  }) => aggregate(
+    pipeline,
+    explain: explain,
+    cursor: cursor,
+    hint: hint,
+    session: session,
+    aggregateOptions: aggregateOptions,
+    rawOptions: rawOptions,
+  ).stream;
 
   /// This method returns a curosr that can be read or transformed into
   /// a stream with `stream` (for a stream you can directly call
@@ -381,22 +435,27 @@ class MongoDatabase {
   /// Runs a specified admin/diagnostic pipeline which does not require an
   /// underlying collection. For aggregations on collection data,
   /// see `dbcollection.aggregate()`.
-  Cursor aggregate(dynamic pipeline,
-      {bool? explain,
-      Map<String, Object>? cursor,
-      HintUnion? hint,
-      ClientSession? session,
-      AggregateOptions? aggregateOptions,
-      Map<String, Object>? rawOptions}) {
+  Cursor aggregate(
+    dynamic pipeline, {
+    bool? explain,
+    Map<String, Object>? cursor,
+    HintUnion? hint,
+    ClientSession? session,
+    AggregateOptions? aggregateOptions,
+    Map<String, Object>? rawOptions,
+  }) {
     return Cursor(
-        AggregateOperation(pipeline,
-            db: this,
-            explain: explain,
-            cursor: cursor,
-            hint: hint,
-            session: session,
-            aggregateOptions: aggregateOptions,
-            rawOptions: rawOptions),
-        server);
+      AggregateOperation(
+        pipeline,
+        db: this,
+        explain: explain,
+        cursor: cursor,
+        hint: hint,
+        session: session,
+        aggregateOptions: aggregateOptions,
+        rawOptions: rawOptions,
+      ),
+      server,
+    );
   }
 }
