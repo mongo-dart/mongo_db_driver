@@ -12,9 +12,12 @@ import 'operation_base.dart';
 Logger _log = Logger('Admin Command');
 
 base class DbAdminCommandOperation extends OperationBase {
-  DbAdminCommandOperation(this.client, this.command,
-      {super.session, super.options})
-      : super(client) {
+  DbAdminCommandOperation(
+    this.client,
+    this.command, {
+    super.session,
+    super.options,
+  }) : super(client) {
     _debugInfo = client.debugOptions.commandExecutionLogLevel != Level.OFF;
     if (_debugInfo) {
       _log.level = client.debugOptions.commandExecutionLogLevel;
@@ -29,10 +32,12 @@ base class DbAdminCommandOperation extends OperationBase {
 
   @override
   Future<MongoDocument> process() async => executeOnServer(
-      client.topology
-              ?.getServer(readPreferenceMode: client.readPreference?.mode) ??
-          (throw MongoDartError('Server not found')),
-      session: session);
+    client.topology?.getServer(
+          readPreferenceMode: client.readPreference?.mode,
+        ) ??
+        (throw MongoDartError('Server not found')),
+    session: session,
+  );
 
   /// This method is for exposing a common interface for the user
   /// Must be overriden from commands
@@ -46,8 +51,10 @@ base class DbAdminCommandOperation extends OperationBase {
   @override
   @nonVirtual
   @protected
-  Future<MongoDocument> executeOnServer(Server server,
-      {ClientSession? session}) async {
+  Future<MongoDocument> executeOnServer(
+    Server server, {
+    ClientSession? session,
+  }) async {
     var command = <String, dynamic>{...$buildCommand(), key$Db: 'admin'};
     options.removeWhere((key, value) => command.containsKey(key));
 

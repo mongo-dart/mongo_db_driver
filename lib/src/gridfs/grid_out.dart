@@ -28,15 +28,19 @@ class GridOut extends GridFSFile {
   /// and a file with the same name exists, it is overwitten,
   /// otherwise a suffix like "(n)" is appended to the file name, where n is
   /// a progressive number not yet assigned to any existing file in the system
-  Future<File> toFile(File file,
-      {FileMode? mode, bool? overwriteExistingFile}) async {
+  Future<File> toFile(
+    File file, {
+    FileMode? mode,
+    bool? overwriteExistingFile,
+  }) async {
     overwriteExistingFile ??= false;
     mode ??= FileMode.writeOnly;
     if (mode == FileMode.read) {
       throw ArgumentError('Read file mode not valid for method "toFile()"');
     }
     File tempFile;
-    String tempFilePath = '${p.dirname(file.path)}${Platform.pathSeparator}'
+    String tempFilePath =
+        '${p.dirname(file.path)}${Platform.pathSeparator}'
         '${p.basenameWithoutExtension(file.path)}_${Uuid().v4()}'
         '${p.extension(file.path)}';
     if (mode == FileMode.append || mode == FileMode.writeOnlyAppend) {
@@ -46,15 +50,19 @@ class GridOut extends GridFSFile {
     }
     Future<void> addToFile(Map<String, dynamic> chunk) async {
       final bytes = chunk['data'] as BsonBinary;
-      await tempFile.writeAsBytes(bytes.byteList,
-          mode: FileMode.writeOnlyAppend, flush: true);
+      await tempFile.writeAsBytes(
+        bytes.byteList,
+        mode: FileMode.writeOnlyAppend,
+        flush: true,
+      );
     }
 
     var chunkList = await fs.chunks
         .find(
-            filter: where
-              ..$eq('files_id', id)
-              ..sortBy('n'))
+          filter: where
+            ..$eq('files_id', id)
+            ..sortBy('n'),
+        )
         .toList();
     for (var chunk in chunkList) {
       await addToFile(chunk);
@@ -76,9 +84,10 @@ class GridOut extends GridFSFile {
 
     fs.chunks
         .find(
-            filter: where
-              ..$eq('files_id', id)
-              ..sortBy('n'))
+          filter: where
+            ..$eq('files_id', id)
+            ..sortBy('n'),
+        )
         .forEach(addToSink)
         .then((_) => completer.complete(length));
     return completer.future;

@@ -72,7 +72,7 @@ Future testBig() {
     0x80,
     0x81,
     0xfe,
-    0xff
+    0xff,
   ];
 
   var target = GridFS.defaultChunkSize * 3;
@@ -97,7 +97,7 @@ Future testVeryBig() {
     0x80,
     0x81,
     0xfe,
-    0xff
+    0xff,
   ];
 
   var target = int.parse('1073741824');
@@ -122,7 +122,7 @@ Future tesSomeChunks() async {
     0x80,
     0x81,
     0xfe,
-    0xff
+    0xff,
   ];
 
   GridFS.defaultChunkSize = Int32(9);
@@ -155,8 +155,11 @@ Future<List<CountResult>> getInitialState(GridFS gridFS) async {
   return result; */
 }
 
-Future testInOut(List<int> data, GridFS gridFS,
-    [Map<String, dynamic>? extraData]) async {
+Future testInOut(
+  List<int> data,
+  GridFS gridFS, [
+  Map<String, dynamic>? extraData,
+]) async {
   var consumer = MockConsumer();
   var out = IOSink(consumer);
   await getInitialState(gridFS);
@@ -170,8 +173,11 @@ Future testInOut(List<int> data, GridFS gridFS,
   var gridOut = await gridFS.findOne(where..$eq('_id', input.id));
   expect(gridOut, isNotNull, reason: 'Did not find file by Id');
   expect(input.id, gridOut?.id, reason: 'Ids not equal.');
-  expect(GridFS.defaultChunkSize, gridOut?.chunkSize,
-      reason: 'Chunk size not the same.');
+  expect(
+    GridFS.defaultChunkSize,
+    gridOut?.chunkSize,
+    reason: 'Chunk size not the same.',
+  );
   expect('test', gridOut?.filename, reason: 'Filename not equal');
   expect(gridOut?.extraData, input.extraData);
   await gridOut?.writeTo(out);
@@ -180,7 +186,7 @@ Future testInOut(List<int> data, GridFS gridFS,
 
 Future testChunkTransformerOneChunk() {
   return Stream.fromIterable([
-    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
   ]).transform(ChunkHandler(Int32(3)).transformer).toList().then((chunkedList) {
     expect(chunkedList[0], orderedEquals([1, 2, 3]));
     expect(chunkedList[1], orderedEquals([4, 5, 6]));
@@ -194,7 +200,7 @@ Future testChunkTransformerSeveralChunks() {
     [1, 2, 3, 4],
     [5],
     [6, 7],
-    [8, 9, 10, 11]
+    [8, 9, 10, 11],
   ]).transform(ChunkHandler(Int32(3)).transformer).toList().then((chunkedList) {
     expect(chunkedList[0], orderedEquals([1, 2, 3]));
     expect(chunkedList[1], orderedEquals([4, 5, 6]));
@@ -208,7 +214,7 @@ Future testChunkTransformerSeveralChunks2() {
     [1, 2, 3, 4],
     [5, 6],
     [7],
-    [8, 9, 10, 11]
+    [8, 9, 10, 11],
   ]).transform(ChunkHandler(Int32(3)).transformer).toList().then((chunkedList) {
     expect(chunkedList[0], orderedEquals([1, 2, 3]));
     expect(chunkedList[1], orderedEquals([4, 5, 6]));
@@ -280,7 +286,7 @@ Future testExtraData() {
   var extraData = <String, dynamic>{
     'test': [1, 2, 3],
     'extraData': 'Test',
-    'map': {'a': 1}
+    'map': {'a': 1},
   };
 
   return testInOut(data, gridFS, extraData);
@@ -308,9 +314,13 @@ void main() {
   group('ChunkTransformer tests:', () {
     test('testChunkTransformer', testChunkTransformerOneChunk);
     test(
-        'testChunkTransformerSeveralChunks', testChunkTransformerSeveralChunks);
-    test('testChunkTransformerSeveralChunks2',
-        testChunkTransformerSeveralChunks2);
+      'testChunkTransformerSeveralChunks',
+      testChunkTransformerSeveralChunks,
+    );
+    test(
+      'testChunkTransformerSeveralChunks2',
+      testChunkTransformerSeveralChunks2,
+    );
   });
   group('GridFS tests:', () {
     setUp(() => GridFS.defaultChunkSize = Int32(256 * 1024));
@@ -326,8 +336,10 @@ void main() {
   tearDownAll(() async {
     await client.connect();
     db = client.db();
-    await Future.forEach(usedCollectionNames,
-        (String collectionName) => db.collection(collectionName).drop());
+    await Future.forEach(
+      usedCollectionNames,
+      (String collectionName) => db.collection(collectionName).drop(),
+    );
     await client.close();
   });
 }

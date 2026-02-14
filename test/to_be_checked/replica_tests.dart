@@ -13,8 +13,9 @@ Future testCollectionInfoCursor() async {
   MongoCollection newColl;
 
   var client = MongoClient(
-      'mongodb://$defaultUri1,$defaultUri2,$defaultUri3/mongo_dart-test'
-      '?authMechanism=${ScramSha256Authenticator.name}');
+    'mongodb://$defaultUri1,$defaultUri2,$defaultUri3/mongo_dart-test'
+    '?authMechanism=${ScramSha256Authenticator.name}',
+  );
   await client.connect();
   final db = client.db();
 
@@ -22,7 +23,7 @@ Future testCollectionInfoCursor() async {
   await newColl.deleteMany();
 
   await newColl.insertMany([
-    {'a': 1}
+    {'a': 1},
   ]);
 
   var v = await db.getCollectionInfos({'name': 'new_collecion'});
@@ -32,20 +33,20 @@ Future testCollectionInfoCursor() async {
 }
 
 void main() {
-//  hierarchicalLoggingEnabled = true;
-//  Logger.root.level = Level.OFF;
-//  new Logger('ConnectionManager').level = Level.ALL;
-//  var listener = (LogRecord r) {
-//    var name = r.loggerName;
-//    if (name.length > 15) {
-//      name = name.substring(0, 15);
-//    }
-//    while (name.length < 15) {
-//      name = "$name ";
-//    }
-//    print("${r.time}: $name: ${r.message}");
-//  };
-//  Logger.root.onRecord.listen(listener);
+  //  hierarchicalLoggingEnabled = true;
+  //  Logger.root.level = Level.OFF;
+  //  new Logger('ConnectionManager').level = Level.ALL;
+  //  var listener = (LogRecord r) {
+  //    var name = r.loggerName;
+  //    if (name.length > 15) {
+  //      name = name.substring(0, 15);
+  //    }
+  //    while (name.length < 15) {
+  //      name = "$name ";
+  //    }
+  //    print("${r.time}: $name: ${r.message}");
+  //  };
+  //  Logger.root.onRecord.listen(listener);
 
   group('DbCollection tests:', () {
     test('testCollectionInfoCursor', testCollectionInfoCursor);

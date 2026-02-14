@@ -25,8 +25,12 @@ abstract class SaslAuthenticator extends Authenticator {
     var client = server.mongoClient;
 
     AuthCommand command = SaslStartCommand(
-        client, mechanism.name, currentStep.bytesToSendToServer,
-        saslStartOptions: SaslStartOptions(), session: session);
+      client,
+      mechanism.name,
+      currentStep.bytesToSendToServer,
+      saslStartOptions: SaslStartOptions(),
+      session: session,
+    );
 
     while (true) {
       Map<String, dynamic> result;
@@ -34,10 +38,12 @@ abstract class SaslAuthenticator extends Authenticator {
       result = await command.execute(server: server, connection: connection);
 
       if (result[keyOk] == 0.0) {
-        throw MongoDartError(result[keyErrmsg],
-            mongoCode: result[keyCode],
-            errorCode: result[keyCode] == null ? null : '${result[keyCode]}',
-            errorCodeName: result[keyCodeName]);
+        throw MongoDartError(
+          result[keyErrmsg],
+          mongoCode: result[keyCode],
+          errorCode: result[keyCode] == null ? null : '${result[keyCode]}',
+          errorCodeName: result[keyCodeName],
+        );
       }
       if (result['done'] == true) {
         break;
@@ -48,12 +54,16 @@ abstract class SaslAuthenticator extends Authenticator {
       var payloadAsBytes = base64.decode(payload.toString());
 
       if (mechanism.name == ScramSha1Authenticator.name) {
-        currentStep = currentStep.transition(payloadAsBytes,
-            passwordDigestResolver: (UsernamePasswordCredential credential) =>
-                md5
-                    .convert(utf8.encode(
-                        '${credential.username}:mongo:${credential.password}'))
-                    .toString());
+        currentStep = currentStep.transition(
+          payloadAsBytes,
+          passwordDigestResolver: (UsernamePasswordCredential credential) => md5
+              .convert(
+                utf8.encode(
+                  '${credential.username}:mongo:${credential.password}',
+                ),
+              )
+              .toString(),
+        );
       } else {
         currentStep = currentStep.transition(payloadAsBytes);
       }
@@ -61,7 +71,10 @@ abstract class SaslAuthenticator extends Authenticator {
       var conversationId = result['conversationId'] as int;
 
       command = SaslContinueCommand(
-          client, conversationId, currentStep.bytesToSendToServer);
+        client,
+        conversationId,
+        currentStep.bytesToSendToServer,
+      );
     }
   }
 }

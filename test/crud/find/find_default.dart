@@ -17,7 +17,9 @@ Future findDefault(MongoDatabase db, List<String> usedCollections) async {
 
 ///
 Future findDefaultSelectionQuery(
-    MongoDatabase db, List<String> usedCollections) async {
+  MongoDatabase db,
+  List<String> usedCollections,
+) async {
   var collectionName = getRandomCollectionName(usedCollections);
   var collection = db.collection(collectionName);
   var (_, MongoDocument result, _, _) = await insertBio(collection);
@@ -31,14 +33,17 @@ Future findDefaultSelectionQuery(
 
 ///
 Future findDefaultEmbeddedQuery(
-    MongoDatabase db, List<String> usedCollections) async {
+  MongoDatabase db,
+  List<String> usedCollections,
+) async {
   var collectionName = getRandomCollectionName(usedCollections);
   var collection = db.collection(collectionName);
   var (_, MongoDocument result, _, _) = await insertBio(collection);
   expect(result, containsPair('ok', 1.0));
 
-  var findList =
-      await collection.find(filter: where..$eq('name.last', 'Hopper')).toList();
+  var findList = await collection
+      .find(filter: where..$eq('name.last', 'Hopper'))
+      .toList();
 
   expect(findList.length, 1);
   expect(findList.first['_id'], 3);
@@ -46,7 +51,9 @@ Future findDefaultEmbeddedQuery(
 
 ///
 Future findDefaultMultipleQuery(
-    MongoDatabase db, List<String> usedCollections) async {
+  MongoDatabase db,
+  List<String> usedCollections,
+) async {
   var collectionName = getRandomCollectionName(usedCollections);
   var collection = db.collection(collectionName);
   var (_, MongoDocument result, _, _) = await insertBio(collection);
@@ -54,8 +61,9 @@ Future findDefaultMultipleQuery(
 
   var findList = await collection
       .find(
-          filter: where
-            ..$in('_id', [5, ObjectId.parse('51df07b094c6acd67e492f41')]))
+        filter: where
+          ..$in('_id', [5, ObjectId.parse('51df07b094c6acd67e492f41')]),
+      )
       .toList();
 
   expect(findList.length, 2);
@@ -63,7 +71,9 @@ Future findDefaultMultipleQuery(
 }
 
 Future findDefaultQueries(
-    MongoDatabase db, List<String> usedCollections) async {
+  MongoDatabase db,
+  List<String> usedCollections,
+) async {
   var collectionName = getRandomCollectionName(usedCollections);
   var collection = db.collection(collectionName);
   var (_, MongoDocument result, _, _) = await insertBio(collection);
@@ -76,18 +86,20 @@ Future findDefaultQueries(
   expect(findList.length, 3);
   expect(findList.first['_id'], 6);
 
-  findList =
-      await collection.find(filter: where..$regex('name.last', '^N')).toList();
+  findList = await collection
+      .find(filter: where..$regex('name.last', '^N'))
+      .toList();
 
   expect(findList.length, 1);
   expect(findList.first['_id'], 4);
 
   findList = await collection
       .find(
-          filter: where
-            ..raw({
-              'name.last': {r'$regex': '^N'}
-            }))
+        filter: where
+          ..raw({
+            'name.last': {r'$regex': '^N'},
+          }),
+      )
       .toList();
 
   expect(findList.length, 1);
@@ -95,7 +107,9 @@ Future findDefaultQueries(
 }
 
 Future findDefaultRangeQuery(
-    MongoDatabase db, List<String> usedCollections) async {
+  MongoDatabase db,
+  List<String> usedCollections,
+) async {
   var collectionName = getRandomCollectionName(usedCollections);
   var collection = db.collection(collectionName);
   var (_, MongoDocument result, _, _) = await insertBio(collection);
@@ -103,8 +117,9 @@ Future findDefaultRangeQuery(
 
   var findList = await collection
       .find(
-          filter: where
-            ..inRange('birth', DateTime(1940, 1, 1), DateTime(1960, 1, 1)))
+        filter: where
+          ..inRange('birth', DateTime(1940, 1, 1), DateTime(1960, 1, 1)),
+      )
       .toList();
 
   expect(findList.length, 3);
@@ -112,7 +127,9 @@ Future findDefaultRangeQuery(
 }
 
 Future findDefaultAndQuery(
-    MongoDatabase db, List<String> usedCollections) async {
+  MongoDatabase db,
+  List<String> usedCollections,
+) async {
   var collectionName = getRandomCollectionName(usedCollections);
   var collection = db.collection(collectionName);
   var (_, MongoDocument result, _, _) = await insertBio(collection);
@@ -120,9 +137,10 @@ Future findDefaultAndQuery(
 
   var findList = await collection
       .find(
-          filter: where
-            ..$gt('birth', DateTime(1920, 1, 1))
-            ..notExists('death'))
+        filter: where
+          ..$gt('birth', DateTime(1920, 1, 1))
+          ..notExists('death'),
+      )
       .toList();
 
   expect(findList.length, 3);

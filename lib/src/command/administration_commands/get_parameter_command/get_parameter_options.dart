@@ -16,7 +16,5 @@ class GetParameterOptions {
 
   const GetParameterOptions({this.comment});
 
-  Options get options => <String, dynamic>{
-        if (comment != null) keyComment: comment!,
-      };
+  Options get options => <String, dynamic>{keyComment: ?comment};
 }

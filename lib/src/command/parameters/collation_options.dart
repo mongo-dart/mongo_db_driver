@@ -85,30 +85,36 @@ class CollationOptions {
   /// for details
   bool normalization;
 
-  CollationOptions(this.locale,
-      {this.strength,
-      this.caseLevel = false,
-      this.caseFirst,
-      this.numericOrdering = false,
-      this.alternate,
-      this.maxVariable,
-      this.backwards = false,
-      this.normalization = false}) {
+  CollationOptions(
+    this.locale, {
+    this.strength,
+    this.caseLevel = false,
+    this.caseFirst,
+    this.numericOrdering = false,
+    this.alternate,
+    this.maxVariable,
+    this.backwards = false,
+    this.normalization = false,
+  }) {
     if (strength != null && (strength! < 1 || strength! > 5)) {
       throw MongoDartError(
-          'The allowed values for the strngt parameter are 1 to 5');
+        'The allowed values for the strngt parameter are 1 to 5',
+      );
     }
     if (caseFirst != null && !_caseFirstValidValues.contains(caseFirst)) {
       throw MongoDartError(
-          'invalid value "$caseFirst" for the caseFirst parameter');
+        'invalid value "$caseFirst" for the caseFirst parameter',
+      );
     }
     if (alternate != null && !_alternateValidValues.contains(alternate)) {
       throw MongoDartError(
-          'invalid value "$alternate" for the alternate parameter');
+        'invalid value "$alternate" for the alternate parameter',
+      );
     }
     if (maxVariable != null && !_maxVariableValidValues.contains(maxVariable)) {
       throw MongoDartError(
-          'invalid value "$maxVariable" for the maxVariable parameter');
+        'invalid value "$maxVariable" for the maxVariable parameter',
+      );
     }
   }
 
@@ -161,26 +167,28 @@ class CollationOptions {
       throw MongoDartError('$keyNormalization must be of type bool');
     }
 
-    return CollationOptions(collationMap[keyLocale] as String,
-        caseLevel: collationMap[keyCaseLevel] as bool? ?? false,
-        caseFirst: collationMap[keyCaseFirst] as String?,
-        strength: collationMap[keyStrength] as int?,
-        numericOrdering: collationMap[keyNumericOrdering] as bool? ?? false,
-        alternate: collationMap[keyAlternate] as String?,
-        maxVariable: collationMap[keyMaxVariable] as String?,
-        backwards: collationMap[keyBackwards] as bool? ?? false,
-        normalization: collationMap[keyNormalization] as bool? ?? false);
+    return CollationOptions(
+      collationMap[keyLocale] as String,
+      caseLevel: collationMap[keyCaseLevel] as bool? ?? false,
+      caseFirst: collationMap[keyCaseFirst] as String?,
+      strength: collationMap[keyStrength] as int?,
+      numericOrdering: collationMap[keyNumericOrdering] as bool? ?? false,
+      alternate: collationMap[keyAlternate] as String?,
+      maxVariable: collationMap[keyMaxVariable] as String?,
+      backwards: collationMap[keyBackwards] as bool? ?? false,
+      normalization: collationMap[keyNormalization] as bool? ?? false,
+    );
   }
 
   Options get options => <String, dynamic>{
-        keyLocale: locale,
-        if (strength != null) keyStrength: strength!,
-        if (caseLevel) keyCaseLevel: caseLevel,
-        if (caseFirst != null) keyCaseFirst: caseFirst!,
-        if (numericOrdering) keyNumericOrdering: numericOrdering,
-        if (alternate != null) keyAlternate: alternate!,
-        if (maxVariable != null) keyMaxVariable: maxVariable!,
-        if (backwards) keyBackwards: backwards,
-        if (normalization) keyNormalization: normalization,
-      };
+    keyLocale: locale,
+    keyStrength: ?strength,
+    if (caseLevel) keyCaseLevel: caseLevel,
+    keyCaseFirst: ?caseFirst,
+    if (numericOrdering) keyNumericOrdering: numericOrdering,
+    keyAlternate: ?alternate,
+    keyMaxVariable: ?maxVariable,
+    if (backwards) keyBackwards: backwards,
+    if (normalization) keyNormalization: normalization,
+  };
 }

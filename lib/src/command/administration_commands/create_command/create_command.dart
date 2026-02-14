@@ -27,16 +27,17 @@ import 'create_options.dart';
 ///   An alternative way to creteOptions to specify command options
 ///   (must be manually set)
 base class CreateCommand extends CommandOperation {
-  CreateCommand(MongoDatabase db, String name,
-      {super.session,
-      CreateOptions? createOptions,
-      Map<String, Object>? rawOptions})
-      : super(db, <String, dynamic>{
-          keyCreate: name,
-        }, <String, dynamic>{
-          ...?createOptions?.getOptions(db),
-          ...?rawOptions
-        }) {
+  CreateCommand(
+    MongoDatabase db,
+    String name, {
+    super.session,
+    CreateOptions? createOptions,
+    Map<String, Object>? rawOptions,
+  }) : super(
+         db,
+         <String, dynamic>{keyCreate: name},
+         <String, dynamic>{...?createOptions?.getOptions(db), ...?rawOptions},
+       ) {
     /*   if (name == null) {
       throw MongoDartError('Name required in call to createCommand');
     } */

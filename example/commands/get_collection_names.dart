@@ -29,7 +29,8 @@ void main() async {
   }
 
   print(
-      'First collection name: ${retInfo.first['name']}'); // 'test-list-collections';
+    'First collection name: ${retInfo.first['name']}',
+  ); // 'test-list-collections';
 
   await cleanupDatabase(collectionName);
 }

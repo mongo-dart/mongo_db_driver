@@ -9,16 +9,20 @@ class MongoDBNamespace {
 
   factory MongoDBNamespace.fromString(String namespace) {
     var parts = namespace.split('.');
-    return MongoDBNamespace(parts.first,
-        collection: parts.length > 1 ? parts[1] : null);
+    return MongoDBNamespace(
+      parts.first,
+      collection: parts.length > 1 ? parts[1] : null,
+    );
   }
 
   factory MongoDBNamespace.fromMap(Map<String, dynamic> namespaceMap) {
     if (namespaceMap[keyDb] == null) {
       throw MongoDartError('Missing database name (element $keyDb) in Map');
     }
-    return MongoDBNamespace(namespaceMap[keyDb] as String,
-        collection: namespaceMap[keyColl] as String?);
+    return MongoDBNamespace(
+      namespaceMap[keyDb] as String,
+      collection: namespaceMap[keyColl] as String?,
+    );
   }
 
   @override

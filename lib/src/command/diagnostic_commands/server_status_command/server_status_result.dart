@@ -15,7 +15,7 @@ import 'package:mongo_db_driver/src/utils/map_keys.dart';
 
 class ServerStatusResult with BasicResult {
   ServerStatusResult(Map<String, dynamic> document)
-      : writeBacksQueued = document[keyWriteBacksQueued] as bool? ?? false {
+    : writeBacksQueued = document[keyWriteBacksQueued] as bool? ?? false {
     extractBasic(document);
     extractInstanceInfo(document);
     asserts = document[keyAsserts] as Map<String, dynamic>?;

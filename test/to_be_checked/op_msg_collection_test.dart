@@ -29,7 +29,9 @@ void main() async {
   }
 
   Future insertManyDocuments(
-      MongoCollection collection, int numberOfRecords) async {
+    MongoCollection collection,
+    int numberOfRecords,
+  ) async {
     var toInsert = <Map<String, dynamic>>[];
     for (var n = 0; n < numberOfRecords; n++) {
       toInsert.add({'a': n});
@@ -68,10 +70,11 @@ void main() async {
 
     test('Simple create capped collection', () async {
       var collectionName = getRandomCollectionName();
-      var resultMap = await CreateCommand(db, collectionName,
-              createOptions:
-                  CreateOptions(capped: true, size: 5242880, max: 5000))
-          .process();
+      var resultMap = await CreateCommand(
+        db,
+        collectionName,
+        createOptions: CreateOptions(capped: true, size: 5242880, max: 5000),
+      ).process();
       expect(resultMap[keyOk], 1.0);
       var collection = db.collection(collectionName);
 
@@ -83,42 +86,47 @@ void main() async {
 
     test('Simple create collection with schema', () async {
       var collectionName = getRandomCollectionName();
-      var resultMap = await CreateCommand(db, collectionName,
-          createOptions: CreateOptions(validator: {
+      var resultMap = await CreateCommand(
+        db,
+        collectionName,
+        createOptions: CreateOptions(
+          validator: {
             r'$jsonSchema': {
               'bsonType': 'object',
               'required': ['phone'],
               'properties': {
                 'phone': {
                   'bsonType': 'string',
-                  'description': 'must be a string and is required'
+                  'description': 'must be a string and is required',
                 },
                 'email': {
                   'bsonType': 'string',
                   'pattern': r'@mongodb\.com$',
                   'description':
-                      'must be a string and match the regular expression pattern'
+                      'must be a string and match the regular expression pattern',
                 },
                 'status': {
                   'enum': ['Unknown', 'Incomplete'],
-                  'description': 'can only be one of the enum values'
-                }
-              }
-            }
-          })).process();
+                  'description': 'can only be one of the enum values',
+                },
+              },
+            },
+          },
+        ),
+      ).process();
       expect(resultMap[keyOk], 1.0);
       var collection = db.collection(collectionName);
 
       var (writeResult, _, _, _) = await collection.insertOne(
-          {'name': 'Anand', 'phone': '451 3874643', 'status': 'Incomplete'},
-          insertOneOptions:
-              InsertOneOptions(writeConcern: WriteConcern.majority));
+        {'name': 'Anand', 'phone': '451 3874643', 'status': 'Incomplete'},
+        insertOneOptions: InsertOneOptions(writeConcern: WriteConcern.majority),
+      );
       expect(writeResult.isSuccess, isTrue);
 
       (writeResult, _, _, _) = await collection.insertOne(
-          {'name': 'Amanda', 'status': 'Updated'},
-          insertOneOptions:
-              InsertOneOptions(writeConcern: WriteConcern.majority));
+        {'name': 'Amanda', 'status': 'Updated'},
+        insertOneOptions: InsertOneOptions(writeConcern: WriteConcern.majority),
+      );
       expect(writeResult.isSuccess, isFalse);
       expect(writeResult.operationSucceeded, isTrue);
       expect(writeResult.hasWriteErrors, isTrue);
@@ -148,9 +156,11 @@ void main() async {
 
     test('Simple create collection with collation', () async {
       var collectionName = getRandomCollectionName();
-      var resultMap = await CreateCommand(db, collectionName,
-              createOptions: CreateOptions(collation: CollationOptions('fr')))
-          .process();
+      var resultMap = await CreateCommand(
+        db,
+        collectionName,
+        createOptions: CreateOptions(collation: CollationOptions('fr')),
+      ).process();
       expect(resultMap[keyOk], 1.0);
       var collection = db.collection(collectionName);
 
@@ -158,8 +168,9 @@ void main() async {
       await collection.insertOne({'_id': 2, 'category': 'cafe'});
       await collection.insertOne({'_id': 3, 'category': 'cafE'});
 
-      var result =
-          await collection.find(filter: where..sortBy('category')).toList();
+      var result = await collection
+          .find(filter: where..sortBy('category'))
+          .toList();
 
       expect(result, isNotNull);
       expect(result, isNotEmpty);
@@ -170,12 +181,17 @@ void main() async {
 
     test('Simple create collection with storage engine options', () async {
       var collectionName = getRandomCollectionName();
-      var resultMap = await CreateCommand(db, collectionName,
-          createOptions: CreateOptions(storageEngine: {
+      var resultMap = await CreateCommand(
+        db,
+        collectionName,
+        createOptions: CreateOptions(
+          storageEngine: {
             'wiredTiger': {
-              'configString': 'log=(enabled),block_compressor=snappy'
-            }
-          })).process();
+              'configString': 'log=(enabled),block_compressor=snappy',
+            },
+          },
+        ),
+      ).process();
       expect(resultMap[keyOk], 1.0);
     });
   });
@@ -196,15 +212,21 @@ void main() async {
     test('Simple create view', () async {
       var collectionName = 'abc';
       var viewName = getRandomCollectionName();
-      var resultMap = await CreateCommand(db, viewName,
-          createOptions: CreateOptions(viewOn: collectionName, pipeline: [
+      var resultMap = await CreateCommand(
+        db,
+        viewName,
+        createOptions: CreateOptions(
+          viewOn: collectionName,
+          pipeline: [
             {
               r'$project': {
                 'management': r'$feedback.management',
-                'department': 1
-              }
-            }
-          ])).process();
+                'department': 1,
+              },
+            },
+          ],
+        ),
+      ).process();
       expect(resultMap[keyOk], 1.0);
 
       var collection = db.collection(collectionName);
@@ -213,19 +235,19 @@ void main() async {
         '_id': 1,
         'empNumber': 'abc123',
         'feedback': {'management': 3, 'environment': 3},
-        'department': 'A'
+        'department': 'A',
       });
       await collection.insertOne({
         '_id': 2,
         'empNumber': 'xyz987',
         'feedback': {'management': 2, 'environment': 3},
-        'department': 'B'
+        'department': 'B',
       });
       await collection.insertOne({
         '_id': 3,
         'empNumber': 'ijk555',
         'feedback': {'management': 3, 'environment': 4},
-        'department': 'A'
+        'department': 'A',
       });
 
       var result = await view.find().toList();
@@ -238,16 +260,22 @@ void main() async {
     test('Create view with aggregate sort', () async {
       var collectionName = 'abc';
       var viewName = getRandomCollectionName();
-      var resultMap = await CreateCommand(db, viewName,
-          createOptions: CreateOptions(viewOn: collectionName, pipeline: [
+      var resultMap = await CreateCommand(
+        db,
+        viewName,
+        createOptions: CreateOptions(
+          viewOn: collectionName,
+          pipeline: [
             {
               r'$project': {
                 'management': r'$feedback.management',
-                'department': 1
-              }
+                'department': 1,
+              },
             },
-            {r'$sortByCount': r'$department'}
-          ])).process();
+            {r'$sortByCount': r'$department'},
+          ],
+        ),
+      ).process();
       expect(resultMap[keyOk], 1.0);
 
       var collection = db.collection(collectionName);
@@ -256,19 +284,19 @@ void main() async {
         '_id': 1,
         'empNumber': 'abc123',
         'feedback': {'management': 3, 'environment': 3},
-        'department': 'A'
+        'department': 'A',
       });
       await collection.insertOne({
         '_id': 2,
         'empNumber': 'xyz987',
         'feedback': {'management': 2, 'environment': 3},
-        'department': 'B'
+        'department': 'B',
       });
       await collection.insertOne({
         '_id': 3,
         'empNumber': 'ijk555',
         'feedback': {'management': 3, 'environment': 4},
-        'department': 'A'
+        'department': 'A',
       });
 
       var result = await view.find().toList();
@@ -280,15 +308,21 @@ void main() async {
     test('Create view and aggregate later', () async {
       var collectionName = 'abc';
       var viewName = getRandomCollectionName();
-      var resultMap = await CreateCommand(db, viewName,
-          createOptions: CreateOptions(viewOn: collectionName, pipeline: [
+      var resultMap = await CreateCommand(
+        db,
+        viewName,
+        createOptions: CreateOptions(
+          viewOn: collectionName,
+          pipeline: [
             {
               r'$project': {
                 'management': r'$feedback.management',
-                'department': 1
-              }
-            }
-          ])).process();
+                'department': 1,
+              },
+            },
+          ],
+        ),
+      ).process();
       expect(resultMap[keyOk], 1.0);
 
       var collection = db.collection(collectionName);
@@ -297,23 +331,23 @@ void main() async {
         '_id': 1,
         'empNumber': 'abc123',
         'feedback': {'management': 3, 'environment': 3},
-        'department': 'A'
+        'department': 'A',
       });
       await collection.insertOne({
         '_id': 2,
         'empNumber': 'xyz987',
         'feedback': {'management': 2, 'environment': 3},
-        'department': 'B'
+        'department': 'B',
       });
       await collection.insertOne({
         '_id': 3,
         'empNumber': 'ijk555',
         'feedback': {'management': 3, 'environment': 4},
-        'department': 'A'
+        'department': 'A',
       });
 
       var result = await view.aggregateToStream([
-        {r'$sortByCount': r'$department'}
+        {r'$sortByCount': r'$department'},
       ]).toList();
       expect(result.first['_id'], 'A');
       expect(result.first['count'], 2);
@@ -331,59 +365,85 @@ void main() async {
         '_id': 1,
         'item': 'abc',
         'price': Decimal.parse('12.00'),
-        'quantity': 2
+        'quantity': 2,
       });
       await collection1.insertOne({
         '_id': 2,
         'item': 'jkl',
         'price': Decimal.parse('20.00'),
-        'quantity': 1
+        'quantity': 1,
       });
       await collection1.insertOne({
         '_id': 3,
         'item': 'abc',
         'price': Decimal.parse('10.95'),
-        'quantity': 5
+        'quantity': 5,
       });
       await collection1.insertOne({
         '_id': 4,
         'item': 'xyz',
         'price': Decimal.parse('5.95'),
-        'quantity': 5
+        'quantity': 5,
       });
       await collection1.insertOne({
         '_id': 5,
         'item': 'xyz',
         'price': Decimal.parse('5.95'),
-        'quantity': 10
+        'quantity': 10,
       });
 
-      await collection2.insertOne(
-          {'_id': 1, 'sku': 'abc', 'description': 'product 1', 'instock': 120});
-      await collection2.insertOne(
-          {'_id': 2, 'sku': 'def', 'description': 'product 2', 'instock': 80});
-      await collection2.insertOne(
-          {'_id': 3, 'sku': 'ijk', 'description': 'product 3', 'instock': 60});
-      await collection2.insertOne(
-          {'_id': 4, 'sku': 'jkl', 'description': 'product 4', 'instock': 70});
-      await collection2.insertOne(
-          {'_id': 5, 'sku': 'xyz', 'description': 'product 5', 'instock': 200});
+      await collection2.insertOne({
+        '_id': 1,
+        'sku': 'abc',
+        'description': 'product 1',
+        'instock': 120,
+      });
+      await collection2.insertOne({
+        '_id': 2,
+        'sku': 'def',
+        'description': 'product 2',
+        'instock': 80,
+      });
+      await collection2.insertOne({
+        '_id': 3,
+        'sku': 'ijk',
+        'description': 'product 3',
+        'instock': 60,
+      });
+      await collection2.insertOne({
+        '_id': 4,
+        'sku': 'jkl',
+        'description': 'product 4',
+        'instock': 70,
+      });
+      await collection2.insertOne({
+        '_id': 5,
+        'sku': 'xyz',
+        'description': 'product 5',
+        'instock': 200,
+      });
 
       var viewName = getRandomCollectionName();
-      var resultMap = await CreateCommand(db, viewName,
-          createOptions: CreateOptions(viewOn: collection1Name, pipeline: [
+      var resultMap = await CreateCommand(
+        db,
+        viewName,
+        createOptions: CreateOptions(
+          viewOn: collection1Name,
+          pipeline: [
             {
               r'$lookup': {
                 'from': collection2Name,
                 'localField': 'item',
                 'foreignField': 'sku',
-                'as': 'inventory_docs'
-              }
+                'as': 'inventory_docs',
+              },
             },
             {
-              r'$project': {'inventory_docs._id': 0, 'inventory_docs.sku': 0}
-            }
-          ])).process();
+              r'$project': {'inventory_docs._id': 0, 'inventory_docs.sku': 0},
+            },
+          ],
+        ),
+      ).process();
       expect(resultMap[keyOk], 1.0);
 
       var view = db.collection(viewName);
@@ -413,71 +473,97 @@ void main() async {
         '_id': 1,
         'item': 'abc',
         'price': Decimal.parse('12.00'),
-        'quantity': 2
+        'quantity': 2,
       });
       await collection1.insertOne({
         '_id': 2,
         'item': 'jkl',
         'price': Decimal.parse('20.00'),
-        'quantity': 1
+        'quantity': 1,
       });
       await collection1.insertOne({
         '_id': 3,
         'item': 'abc',
         'price': Decimal.parse('10.95'),
-        'quantity': 5
+        'quantity': 5,
       });
       await collection1.insertOne({
         '_id': 4,
         'item': 'xyz',
         'price': Decimal.parse('5.95'),
-        'quantity': 5
+        'quantity': 5,
       });
       await collection1.insertOne({
         '_id': 5,
         'item': 'xyz',
         'price': Decimal.parse('5.95'),
-        'quantity': 10
+        'quantity': 10,
       });
       await collection1.insertOne({
         '_id': 6,
         'item': 'abc',
         'price': Decimal.parse('14.00'),
-        'quantity': 4
+        'quantity': 4,
       });
 
-      await collection2.insertOne(
-          {'_id': 1, 'sku': 'abc', 'description': 'product 1', 'instock': 120});
-      await collection2.insertOne(
-          {'_id': 2, 'sku': 'def', 'description': 'product 2', 'instock': 80});
-      await collection2.insertOne(
-          {'_id': 3, 'sku': 'ijk', 'description': 'product 3', 'instock': 60});
-      await collection2.insertOne(
-          {'_id': 4, 'sku': 'jkl', 'description': 'product 4', 'instock': 70});
-      await collection2.insertOne(
-          {'_id': 5, 'sku': 'xyz', 'description': 'product 5', 'instock': 200});
+      await collection2.insertOne({
+        '_id': 1,
+        'sku': 'abc',
+        'description': 'product 1',
+        'instock': 120,
+      });
+      await collection2.insertOne({
+        '_id': 2,
+        'sku': 'def',
+        'description': 'product 2',
+        'instock': 80,
+      });
+      await collection2.insertOne({
+        '_id': 3,
+        'sku': 'ijk',
+        'description': 'product 3',
+        'instock': 60,
+      });
+      await collection2.insertOne({
+        '_id': 4,
+        'sku': 'jkl',
+        'description': 'product 4',
+        'instock': 70,
+      });
+      await collection2.insertOne({
+        '_id': 5,
+        'sku': 'xyz',
+        'description': 'product 5',
+        'instock': 200,
+      });
 
       var viewName = getRandomCollectionName();
-      var resultMap = await CreateCommand(db, viewName,
-          createOptions: CreateOptions(viewOn: collection1Name, pipeline: [
+      var resultMap = await CreateCommand(
+        db,
+        viewName,
+        createOptions: CreateOptions(
+          viewOn: collection1Name,
+          pipeline: [
             {
               r'$lookup': {
                 'from': 'inventory',
                 'localField': 'item',
                 'foreignField': 'sku',
-                'as': 'inventory_docs'
-              }
+                'as': 'inventory_docs',
+              },
             },
             {
-              r'$project': {'inventory_docs._id': 0, 'inventory_docs.sku': 0}
-            }
-          ])).process();
+              r'$project': {'inventory_docs._id': 0, 'inventory_docs.sku': 0},
+            },
+          ],
+        ),
+      ).process();
       expect(resultMap[keyOk], 1.0);
 
       var view = db.collection(viewName);
 
       var result = await view.aggregateToStream([
-        {r'$sortByCount': r'$item'}
+        {r'$sortByCount': r'$item'},
       ]).toList();
 
       expect(result.length, 3);
@@ -507,22 +593,21 @@ void main() async {
         db,
         viewName,
         createOptions: CreateOptions(
-            viewOn: collectionName,
-            pipeline: [
-              {
-                r'$project': {'category': 1}
-              }
-            ],
-            collation: CollationOptions('fr')),
+          viewOn: collectionName,
+          pipeline: [
+            {
+              r'$project': {'category': 1},
+            },
+          ],
+          collation: CollationOptions('fr'),
+        ),
       ).process();
       expect(resultMap[keyOk], 1.0);
 
       var view = db.collection(viewName);
 
       var result = await view
-          .find(
-            filter: QueryExpression()..sortBy('category'),
-          )
+          .find(filter: QueryExpression()..sortBy('category'))
           .toList();
       expect(result[1]['category'], 'cafe');
       expect(result[3]['category'], 'café');
@@ -543,19 +628,22 @@ void main() async {
       var viewName = getRandomCollectionName();
       usedCollectionNames.add(viewName);
 
-      var resultMap = await CreateCommand(db, viewName,
-          createOptions: CreateOptions(
-            viewOn: collectionName,
-            pipeline: [
-              {
-                r'$project': {'category': 1}
-              }
-            ],
-            /* collation: CollationOptions('fr', strength: 1) */
-          ),
-          rawOptions: {
-            'collation': {'locale': 'fr', 'strength': 1}
-          }).process();
+      var resultMap = await CreateCommand(
+        db,
+        viewName,
+        createOptions: CreateOptions(
+          viewOn: collectionName,
+          pipeline: [
+            {
+              r'$project': {'category': 1},
+            },
+          ],
+          /* collation: CollationOptions('fr', strength: 1) */
+        ),
+        rawOptions: {
+          'collation': {'locale': 'fr', 'strength': 1},
+        },
+      ).process();
       expect(resultMap[keyOk], 1.0);
 
       var view = db.collection(viewName);
@@ -584,13 +672,14 @@ void main() async {
         db,
         viewName,
         createOptions: CreateOptions(
-            viewOn: collectionName,
-            pipeline: [
-              {
-                r'$project': {'category': 1}
-              }
-            ],
-            collation: CollationOptions('fr')),
+          viewOn: collectionName,
+          pipeline: [
+            {
+              r'$project': {'category': 1},
+            },
+          ],
+          collation: CollationOptions('fr'),
+        ),
       ).process();
       expect(resultMap[keyOk], 1.0);
 
@@ -599,9 +688,11 @@ void main() async {
       try {
         await view
             .find(
-                filter: where..sortBy('category'),
-                findOptions:
-                    FindOptions(collation: CollationOptions('fr', strength: 1)))
+              filter: where..sortBy('category'),
+              findOptions: FindOptions(
+                collation: CollationOptions('fr', strength: 1),
+              ),
+            )
             .toList();
       } on MongoDartError catch (error) {
         expect(error.mongoCode, 167);
@@ -615,8 +706,10 @@ void main() async {
   tearDownAll(() async {
     await client.connect();
     db = client.db();
-    await Future.forEach(usedCollectionNames,
-        (String collectionName) => db.collection(collectionName).drop());
+    await Future.forEach(
+      usedCollectionNames,
+      (String collectionName) => db.collection(collectionName).drop(),
+    );
     await client.close();
   });
 }

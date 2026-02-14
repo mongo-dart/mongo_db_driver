@@ -13,41 +13,55 @@ import 'abort_transaction_options.dart';
 base class AbortTransactionCommand extends DbAdminCommandOperation {
   @protected
   AbortTransactionCommand.protected(
-      MongoClient client, TransactionInfo transactionInfo,
-      {super.session,
-      AbortTransactionOptions? abortTransactionOptions,
-      Options? rawOptions})
-      : super(client, <String, dynamic>{
-          keyAbortTransaction: 1,
-          //keyTxnNumber: transactionInfo.transactionNumber,
-          //keyAutoabort: false
-        }, options: <String, dynamic>{
-          ...transactionInfo.options.getOptions(client),
-          ...?abortTransactionOptions?.getOptions(client),
-          ...?rawOptions
-        });
+    MongoClient client,
+    TransactionInfo transactionInfo, {
+    super.session,
+    AbortTransactionOptions? abortTransactionOptions,
+    Options? rawOptions,
+  }) : super(
+         client,
+         <String, dynamic>{
+           keyAbortTransaction: 1,
+           //keyTxnNumber: transactionInfo.transactionNumber,
+           //keyAutoabort: false
+         },
+         options: <String, dynamic>{
+           ...transactionInfo.options.getOptions(client),
+           ...?abortTransactionOptions?.getOptions(client),
+           ...?rawOptions,
+         },
+       );
 
   factory AbortTransactionCommand(
-      MongoClient client, TransactionInfo transactionInfo,
-      {ClientSession? session,
-      AbortTransactionOptions? abortTransactionOptions,
-      Options? rawOptions}) {
+    MongoClient client,
+    TransactionInfo transactionInfo, {
+    ClientSession? session,
+    AbortTransactionOptions? abortTransactionOptions,
+    Options? rawOptions,
+  }) {
     if (client.serverApi != null) {
       switch (client.serverApi!.version) {
         case ServerApiVersion.v1:
-          return AbortTransactionCommandV1(client, transactionInfo,
-              session: session,
-              abortTransactionOptions: abortTransactionOptions?.toV1,
-              rawOptions: rawOptions);
+          return AbortTransactionCommandV1(
+            client,
+            transactionInfo,
+            session: session,
+            abortTransactionOptions: abortTransactionOptions?.toV1,
+            rawOptions: rawOptions,
+          );
         // ignore: unreachable_switch_default
         default:
           throw MongoDartError(
-              'Stable Api ${client.serverApi!.version} not managed');
+            'Stable Api ${client.serverApi!.version} not managed',
+          );
       }
     }
-    return AbortTransactionCommandOpen(client, transactionInfo,
-        session: session,
-        abortTransactionOptions: abortTransactionOptions?.toOpen,
-        rawOptions: rawOptions);
+    return AbortTransactionCommandOpen(
+      client,
+      transactionInfo,
+      session: session,
+      abortTransactionOptions: abortTransactionOptions?.toOpen,
+      rawOptions: rawOptions,
+    );
   }
 }

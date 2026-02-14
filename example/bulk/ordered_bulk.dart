@@ -73,17 +73,27 @@ void main() async {
   ///'''
   /*  bulk.updateMany(UpdateManyStatement(where..$eq('status', 'D').map[key$Query],
       UpdateExpression()..$set('status', 'd').map as UpdateDocument)); */
-  bulk.updateMany(UpdateManyStatement(QueryUnion(where..$eq('status', 'D')),
-      UpdateUnion(UpdateExpression()..$set('status', 'd'))));
+  bulk.updateMany(
+    UpdateManyStatement(
+      QueryUnion(where..$eq('status', 'D')),
+      UpdateUnion(UpdateExpression()..$set('status', 'd')),
+    ),
+  );
 
-  bulk.updateOne(UpdateOneStatement(
+  bulk.updateOne(
+    UpdateOneStatement(
       QueryUnion({'cust_num': 99999, 'item': 'abc123', 'status': 'A'}),
-      UpdateUnion(UpdateExpression()..$inc('ordered', 1))));
+      UpdateUnion(UpdateExpression()..$inc('ordered', 1)),
+    ),
+  );
 
-  bulk.replaceOne(ReplaceOneStatement(
+  bulk.replaceOne(
+    ReplaceOneStatement(
       QueryUnion({'cust_num': 12345, 'item': 'tst24', 'status': 'D'}),
       {'cust_num': 12345, 'item': 'tst24', 'status': 'Replaced'},
-      upsert: true));
+      upsert: true,
+    ),
+  );
 
   /// Bulk `executeDocument()` returns an instance of the `BulkWriteResult`
   /// class that is a convenient way of reading the result data.

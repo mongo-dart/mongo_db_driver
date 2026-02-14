@@ -25,18 +25,20 @@ class BulkOptions {
   /// **New in version 3.2.**
   final bool bypassDocumentValidation;
 
-  BulkOptions(
-      {this.writeConcern, bool? ordered, bool? bypassDocumentValidation})
-      : ordered = ordered ?? true,
-        bypassDocumentValidation = bypassDocumentValidation ?? false;
+  BulkOptions({
+    this.writeConcern,
+    bool? ordered,
+    bool? bypassDocumentValidation,
+  }) : ordered = ordered ?? true,
+       bypassDocumentValidation = bypassDocumentValidation ?? false;
 
   // The db parameter is used to transform the writeConcern into a Map
   /// When a writeConcern is given a Db object must be specified
   Options getOptions(MongoDatabase db) => <String, dynamic>{
-        if (writeConcern != null)
-          keyWriteConcern: writeConcern!.asMap(db.server.serverStatus),
-        if (!ordered) keyOrdered: ordered,
-        if (bypassDocumentValidation)
-          keyBypassDocumentValidation: bypassDocumentValidation,
-      };
+    if (writeConcern != null)
+      keyWriteConcern: writeConcern!.asMap(db.server.serverStatus),
+    if (!ordered) keyOrdered: ordered,
+    if (bypassDocumentValidation)
+      keyBypassDocumentValidation: bypassDocumentValidation,
+  };
 }

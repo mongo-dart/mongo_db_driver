@@ -5,12 +5,14 @@ import 'package:mongo_db_driver/src/utils/map_keys.dart';
 
 class FindAndModifyResult with BasicResult, TimingResult {
   FindAndModifyResult(
-      Map<String, dynamic> document) /* : serverResponse = document */ {
+    Map<String, dynamic> document,
+  ) /* : serverResponse = document */ {
     extractBasic(document);
     extractTiming(document);
     value = document[keyValue] as Map<String, dynamic>?;
-    lastErrorObject =
-        LastErrorObject.fromMap(document[keyLastErrorObject] as Map? ?? {});
+    lastErrorObject = LastErrorObject.fromMap(
+      document[keyLastErrorObject] as Map? ?? {},
+    );
   }
 
   /// This is the original response from the server;

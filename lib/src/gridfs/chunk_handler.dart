@@ -53,7 +53,10 @@ class ChunkHandler {
       _handle(data, sink, false);
 
   void handleError(
-      Object error, StackTrace stackTrace, EventSink<Uint8List> sink) {
+    Object error,
+    StackTrace stackTrace,
+    EventSink<Uint8List> sink,
+  ) {
     print(error);
     print(stackTrace);
     sink.addError(error);
@@ -66,5 +69,7 @@ class ChunkHandler {
 
   StreamTransformer<List<int>, Uint8List> get transformer =>
       StreamTransformer<List<int>, Uint8List>.fromHandlers(
-          handleData: handleData, handleDone: handleDone);
+        handleData: handleData,
+        handleDone: handleDone,
+      );
 }

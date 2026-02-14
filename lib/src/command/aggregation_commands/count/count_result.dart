@@ -4,7 +4,7 @@ import 'package:mongo_db_driver/src/utils/map_keys.dart';
 
 class CountResult with BasicResult, TimingResult {
   CountResult(Map<String, dynamic> document)
-      : count = document[keyN] as int? ?? 0 {
+    : count = document[keyN] as int? ?? 0 {
     extractBasic(document);
     extractTiming(document);
   }

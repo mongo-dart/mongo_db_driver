@@ -12,33 +12,39 @@ import '../v1/insert_one_options_v1.dart';
 /// getters toXXX()
 abstract class InsertOneOptions extends InsertOptions {
   @protected
-  InsertOneOptions.protected(
-      {super.writeConcern, super.bypassDocumentValidation = null})
-      : super.protected();
+  InsertOneOptions.protected({
+    super.writeConcern,
+    super.bypassDocumentValidation = null,
+  }) : super.protected();
 
-  factory InsertOneOptions(
-      {ServerApi? serverApi,
-      WriteConcern? writeConcern,
-      bool? bypassDocumentValidation = false}) {
+  factory InsertOneOptions({
+    ServerApi? serverApi,
+    WriteConcern? writeConcern,
+    bool? bypassDocumentValidation = false,
+  }) {
     if (serverApi != null && serverApi.version == ServerApiVersion.v1) {
       return InsertOneOptionsV1(
-          writeConcern: writeConcern,
-          bypassDocumentValidation: bypassDocumentValidation);
+        writeConcern: writeConcern,
+        bypassDocumentValidation: bypassDocumentValidation,
+      );
     }
     return InsertOneOptionsOpen(
-        writeConcern: writeConcern,
-        bypassDocumentValidation: bypassDocumentValidation);
+      writeConcern: writeConcern,
+      bypassDocumentValidation: bypassDocumentValidation,
+    );
   }
 
   InsertOneOptionsOpen get toOneOpen => this is InsertOneOptionsOpen
       ? this as InsertOneOptionsOpen
       : InsertOneOptionsOpen(
           writeConcern: writeConcern,
-          bypassDocumentValidation: bypassDocumentValidation);
+          bypassDocumentValidation: bypassDocumentValidation,
+        );
 
   InsertOneOptionsV1 get toOneV1 => this is InsertOneOptionsV1
       ? this as InsertOneOptionsV1
       : InsertOneOptionsV1(
           writeConcern: writeConcern,
-          bypassDocumentValidation: bypassDocumentValidation);
+          bypassDocumentValidation: bypassDocumentValidation,
+        );
 }

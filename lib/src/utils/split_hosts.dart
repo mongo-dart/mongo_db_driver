@@ -6,8 +6,10 @@ List<String> splitHosts(String uriString) {
   if (uriString.startsWith('mongodb://')) {
     startHostsIndex = 'mongodb://'.length;
   } else {
-    throw MongoDartError('Unexpected scheme in url "$uriString". '
-        'The url is expected to start with "mongodb://"');
+    throw MongoDartError(
+      'Unexpected scheme in url "$uriString". '
+      'The url is expected to start with "mongodb://"',
+    );
   }
   endServersIndex = uriString.indexOf('/', startHostsIndex);
   if (endServersIndex == -1) {

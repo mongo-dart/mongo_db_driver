@@ -1,11 +1,13 @@
 import 'package:mongo_db_driver/src/command/command_exp.dart';
 
 class UpdateStatementOpen extends UpdateStatement {
-  UpdateStatementOpen(super.q, super.u,
-      {super.upsert,
-      super.multi,
-      super.collation,
-      super.arrayFilters,
-      super.hint})
-      : super.protected();
+  UpdateStatementOpen(
+    super.q,
+    super.u, {
+    super.upsert,
+    super.multi,
+    super.collation,
+    super.arrayFilters,
+    super.hint,
+  }) : super.protected();
 }

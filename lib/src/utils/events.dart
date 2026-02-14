@@ -30,7 +30,7 @@ class ListenerWrapper<T extends Event> {
   final bool runOnlyOnce;
 
   ListenerWrapper(this._emitter, this._fn, {bool? runOnlyOnce})
-      : runOnlyOnce = runOnlyOnce ?? false;
+    : runOnlyOnce = runOnlyOnce ?? false;
 
   FutureOr<void> run(T event) async {
     try {
@@ -60,13 +60,16 @@ mixin EventEmitter {
   void on<T extends Event>(ListenerFunction<T> listener) =>
       addListener(listener);
 
-  void _addListener<T extends Event>(ListenerFunction<T> listener,
-      {bool? setAsFirst}) {
+  void _addListener<T extends Event>(
+    ListenerFunction<T> listener, {
+    bool? setAsFirst,
+  }) {
     setAsFirst ??= false;
     var key = extractType<T>();
     if (!legalEvents.contains(key)) {
       throw MongoDbError(
-          'The class "${extractType(this)}" does not emit $key events');
+        'The class "${extractType(this)}" does not emit $key events',
+      );
     }
     var listeners = _listeners[key] ?? <ListenerWrapper<T>>{};
     if (setAsFirst) {
@@ -89,19 +92,22 @@ mixin EventEmitter {
   void prependOnceListener<T extends Event>(ListenerFunction<T> listener) =>
       _once<T>(listener, setAsFirst: true);
 
-  void _once<T extends Event>(ListenerFunction<T> listener,
-      {bool? setAsFirst}) {
+  void _once<T extends Event>(
+    ListenerFunction<T> listener, {
+    bool? setAsFirst,
+  }) {
     setAsFirst ??= false;
     var key = extractType<T>();
     if (!legalEvents.contains(key)) {
       throw MongoDbError(
-          'The class "${extractType(this)}" does not emit $key events');
+        'The class "${extractType(this)}" does not emit $key events',
+      );
     }
     var listeners = _listeners[key] ?? <ListenerWrapper<T>>{};
     if (setAsFirst) {
       listeners = {
         ListenerWrapper<T>(this, listener, runOnlyOnce: true),
-        ...listeners
+        ...listeners,
       };
     } else {
       listeners.add(ListenerWrapper<T>(this, listener, runOnlyOnce: true));
@@ -119,7 +125,8 @@ mixin EventEmitter {
     if (_listeners.containsKey(key)) {
       final listeners = _listeners[key]! as Set<ListenerWrapper<T>>;
       listeners.removeWhere(
-          (listenerWrapper) => listenerWrapper.isListener(listener));
+        (listenerWrapper) => listenerWrapper.isListener(listener),
+      );
     }
   }
 
@@ -127,7 +134,8 @@ mixin EventEmitter {
     var key = extractType<T>();
     if (!legalEvents.contains(key)) {
       throw MongoDbError(
-          'The class "${extractType(this)}" does not emit $key events');
+        'The class "${extractType(this)}" does not emit $key events',
+      );
     }
     var atLeastOneListener = false;
     if (_listeners.containsKey(key)) {
@@ -145,7 +153,8 @@ mixin EventEmitter {
     var key = extractType(event);
     if (!legalEvents.contains(key)) {
       throw MongoDbError(
-          'The class "${extractType(this)}" does not emit $key events');
+        'The class "${extractType(this)}" does not emit $key events',
+      );
     }
     if (_listeners.containsKey(key)) {
       final listeners = _listeners[key]!;
@@ -159,7 +168,8 @@ mixin EventEmitter {
     var key = extractType(event);
     if (!legalEvents.contains(key)) {
       throw MongoDbError(
-          'The class "${extractType(this)}" does not emit $key events');
+        'The class "${extractType(this)}" does not emit $key events',
+      );
     }
     var ret = <ListenerFunction<T>>[];
     if (_listeners.containsKey(key)) {

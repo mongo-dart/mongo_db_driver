@@ -10,7 +10,7 @@ const writableServerTypes = <ServerType>{
   ServerType.rsPrimary,
   ServerType.standalone,
   ServerType.mongos,
-  ServerType.loadBalancer
+  ServerType.loadBalancer,
 };
 
 const dataBearingServerTypes = <ServerType>{
@@ -18,7 +18,7 @@ const dataBearingServerTypes = <ServerType>{
   ServerType.rsSecondary,
   ServerType.mongos,
   ServerType.standalone,
-  ServerType.loadBalancer
+  ServerType.loadBalancer,
 };
 
 typedef TagSet = Map<String, String>;
@@ -55,42 +55,44 @@ class ServerDescriptionOptions {
 /// The client's view of a single server, based on the most recent hello outcome.
 class ServerDescription {
   /// Create a ServerDescription
-  ServerDescription(this.address,
-      {ServerDescriptionOptions? options,
-      this.type = ServerType.unknown,
-      Set<String>? hosts,
-      Set<String>? passives,
-      Set<String>? arbiters,
-      TagSet? tags,
-      //MongoDartError? error,
-      this.topologyVersion,
-      int? minWireVersion,
-      int? maxWireVersion,
-      //int? roundTripTime,
-      //int? minRoundTripTime,
-      //bool? loadBalancer,
-      DateTime? lastUpdateTime,
-      this.lastWrite,
-      this.me,
-      this.primary,
-      this.setName,
-      this.setVersion,
-      this.electionId,
-      this.logicalSessionTimeoutMinutes,
-      this.operationTime,
-      this.isCryptd,
-      this.$clusterTime})
-      : options = options ?? ServerDescriptionOptions(),
-        hosts = hosts ?? const <String>{},
-        passives = passives ?? const <String>{},
-        arbiters = arbiters ?? const <String>{},
-        tags = tags ?? const <String, String>{},
-        minWireVersion = minWireVersion ?? 0,
-        maxWireVersion = maxWireVersion ?? 0,
-        lastUpdateTime = lastUpdateTime ?? DateTime(1970) {
+  ServerDescription(
+    this.address, {
+    ServerDescriptionOptions? options,
+    this.type = ServerType.unknown,
+    Set<String>? hosts,
+    Set<String>? passives,
+    Set<String>? arbiters,
+    TagSet? tags,
+    //MongoDartError? error,
+    this.topologyVersion,
+    int? minWireVersion,
+    int? maxWireVersion,
+    //int? roundTripTime,
+    //int? minRoundTripTime,
+    //bool? loadBalancer,
+    DateTime? lastUpdateTime,
+    this.lastWrite,
+    this.me,
+    this.primary,
+    this.setName,
+    this.setVersion,
+    this.electionId,
+    this.logicalSessionTimeoutMinutes,
+    this.operationTime,
+    this.isCryptd,
+    this.$clusterTime,
+  }) : options = options ?? ServerDescriptionOptions(),
+       hosts = hosts ?? const <String>{},
+       passives = passives ?? const <String>{},
+       arbiters = arbiters ?? const <String>{},
+       tags = tags ?? const <String, String>{},
+       minWireVersion = minWireVersion ?? 0,
+       maxWireVersion = maxWireVersion ?? 0,
+       lastUpdateTime = lastUpdateTime ?? DateTime(1970) {
     if (address.isEmpty) {
       throw MongoDartError(
-          'ServerDescription must be provided with a non-empty address');
+        'ServerDescription must be provided with a non-empty address',
+      );
     }
 
     /*  options.error = error;
@@ -170,23 +172,23 @@ class ServerDescription {
   /// Do not add to containers before that.
   @override
   int get hashCode => Object.hashAll([
-        options.error,
-        type,
-        minWireVersion,
-        maxWireVersion,
-        me,
-        host,
-        passives,
-        arbiters,
-        tags,
-        setName,
-        electionId,
-        setVersion,
-        primary,
-        logicalSessionTimeoutMinutes,
-        topologyVersion,
-        isCryptd
-      ]);
+    options.error,
+    type,
+    minWireVersion,
+    maxWireVersion,
+    me,
+    host,
+    passives,
+    arbiters,
+    tags,
+    setName,
+    electionId,
+    setVersion,
+    primary,
+    logicalSessionTimeoutMinutes,
+    topologyVersion,
+    isCryptd,
+  ]);
 }
 
 bool tagsStrictEqual(TagSet? tags, TagSet? tags2) {

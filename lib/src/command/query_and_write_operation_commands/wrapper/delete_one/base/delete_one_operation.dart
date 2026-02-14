@@ -13,45 +13,55 @@ import '../v1/delete_one_operation_v1.dart';
 
 typedef DeleteOneDocumentRec = (
   WriteResult writeResult,
-  MongoDocument serverDocument
+  MongoDocument serverDocument,
 );
 
 abstract base class DeleteOneOperation extends DeleteOperation {
   @protected
   DeleteOneOperation.protected(
-      MongoCollection collection, DeleteOneStatement deleteRequest,
-      {super.session, DeleteOneOptions? deleteOneOptions, Options? rawOptions})
-      : super.protected(
-          collection,
-          [deleteRequest],
-          deleteOptions: deleteOneOptions,
-          rawOptions: rawOptions,
-        );
+    MongoCollection collection,
+    DeleteOneStatement deleteRequest, {
+    super.session,
+    DeleteOneOptions? deleteOneOptions,
+    Options? rawOptions,
+  }) : super.protected(
+         collection,
+         [deleteRequest],
+         deleteOptions: deleteOneOptions,
+         rawOptions: rawOptions,
+       );
 
   factory DeleteOneOperation(
-      MongoCollection collection, DeleteOneStatement deleteOneStatement,
-      {ClientSession? session,
-      DeleteOneOptions? deleteOneOptions,
-      Options? rawOptions}) {
+    MongoCollection collection,
+    DeleteOneStatement deleteOneStatement, {
+    ClientSession? session,
+    DeleteOneOptions? deleteOneOptions,
+    Options? rawOptions,
+  }) {
     if (collection.serverApi != null) {
       switch (collection.serverApi!.version) {
         case ServerApiVersion.v1:
           return DeleteOneOperationV1(
-              collection, deleteOneStatement.toDeleteOneV1,
-              session: session,
-              deleteOneOptions: deleteOneOptions?.toDeleteOneV1,
-              rawOptions: rawOptions);
+            collection,
+            deleteOneStatement.toDeleteOneV1,
+            session: session,
+            deleteOneOptions: deleteOneOptions?.toDeleteOneV1,
+            rawOptions: rawOptions,
+          );
         // ignore: unreachable_switch_default
         default:
           throw MongoDartError(
-              'Stable Api ${collection.serverApi!.version} not managed');
+            'Stable Api ${collection.serverApi!.version} not managed',
+          );
       }
     }
     return DeleteOneOperationOpen(
-        collection, deleteOneStatement.toDeleteOneOpen,
-        session: session,
-        deleteOneOptions: deleteOneOptions?.toDeleteOneOpen,
-        rawOptions: rawOptions);
+      collection,
+      deleteOneStatement.toDeleteOneOpen,
+      session: session,
+      deleteOneOptions: deleteOneOptions?.toDeleteOneOpen,
+      rawOptions: rawOptions,
+    );
   }
 
   Future<MongoDocument> executeDeleteOne() async => process();

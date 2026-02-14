@@ -59,18 +59,18 @@ class ListDatabasesOptions {
   /// We limit Comment to String only
   final String? comment;
 
-  ListDatabasesOptions(
-      {dynamic listFilter,
-      this.nameOnly = false,
-      this.authorizedDatabases,
-      this.comment})
-      : filter = QueryUnion(listFilter).query;
+  ListDatabasesOptions({
+    dynamic listFilter,
+    this.nameOnly = false,
+    this.authorizedDatabases,
+    this.comment,
+  }) : filter = QueryUnion(listFilter).query;
 
   Options get options => <String, dynamic>{
-        if (filter.isNotEmpty) keyFilter: filter,
-        if (nameOnly) keyNameOnly: nameOnly,
-        if (authorizedDatabases != null)
-          keyAuthorizedDatabases: authorizedDatabases,
-        if (comment != null) keyComment: comment!,
-      };
+    if (filter.isNotEmpty) keyFilter: filter,
+    if (nameOnly) keyNameOnly: nameOnly,
+    if (authorizedDatabases != null)
+      keyAuthorizedDatabases: authorizedDatabases,
+    keyComment: ?comment,
+  };
 }

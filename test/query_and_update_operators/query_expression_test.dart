@@ -44,8 +44,10 @@ void main() async {
 
     tearDownAll(() async {
       //db = client.db();
-      await Future.forEach(usedCollectionNames,
-          (String collectionName) => db.collection(collectionName).drop());
+      await Future.forEach(
+        usedCollectionNames,
+        (String collectionName) => db.collection(collectionName).drop(),
+      );
       await client.close();
     });
 
@@ -56,58 +58,62 @@ void main() async {
         {
           '_id': 100,
           'sku': 'abc123',
-          'description': 'Single line description.'
+          'description': 'Single line description.',
         },
         {'_id': 101, 'sku': 'abc789', 'description': 'First line\nSecond line'},
-        {'_id': 104, 'sku': 'Abc789', 'description': 'SKU starts with A'}
+        {'_id': 104, 'sku': 'Abc789', 'description': 'SKU starts with A'},
       ];
       var expectedNoMultiline = [
         {
           '_id': 100,
           'sku': 'abc123',
-          'description': 'Single line description.'
+          'description': 'Single line description.',
         },
-        {'_id': 104, 'sku': 'Abc789', 'description': 'SKU starts with A'}
+        {'_id': 104, 'sku': 'Abc789', 'description': 'SKU starts with A'},
       ];
       var expectedNoMultilineNoAnchor = [
         {
           '_id': 100,
           'sku': 'abc123',
-          'description': 'Single line description.'
+          'description': 'Single line description.',
         },
         {'_id': 101, 'sku': 'abc789', 'description': 'First line\nSecond line'},
-        {'_id': 104, 'sku': 'Abc789', 'description': 'SKU starts with A'}
+        {'_id': 104, 'sku': 'Abc789', 'description': 'SKU starts with A'},
       ];
       var expDotMatchNewLine = [
         {
           '_id': 102,
           'sku': 'xyz456',
-          'description': 'Many spaces before     line'
+          'description': 'Many spaces before     line',
         },
         {
           '_id': 103,
           'sku': 'xyz789',
-          'description': 'Multiple\nline description'
-        }
+          'description': 'Multiple\nline description',
+        },
       ];
       var expDotMatchNewLineNos = [
         {
           '_id': 102,
           'sku': 'xyz456',
-          'description': 'Many spaces before     line'
-        }
+          'description': 'Many spaces before     line',
+        },
       ];
       var expIgnoreSpaceAndComments = [
-        {'_id': 100, 'sku': 'abc123', 'description': 'Single line description.'}
+        {
+          '_id': 100,
+          'sku': 'abc123',
+          'description': 'Single line description.',
+        },
       ];
       var expExtendedRegularExpression = [
         {
           '_id': 100,
           'sku': 'abc123',
-          'description': 'Single line description.'
+          'description': 'Single line description.',
         },
         {'_id': 101, 'sku': 'abc789', 'description': 'First line\nSecond line'},
-        {'_id': 104, 'sku': 'Abc789', 'description': 'SKU starts with A'}
+        {'_id': 104, 'sku': 'Abc789', 'description': 'SKU starts with A'},
       ];
       setUpAll(() async {
         var collectionName = getRandomCollectionName(usedCollectionNames);
@@ -116,47 +122,51 @@ void main() async {
           {
             '_id': 100,
             'sku': "abc123",
-            'description': "Single line description."
+            'description': "Single line description.",
           },
           {
             '_id': 101,
             'sku': "abc789",
-            'description': "First line\nSecond line"
+            'description': "First line\nSecond line",
           },
           {
             '_id': 102,
             'sku': "xyz456",
-            'description': "Many spaces before     line"
+            'description': "Many spaces before     line",
           },
           {
             '_id': 103,
             'sku': "xyz789",
-            'description': "Multiple\nline description"
+            'description': "Multiple\nline description",
           },
-          {'_id': 104, 'sku': "Abc789", 'description': "SKU starts with A"}
+          {'_id': 104, 'sku': "Abc789", 'description': "SKU starts with A"},
         ]);
         if (result[keyOk] != 1.0) {
           throw StateError(result[keyErrmsg]);
         }
       });
       test('Document - simple', () async {
-        var findList = await collection!.find(filter: {
-          'sku': {op$regex: r'789$'}
-        }).toList();
+        var findList = await collection!
+            .find(
+              filter: {
+                'sku': {op$regex: r'789$'},
+              },
+            )
+            .toList();
 
         expect(findList, isNotNull);
         expect(findList, [
           {
             '_id': 101,
             'sku': 'abc789',
-            'description': 'First line\nSecond line'
+            'description': 'First line\nSecond line',
           },
           {
             '_id': 103,
             'sku': 'xyz789',
-            'description': 'Multiple\nline description'
+            'description': 'Multiple\nline description',
           },
-          {'_id': 104, 'sku': 'Abc789', 'description': 'SKU starts with A'}
+          {'_id': 104, 'sku': 'Abc789', 'description': 'SKU starts with A'},
         ]);
       });
       test('FilterExpression - simple', () async {
@@ -169,14 +179,14 @@ void main() async {
           {
             '_id': 101,
             'sku': 'abc789',
-            'description': 'First line\nSecond line'
+            'description': 'First line\nSecond line',
           },
           {
             '_id': 103,
             'sku': 'xyz789',
-            'description': 'Multiple\nline description'
+            'description': 'Multiple\nline description',
           },
-          {'_id': 104, 'sku': 'Abc789', 'description': 'SKU starts with A'}
+          {'_id': 104, 'sku': 'Abc789', 'description': 'SKU starts with A'},
         ]);
       });
       test('QueryExpression - simple', () async {
@@ -189,42 +199,24 @@ void main() async {
           {
             '_id': 101,
             'sku': 'abc789',
-            'description': 'First line\nSecond line'
+            'description': 'First line\nSecond line',
           },
           {
             '_id': 103,
             'sku': 'xyz789',
-            'description': 'Multiple\nline description'
+            'description': 'Multiple\nline description',
           },
-          {'_id': 104, 'sku': 'Abc789', 'description': 'SKU starts with A'}
+          {'_id': 104, 'sku': 'Abc789', 'description': 'SKU starts with A'},
         ]);
       });
 
       test('Document - case insensitive', () async {
-        var findList = await collection!.find(filter: {
-          'sku': {r'$regex': r'^ABC', op$options: 'i'}
-        }).toList();
-
-        expect(findList, isNotNull);
-        expect(findList, [
-          {
-            '_id': 100,
-            'sku': 'abc123',
-            'description': 'Single line description.'
-          },
-          {
-            '_id': 101,
-            'sku': 'abc789',
-            'description': 'First line\nSecond line'
-          },
-          {'_id': 104, 'sku': 'Abc789', 'description': 'SKU starts with A'}
-        ]);
-      });
-      test('FilterExpression - case insensitive', () async {
         var findList = await collection!
             .find(
-                filter: FilterExpression()
-                  ..$regex('sku', r'^ABC', caseInsensitive: true))
+              filter: {
+                'sku': {r'$regex': r'^ABC', op$options: 'i'},
+              },
+            )
             .toList();
 
         expect(findList, isNotNull);
@@ -232,14 +224,37 @@ void main() async {
           {
             '_id': 100,
             'sku': 'abc123',
-            'description': 'Single line description.'
+            'description': 'Single line description.',
           },
           {
             '_id': 101,
             'sku': 'abc789',
-            'description': 'First line\nSecond line'
+            'description': 'First line\nSecond line',
           },
-          {'_id': 104, 'sku': 'Abc789', 'description': 'SKU starts with A'}
+          {'_id': 104, 'sku': 'Abc789', 'description': 'SKU starts with A'},
+        ]);
+      });
+      test('FilterExpression - case insensitive', () async {
+        var findList = await collection!
+            .find(
+              filter: FilterExpression()
+                ..$regex('sku', r'^ABC', caseInsensitive: true),
+            )
+            .toList();
+
+        expect(findList, isNotNull);
+        expect(findList, [
+          {
+            '_id': 100,
+            'sku': 'abc123',
+            'description': 'Single line description.',
+          },
+          {
+            '_id': 101,
+            'sku': 'abc789',
+            'description': 'First line\nSecond line',
+          },
+          {'_id': 104, 'sku': 'Abc789', 'description': 'SKU starts with A'},
         ]);
       });
       test('QueryExpression - case insensitive', () async {
@@ -252,21 +267,25 @@ void main() async {
           {
             '_id': 100,
             'sku': 'abc123',
-            'description': 'Single line description.'
+            'description': 'Single line description.',
           },
           {
             '_id': 101,
             'sku': 'abc789',
-            'description': 'First line\nSecond line'
+            'description': 'First line\nSecond line',
           },
-          {'_id': 104, 'sku': 'Abc789', 'description': 'SKU starts with A'}
+          {'_id': 104, 'sku': 'Abc789', 'description': 'SKU starts with A'},
         ]);
       });
 
       test('Document - multiline', () async {
-        var findList = await collection!.find(filter: {
-          'description': {r'$regex': r'^S', op$options: 'm'}
-        }).toList();
+        var findList = await collection!
+            .find(
+              filter: {
+                'description': {r'$regex': r'^S', op$options: 'm'},
+              },
+            )
+            .toList();
 
         expect(findList, isNotNull);
         expect(findList, expectedMultiline);
@@ -274,8 +293,9 @@ void main() async {
       test('FilterExpression - multiline', () async {
         var findList = await collection!
             .find(
-                filter: FilterExpression()
-                  ..$regex('description', r'^S', multiLineAnchorMatch: true))
+              filter: FilterExpression()
+                ..$regex('description', r'^S', multiLineAnchorMatch: true),
+            )
             .toList();
 
         expect(findList, isNotNull);
@@ -284,8 +304,9 @@ void main() async {
       test('QueryExpression - multiline', () async {
         var findList = await collection!
             .find(
-                filter: where
-                  ..$regex('description', r'^S', multiLineAnchorMatch: true))
+              filter: where
+                ..$regex('description', r'^S', multiLineAnchorMatch: true),
+            )
             .toList();
 
         expect(findList, isNotNull);
@@ -309,9 +330,13 @@ void main() async {
       });
 
       test('Document - Dot Character to Match New Line', () async {
-        var findList = await collection!.find(filter: {
-          'description': {r'$regex': r'm.*line', op$options: 'si'}
-        }).toList();
+        var findList = await collection!
+            .find(
+              filter: {
+                'description': {r'$regex': r'm.*line', op$options: 'si'},
+              },
+            )
+            .toList();
 
         expect(findList, isNotNull);
         expect(findList, expDotMatchNewLine);
@@ -319,9 +344,14 @@ void main() async {
       test('FilterExpression - Dot Character to Match New Line', () async {
         var findList = await collection!
             .find(
-                filter: FilterExpression()
-                  ..$regex('description', r'm.*line',
-                      caseInsensitive: true, dotMatchAll: true))
+              filter: FilterExpression()
+                ..$regex(
+                  'description',
+                  r'm.*line',
+                  caseInsensitive: true,
+                  dotMatchAll: true,
+                ),
+            )
             .toList();
 
         expect(findList, isNotNull);
@@ -330,34 +360,46 @@ void main() async {
       test('QueryExpression - Dot Character to Match New Line', () async {
         var findList = await collection!
             .find(
-                filter: where
-                  ..$regex('description', r'm.*line',
-                      caseInsensitive: true, dotMatchAll: true))
+              filter: where
+                ..$regex(
+                  'description',
+                  r'm.*line',
+                  caseInsensitive: true,
+                  dotMatchAll: true,
+                ),
+            )
             .toList();
 
         expect(findList, isNotNull);
         expect(findList, expDotMatchNewLine);
       });
-      test('QueryExpression - Dot Character to Match New Line No DotMatchAll',
-          () async {
-        var findList = await collection!
-            .find(
+      test(
+        'QueryExpression - Dot Character to Match New Line No DotMatchAll',
+        () async {
+          var findList = await collection!
+              .find(
                 filter: where
-                  ..$regex('description', r'm.*line', caseInsensitive: true))
-            .toList();
+                  ..$regex('description', r'm.*line', caseInsensitive: true),
+              )
+              .toList();
 
-        expect(findList, isNotNull);
-        expect(findList, expDotMatchNewLineNos);
-      });
+          expect(findList, isNotNull);
+          expect(findList, expDotMatchNewLineNos);
+        },
+      );
 
       test('Document - Ignore spaces and comments', () async {
         if ((fcv?.compareTo('6.0') ?? -1) < 1) {
           return;
         }
         var pattern = 'abc #category code\n123 #item number';
-        var findList = await collection!.find(filter: {
-          'sku': {r'$regex': pattern, op$options: 'x'}
-        }).toList();
+        var findList = await collection!
+            .find(
+              filter: {
+                'sku': {r'$regex': pattern, op$options: 'x'},
+              },
+            )
+            .toList();
 
         expect(findList, isNotNull);
         expect(findList, expIgnoreSpaceAndComments);
@@ -369,8 +411,9 @@ void main() async {
         var pattern = 'abc #category code\n123 #item number';
         var findList = await collection!
             .find(
-                filter: FilterExpression()
-                  ..$regex('sku', pattern, extendedIgnoreWhiteSpace: true))
+              filter: FilterExpression()
+                ..$regex('sku', pattern, extendedIgnoreWhiteSpace: true),
+            )
             .toList();
 
         expect(findList, isNotNull);
@@ -383,8 +426,9 @@ void main() async {
         var pattern = 'abc #category code\n123 #item number';
         var findList = await collection!
             .find(
-                filter: where
-                  ..$regex('sku', pattern, extendedIgnoreWhiteSpace: true))
+              filter: where
+                ..$regex('sku', pattern, extendedIgnoreWhiteSpace: true),
+            )
             .toList();
 
         expect(findList, isNotNull);
@@ -393,9 +437,13 @@ void main() async {
 
       test('Document - Extended Regular Expression', () async {
         var pattern = "(?i)a(?-i)bc";
-        var findList = await collection!.find(filter: {
-          'sku': {r'$regex': pattern, op$options: 'x'}
-        }).toList();
+        var findList = await collection!
+            .find(
+              filter: {
+                'sku': {r'$regex': pattern, op$options: 'x'},
+              },
+            )
+            .toList();
 
         expect(findList, isNotNull);
         expect(findList, expExtendedRegularExpression);
@@ -404,8 +452,9 @@ void main() async {
         var pattern = "(?i)a(?-i)bc";
         var findList = await collection!
             .find(
-                filter: FilterExpression()
-                  ..$regex('sku', pattern, extendedIgnoreWhiteSpace: true))
+              filter: FilterExpression()
+                ..$regex('sku', pattern, extendedIgnoreWhiteSpace: true),
+            )
             .toList();
 
         expect(findList, isNotNull);
@@ -415,8 +464,9 @@ void main() async {
         var pattern = "(?i)a(?-i)bc";
         var findList = await collection!
             .find(
-                filter: where
-                  ..$regex('sku', pattern, extendedIgnoreWhiteSpace: true))
+              filter: where
+                ..$regex('sku', pattern, extendedIgnoreWhiteSpace: true),
+            )
             .toList();
 
         expect(findList, isNotNull);
@@ -429,16 +479,20 @@ void main() async {
         var (_, MongoDocument result, _, _) = await collection2.insertMany([
           {'_id': 0, 'artist': 'Blue Öyster Cult', "title": 'The Reaper'},
           {'_id': 1, 'artist': 'Blue Öyster Cult', 'title': 'Godzilla'},
-          {'_id': 2, 'artist': 'Blue Oyster Cult', 'title': 'Take Me Away'}
+          {'_id': 2, 'artist': 'Blue Oyster Cult', 'title': 'Take Me Away'},
         ]);
         if (result[keyOk] != 1.0) {
           throw StateError(result[keyErrmsg]);
         }
 
         var pattern = "(*UCP)\byster";
-        var findList = await collection2.find(filter: {
-          'artist': {r'$regex': pattern, op$options: 'x'}
-        }).toList();
+        var findList = await collection2
+            .find(
+              filter: {
+                'artist': {r'$regex': pattern, op$options: 'x'},
+              },
+            )
+            .toList();
 
         expect(findList, isNotNull);
         expect(findList, []);

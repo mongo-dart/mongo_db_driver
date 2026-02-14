@@ -20,7 +20,7 @@ class ServerCapabilities {
   bool isShardedCluster = false;
   bool isStandalone = false;
   String? fcv;
-/* 
+  /* 
   void getParamsFromIstMaster(Map<String, dynamic> isMaster) {
     if (isMaster.containsKey('maxWireVersion')) {
       maxWireVersion = isMaster['maxWireVersion'] as int;

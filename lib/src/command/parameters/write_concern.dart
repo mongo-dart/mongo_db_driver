@@ -64,44 +64,68 @@ class WriteConcern {
   final String? provenance;
 
   /// Creates a WriteConcern object
-  WriteConcern(
-      {W? w, this.wtimeout, this.fsync = true, this.j = true, this.provenance})
-      : w = w ?? primaryAcknowledged;
+  WriteConcern({
+    W? w,
+    this.wtimeout,
+    this.fsync = true,
+    this.j = true,
+    this.provenance,
+  }) : w = w ?? primaryAcknowledged;
 
   WriteConcern.fromMap(Map<String, Object> writeConcernMap)
-      : w = W(writeConcernMap[keyW]),
-        wtimeout = writeConcernMap[keyWtimeout] as int?,
-        fsync = writeConcernMap[keyFsync] as bool? ?? false,
-        j = writeConcernMap[keyJ] as bool? ?? false,
-        provenance = writeConcernMap[keyProvenance] as String?;
+    : w = W(writeConcernMap[keyW]),
+      wtimeout = writeConcernMap[keyWtimeout] as int?,
+      fsync = writeConcernMap[keyFsync] as bool? ?? false,
+      j = writeConcernMap[keyJ] as bool? ?? false,
+      provenance = writeConcernMap[keyProvenance] as String?;
 
   /// Write operations that use this write concern will return as soon as the
   /// message is written to the socket.
   /// Exceptions are raised for network issues, but not server errors.
-  static final unacknowledged =
-      WriteConcern(w: W(0), wtimeout: 0, fsync: false, j: false);
+  static final unacknowledged = WriteConcern(
+    w: W(0),
+    wtimeout: 0,
+    fsync: false,
+    j: false,
+  );
 
   /// Write operations that use this write concern will wait for
   /// acknowledgement from the primary server before returning.
   /// Exceptions are raised for network issues, and server errors.
-  static final acknowledged =
-      WriteConcern(w: primaryAcknowledged, wtimeout: 0, fsync: false, j: false);
+  static final acknowledged = WriteConcern(
+    w: primaryAcknowledged,
+    wtimeout: 0,
+    fsync: false,
+    j: false,
+  );
 
   /// Exceptions are raised for network issues, and server errors;
   /// waits for at least 2 servers for the write operation.
-  static final replicaAcknowledged =
-      WriteConcern(w: W(2), wtimeout: 0, fsync: false, j: false);
+  static final replicaAcknowledged = WriteConcern(
+    w: W(2),
+    wtimeout: 0,
+    fsync: false,
+    j: false,
+  );
 
   /// Exceptions are raised for network issues, and server errors; the write
   /// operation waits for the server to
   /// group commit to the journal file on disk.
-  static final journaled =
-      WriteConcern(w: primaryAcknowledged, wtimeout: 0, fsync: false, j: true);
+  static final journaled = WriteConcern(
+    w: primaryAcknowledged,
+    wtimeout: 0,
+    fsync: false,
+    j: true,
+  );
 
   /// Exceptions are raised for network issues, and server errors; waits on a
   /// majority of servers for the write operation.
-  static final majority =
-      WriteConcern(w: wMajority, wtimeout: 0, fsync: false, j: false);
+  static final majority = WriteConcern(
+    w: wMajority,
+    wtimeout: 0,
+    fsync: false,
+    j: false,
+  );
 
   /// Gets the getlasterror command for this write concern.
   /*  Map<String, dynamic> get command {
@@ -131,14 +155,14 @@ class WriteConcern {
   /// In 4.0 journal cannot be disabled on wiredTiger engine
   /// In 4.2 only wiredTiger can be used
   Options asMap(ServerStatus serverStatus) => <String, dynamic>{
-        keyW: w.value,
-        if (wtimeout != null) keyWtimeout: wtimeout!,
-        if (serverStatus.isPersistent)
-          if (j)
-            keyJ: j
-          else if (serverStatus.isJournaled)
-            keyJ: fsync
-          else
-            keyFsync: fsync,
-      };
+    keyW: w.value,
+    keyWtimeout: ?wtimeout,
+    if (serverStatus.isPersistent)
+      if (j)
+        keyJ: j
+      else if (serverStatus.isJournaled)
+        keyJ: fsync
+      else
+        keyFsync: fsync,
+  };
 }

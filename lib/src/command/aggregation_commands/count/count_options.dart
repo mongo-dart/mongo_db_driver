@@ -50,8 +50,8 @@ class CountOptions {
   CountOptions({this.readConcern, this.collation, this.comment});
 
   Options get options => <String, dynamic>{
-        if (readConcern != null) keyReadConcern: readConcern!.toMap(),
-        if (collation != null) keyCollation: collation!.options,
-        if (comment != null) keyComment: comment!,
-      };
+    if (readConcern != null) keyReadConcern: readConcern!.toMap(),
+    if (collation != null) keyCollation: collation!.options,
+    keyComment: ?comment,
+  };
 }

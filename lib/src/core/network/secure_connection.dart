@@ -18,37 +18,46 @@ class SecureConnection extends ConnectionBase {
       if (server.mongoClient.clientAuth?.tlsCAFileContent != null &&
           !_caCertificateAlreadyInHash) {
         securityContext.setTrustedCertificatesBytes(
-            server.mongoClient.clientAuth!.tlsCAFileContent!);
+          server.mongoClient.clientAuth!.tlsCAFileContent!,
+        );
       }
       if (server.mongoClient.clientAuth?.tlsCertificateKeyFileContent != null) {
         securityContext
           ..useCertificateChainBytes(
-              server.mongoClient.clientAuth!.tlsCertificateKeyFileContent!)
+            server.mongoClient.clientAuth!.tlsCertificateKeyFileContent!,
+          )
           ..usePrivateKeyBytes(
-              server.mongoClient.clientAuth!.tlsCertificateKeyFileContent!,
-              password:
-                  server.mongoClient.clientAuth?.tlsCertificateKeyFilePassword);
+            server.mongoClient.clientAuth!.tlsCertificateKeyFileContent!,
+            password:
+                server.mongoClient.clientAuth?.tlsCertificateKeyFilePassword,
+          );
       }
 
       locSocket = await SecureSocket.connect(
-          serverConfig.host, serverConfig.port, context: securityContext,
-          onBadCertificate: (certificate) {
-        // couldn't find here if the cause is an hostname mismatch
-        return server.mongoClient.clientAuth!.tlsAllowInvalidCertificates;
-      });
+        serverConfig.host,
+        serverConfig.port,
+        context: securityContext,
+        onBadCertificate: (certificate) {
+          // couldn't find here if the cause is an hostname mismatch
+          return server.mongoClient.clientAuth!.tlsAllowInvalidCertificates;
+        },
+      );
     } on TlsException catch (e) {
-      if (e.osError?.message
-              .contains('CERT_ALREADY_IN_HASH_TABLE(x509_lu.c:356)') ??
+      if (e.osError?.message.contains(
+            'CERT_ALREADY_IN_HASH_TABLE(x509_lu.c:356)',
+          ) ??
           false) {
         _caCertificateAlreadyInHash = true;
         return connect();
       }
       var ex = ConnectionException(
-          'Could not connect to ${serverConfig.hostUrl}\n- $e');
+        'Could not connect to ${serverConfig.hostUrl}\n- $e',
+      );
       throw ex;
     } catch (e) {
       var ex = ConnectionException(
-          'Could not connect to ${serverConfig.hostUrl}\n- $e');
+        'Could not connect to ${serverConfig.hostUrl}\n- $e',
+      );
       throw ex;
     }
 

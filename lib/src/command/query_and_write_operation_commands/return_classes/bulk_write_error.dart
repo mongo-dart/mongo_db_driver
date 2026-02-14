@@ -7,7 +7,7 @@ class BulkWriteError extends WriteError {
   int? operationInputIndex;
 
   BulkWriteError.fromMap(super.bulkWriteErrorMap)
-      : index = bulkWriteErrorMap[keyIndex] as int?,
-        operationInputIndex = bulkWriteErrorMap[keyOperationInputIndex] as int?,
-        super.fromMap();
+    : index = bulkWriteErrorMap[keyIndex] as int?,
+      operationInputIndex = bulkWriteErrorMap[keyOperationInputIndex] as int?,
+      super.fromMap();
 }

@@ -16,7 +16,8 @@ void main() async {
   final pipeline = pipelineBuilder
     ..addStage($match((where..$eq('status', 'A'))))
     ..addStage(
-        $group(id: Field('cust_id'), fields: {'total': $sum(Field('amount'))}));
+      $group(id: Field('cust_id'), fields: {'total': $sum(Field('amount'))}),
+    );
 
   final result = await collection.aggregateToStream(pipeline).toList();
   result.forEach(print);

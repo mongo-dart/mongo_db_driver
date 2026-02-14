@@ -12,7 +12,8 @@ import '../database/server_api.dart';
 /// @see https://docs.mongodb.com/manual/reference/connection-string
 class MongoClientOptions
 /*  mixin
-        ConnectionPoolSettings */ /*extends BSONSerializeOptions,  SupportedNodeConnectionOptions*/ {
+        ConnectionPoolSettings */
+/*extends BSONSerializeOptions,  SupportedNodeConnectionOptions*/ {
   ConnectionPoolSettings connectionPoolSettings = ConnectionPoolSettings();
 
   /// Specifies the name of the replica set, if the mongod is a member of a
@@ -65,11 +66,11 @@ class MongoClientOptions
   /// instance.
   List<CompressorName>? compressors;
   set compressorsString(String value) => compressors ??= [
-        for (var compressor in value.split(','))
-          CompressorName.values
-              .toList()
-              .firstWhere((element) => element.name == compressor)
-      ];
+    for (var compressor in value.split(','))
+      CompressorName.values.toList().firstWhere(
+        (element) => element.name == compressor,
+      ),
+  ];
 
   /// An integer that specifies the compression level if using zlib
   /// for network compression.

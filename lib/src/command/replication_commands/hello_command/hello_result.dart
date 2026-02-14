@@ -26,21 +26,20 @@ import '../../../topology/topology_version.dart';
 
 class HelloResult with BasicResult, TimingResult {
   HelloResult(Map<String, dynamic> document)
-      : isWritablePrimary = document[keyIsWritablePrimary] as bool? ?? false,
-        maxBsonObjectSize =
-            document[keyMaxBsonObjectSize] as int? ?? 16 * 1024 * 1024,
-        maxMessageSizeBytes =
-            document[keyMaxMessageSizeBytes] as int? ?? 48000000,
-        maxWriteBatchSize = document[keyMaxWriteBatchSize] as int? ?? 100000,
-        localTime = document[keyLocalTime] as DateTime,
-        logicalSessionTimeoutMinutes =
-            document[keyLogicalSessionTimeoutMinutes] as int,
-        minWireVersion = document[keyMinWireVersion] as int,
-        maxWireVersion = document[keyMaxWireVersion] as int,
-        readOnly = document[keyReadOnly] ?? false,
-        isreplicaset = document['isreplicaset'] ?? false,
-        topologyVersion =
-            TopologyVersion.document(document[keyTopologyVersion]) {
+    : isWritablePrimary = document[keyIsWritablePrimary] as bool? ?? false,
+      maxBsonObjectSize =
+          document[keyMaxBsonObjectSize] as int? ?? 16 * 1024 * 1024,
+      maxMessageSizeBytes =
+          document[keyMaxMessageSizeBytes] as int? ?? 48000000,
+      maxWriteBatchSize = document[keyMaxWriteBatchSize] as int? ?? 100000,
+      localTime = document[keyLocalTime] as DateTime,
+      logicalSessionTimeoutMinutes =
+          document[keyLogicalSessionTimeoutMinutes] as int,
+      minWireVersion = document[keyMinWireVersion] as int,
+      maxWireVersion = document[keyMaxWireVersion] as int,
+      readOnly = document[keyReadOnly] ?? false,
+      isreplicaset = document['isreplicaset'] ?? false,
+      topologyVersion = TopologyVersion.document(document[keyTopologyVersion]) {
     extractBasic(document);
     extractTiming(document);
 

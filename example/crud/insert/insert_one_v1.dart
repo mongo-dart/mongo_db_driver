@@ -18,9 +18,11 @@ void main() async {
 
   Logger.root.onRecord.listen(listener);
 
-  var client = MongoClient(defaultUri,
-      mongoClientOptions: MongoClientOptions()
-        ..serverApi = ServerApi(ServerApiVersion.v1));
+  var client = MongoClient(
+    defaultUri,
+    mongoClientOptions: MongoClientOptions()
+      ..serverApi = ServerApi(ServerApiVersion.v1),
+  );
   await client.connect();
   var db = client.db();
 
@@ -38,7 +40,7 @@ void main() async {
     'name': 'Tom',
     'state': 'active',
     'rating': 100,
-    'score': 5
+    'score': 5,
   });
 
   if (!ret.isSuccess) {
@@ -50,14 +52,14 @@ void main() async {
   print('Fetched: "${res?['name']}"');
   // Tom
 
-// *** In Session ***
+  // *** In Session ***
   var session = client.startSession();
   (ret, _, _, _) = await collection.insertOne(<String, dynamic>{
     '_id': 2,
     'name': 'Ezra',
     'state': 'active',
     'rating': 90,
-    'score': 6
+    'score': 6,
   }, session: session);
 
   if (!ret.isSuccess) {
@@ -70,7 +72,7 @@ void main() async {
   print('Fetched: "${res?['name']}"');
   // Ezra
 
-// *** In Transaction committed ***
+  // *** In Transaction committed ***
   session = client.startSession();
   session.startTransaction();
   (ret, _, _, _) = await collection.insertOne(<String, dynamic>{
@@ -78,7 +80,7 @@ void main() async {
     'name': 'Nathan',
     'state': 'active',
     'rating': 98,
-    'score': 4
+    'score': 4,
   }, session: session);
 
   if (!ret.isSuccess) {
@@ -95,7 +97,7 @@ void main() async {
   print('Fetched: "${res?['name']}"');
   // Nathan
 
-// *** In Transaction aborted ***
+  // *** In Transaction aborted ***
   session = client.startSession();
   session.startTransaction();
   (ret, _, _, _) = await collection.insertOne(<String, dynamic>{

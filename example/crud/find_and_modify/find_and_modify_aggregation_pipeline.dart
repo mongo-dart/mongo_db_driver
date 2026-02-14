@@ -35,7 +35,7 @@ void main() async {
       'grades': [
         {'grade': 80, 'mean': 75, 'std': 6},
         {'grade': 85, 'mean': 90, 'std': 4},
-        {'grade': 85, 'mean': 85, 'std': 6}
+        {'grade': 85, 'mean': 85, 'std': 6},
       ],
     },
     {
@@ -43,9 +43,9 @@ void main() async {
       'grades': [
         {'grade': 90, 'mean': 75, 'std': 6},
         {'grade': 87, 'mean': 90, 'std': 3},
-        {'grade': 85, 'mean': 85, 'std': 4}
-      ]
-    }
+        {'grade': 85, 'mean': 85, 'std': 4},
+      ],
+    },
   ]);
   if (!ret.isSuccess) {
     print('Error detected in record insertion');
@@ -53,17 +53,20 @@ void main() async {
 
   var (res, _) = await collection.findOneAndUpdate(
     where..$eq('_id', 1),
-    (AggregationPipelineBuilder()
-          ..addStage($addFields.raw({
+    (AggregationPipelineBuilder()..addStage(
+          $addFields.raw({
             r'total': {r'$sum': r'$grades.grade'},
-          })))
+          }),
+        ))
         .build(),
     returnNew: true,
   );
   print('Updated document: ${res.lastErrorObject?.updatedExisting}'); // true
 
-  print('Modified element new total: '
-      '${res.value?['total']}'); // 250;
+  print(
+    'Modified element new total: '
+    '${res.value?['total']}',
+  ); // 250;
 
   await cleanupDatabase();
 }

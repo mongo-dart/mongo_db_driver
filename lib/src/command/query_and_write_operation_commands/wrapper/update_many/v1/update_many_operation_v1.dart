@@ -4,10 +4,11 @@ import 'update_many_statement_v1.dart';
 
 base class UpdateManyOperationV1 extends UpdateManyOperation {
   UpdateManyOperationV1(
-      super.collection, UpdateManyStatementV1 super.updateManyStatement,
-      {super.ordered,
-      super.session,
-      UpdateManyOptionsV1? super.updateManyOptions,
-      super.rawOptions})
-      : super.protected();
+    super.collection,
+    UpdateManyStatementV1 super.updateManyStatement, {
+    super.ordered,
+    super.session,
+    UpdateManyOptionsV1? super.updateManyOptions,
+    super.rawOptions,
+  }) : super.protected();
 }

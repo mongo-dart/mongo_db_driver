@@ -5,8 +5,10 @@
 @Deprecated('Use UpdateSpec getter instead')
 bool containsOnlyUpdateOperators(Map<String, dynamic> updateDocument) =>
     updateDocument.isNotEmpty &&
-    updateDocument.keys
-            .firstWhere((element) => element[0] != r'$', orElse: () => r'$') ==
+    updateDocument.keys.firstWhere(
+          (element) => element[0] != r'$',
+          orElse: () => r'$',
+        ) ==
         r'$';
 
 /// This method returns true if none of the top keys are update operators
@@ -16,6 +18,8 @@ bool containsOnlyUpdateOperators(Map<String, dynamic> updateDocument) =>
 @Deprecated('Use UpdateSpec getter instead')
 bool isPureDocument(Map<String, dynamic> updateDocument) =>
     updateDocument.isNotEmpty &&
-    updateDocument.keys
-            .firstWhere((element) => element[0] == r'$', orElse: () => '#') ==
+    updateDocument.keys.firstWhere(
+          (element) => element[0] == r'$',
+          orElse: () => '#',
+        ) ==
         '#';

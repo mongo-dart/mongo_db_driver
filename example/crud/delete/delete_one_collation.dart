@@ -29,36 +29,46 @@ void main() async {
 
   var findResult = await collection
       .find(
-          filter: where
-            ..$eq('category', 'cafe')
-            ..$eq('status', 'a'))
+        filter: where
+          ..$eq('category', 'cafe')
+          ..$eq('status', 'a'),
+      )
       .toList();
 
-  print('First record category without collation before deletion: '
-      '${findResult.first['category']}'); // 'cafe';
+  print(
+    'First record category without collation before deletion: '
+    '${findResult.first['category']}',
+  ); // 'cafe';
 
   findResult = await collection
       .find(
-          filter: where
-            ..$eq('category', 'cafe')
-            ..$eq('status', 'a'),
-          findOptions:
-              FindOptions(collation: CollationOptions('fr', strength: 1)))
+        filter: where
+          ..$eq('category', 'cafe')
+          ..$eq('status', 'a'),
+        findOptions: FindOptions(
+          collation: CollationOptions('fr', strength: 1),
+        ),
+      )
       .toList();
 
-  print('First record category with collation before deletion: '
-      '${findResult.first['category']}'); // 'café';
+  print(
+    'First record category with collation before deletion: '
+    '${findResult.first['category']}',
+  ); // 'café';
 
-  var (res, _) = await collection.deleteOne(
-      <String, Object>{'category': 'cafe', 'status': 'a'},
-      collation: CollationOptions('fr', strength: 1));
+  var (res, _) = await collection.deleteOne(<String, Object>{
+    'category': 'cafe',
+    'status': 'a',
+  }, collation: CollationOptions('fr', strength: 1));
 
   print('Removed documents: ${res.nRemoved}');
 
   findResult = await collection.find().toList();
 
-  print('First record category after deletion with collation: '
-      '${findResult.first['category']}'); // 'cafE';
+  print(
+    'First record category after deletion with collation: '
+    '${findResult.first['category']}',
+  ); // 'cafE';
 
   await cleanupDatabase();
 }

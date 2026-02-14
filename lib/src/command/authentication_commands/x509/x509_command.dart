@@ -6,19 +6,26 @@ import '../../base/operation_base.dart';
 import '../../command_exp.dart';
 
 base class X509Command extends AuthCommand {
-  X509Command(MongoClient client, String mechanism, String? username,
-      {super.session,
-      SaslStartOptions? saslStartOptions,
-      Options? rawOptions,
-      ConnectionBase? connection})
-      : super(client, <String, dynamic>{
-          keyAuthenticate: 1,
-          keyMechanism: mechanism,
-          if (username != null && username.isNotEmpty) keyUser: username
-        }, options: <String, dynamic>{
-          ...?saslStartOptions?.options,
-          ...?rawOptions
-        }) {
+  X509Command(
+    MongoClient client,
+    String mechanism,
+    String? username, {
+    super.session,
+    SaslStartOptions? saslStartOptions,
+    Options? rawOptions,
+    ConnectionBase? connection,
+  }) : super(
+         client,
+         <String, dynamic>{
+           keyAuthenticate: 1,
+           keyMechanism: mechanism,
+           if (username != null && username.isNotEmpty) keyUser: username,
+         },
+         options: <String, dynamic>{
+           ...?saslStartOptions?.options,
+           ...?rawOptions,
+         },
+       ) {
     requiresAuthentication = false;
   }
 }

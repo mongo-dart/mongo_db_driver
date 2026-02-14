@@ -15,19 +15,27 @@ const Set keysToOmit = <String>{
   'j',
   'fsync',
   'readPreference',
-  'session'
+  'session',
 };
 
 base class CreateIndexOperation extends CommandOperation {
   Object fieldOrSpec;
   late Map<String, Object> indexes;
 
-  CreateIndexOperation(MongoDatabase db, MongoCollection collection,
-      this.fieldOrSpec, CreateIndexOptions? indexOptions,
-      {super.session, Map<String, Object>? rawOptions})
-      : super(db, {},
-            <String, dynamic>{...?indexOptions?.options, ...?rawOptions},
-            collection: collection, aspect: Aspect.writeOperation) {
+  CreateIndexOperation(
+    MongoDatabase db,
+    MongoCollection collection,
+    this.fieldOrSpec,
+    CreateIndexOptions? indexOptions, {
+    super.session,
+    Map<String, Object>? rawOptions,
+  }) : super(
+         db,
+         {},
+         <String, dynamic>{...?indexOptions?.options, ...?rawOptions},
+         collection: collection,
+         aspect: Aspect.writeOperation,
+       ) {
     // parseIndexOptions alway returns a filled "keyName" and a "keyFieldHash"
     // elements
     var indexParameters = parseIndexOptions(fieldOrSpec);
@@ -57,7 +65,7 @@ base class CreateIndexOperation extends CommandOperation {
     // Create command, apply write concern to command
     return <String, dynamic>{
       keyCreateIndexes: collection!.collectionName,
-      keyCreateIndexesArgument: [indexes]
+      keyCreateIndexesArgument: [indexes],
     };
   }
 }
@@ -67,35 +75,36 @@ Map<String, Object> parseIndexOptions(Object fieldOrSpec) {
   var indexes = <String>[];
   Iterable? keys;
 
-// Get all the fields accordingly
+  // Get all the fields accordingly
   if (fieldOrSpec is String) {
-// 'type'
+    // 'type'
     indexes.add(_fieldIndexName(fieldOrSpec, '1'));
     fieldHash[fieldOrSpec] = 1;
   } else if (fieldOrSpec is List) {
     for (Object object in fieldOrSpec) {
       if (object is String) {
-// [{location:'2d'}, 'type']
+        // [{location:'2d'}, 'type']
         indexes.add(_fieldIndexName(object, '1'));
         fieldHash[object] = 1;
       } else if (object is List) {
-// [['location', '2d'],['type', 1]]
+        // [['location', '2d'],['type', 1]]
         indexes.add(
-            _fieldIndexName(object[0] as String, (object[1] ?? '1') as String));
+          _fieldIndexName(object[0] as String, (object[1] ?? '1') as String),
+        );
         fieldHash[object[0]] = object[1] ?? '1';
       } else if (object is Map) {
-// [{location:'2d'}, {type:1}]
+        // [{location:'2d'}, {type:1}]
         keys = object.keys;
         for (String key in keys) {
           indexes.add(_fieldIndexName(key, object[key] as String));
           fieldHash[key] = object[key];
         }
       } else {
-// undefined (ignore)
+        // undefined (ignore)
       }
     }
   } else if (fieldOrSpec is Map) {
-// {location:'2d', type:1}
+    // {location:'2d', type:1}
     keys = fieldOrSpec.keys;
     for (String key in keys) {
       var indexDirection = '${fieldOrSpec[key]}';
@@ -104,11 +113,7 @@ Map<String, Object> parseIndexOptions(Object fieldOrSpec) {
     }
   }
 
-  return {
-    keyName: indexes.join('_'),
-    if (keys != null) keyKeys: keys,
-    keyFieldHash: fieldHash
-  };
+  return {keyName: indexes.join('_'), keyKeys: ?keys, keyFieldHash: fieldHash};
 }
 
 String _fieldIndexName(String fieldName, String sort) => '${fieldName}_$sort';

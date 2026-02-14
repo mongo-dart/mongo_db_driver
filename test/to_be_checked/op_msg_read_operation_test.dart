@@ -32,7 +32,7 @@ var testDoc = {
     'link':
         'http://localhost:4002/storage/turismo/midias/acd13d50-15af-45fd-98f9-0903d1bb3ea5.jpg',
     'mimeType': 'image/jpeg',
-    'tipo': null
+    'tipo': null,
   },
   'infos': [
     {
@@ -40,15 +40,15 @@ var testDoc = {
       'title': 'ONDE COMER EM RIO DAS OSTRAS',
       'lang': 'pt',
       'content':
-          'Bares, restaurantes e quiosques oferecem o melhor da gastronomia regional, onde os festivais como os de Frutos do Mar, Pizza, Pão e Petiscos de Quiosque, são sempre destaque.'
+          'Bares, restaurantes e quiosques oferecem o melhor da gastronomia regional, onde os festivais como os de Frutos do Mar, Pizza, Pão e Petiscos de Quiosque, são sempre destaque.',
     },
     {
       'id': '91fb8685-724d-49ba-b65b-1fb5c0cf40df',
       'title': 'BAR DA BOCA',
       'lang': 'en',
       'content':
-          'Bars, restaurants and kiosks suitable for the best of regional cuisine, where festivals such as Seafood, Pizza, Bread and Kiosk Snacks are always the highlight.'
-    }
+          'Bars, restaurants and kiosks suitable for the best of regional cuisine, where festivals such as Seafood, Pizza, Bread and Kiosk Snacks are always the highlight.',
+    },
   ],
   'pontosGastronomicos': [
     {
@@ -58,15 +58,15 @@ var testDoc = {
           'id': '925ed160-9276-4046-87a2-d1f37547f7cb',
           'title': 'BAR DA BOCA',
           'lang': 'pt',
-          'content': 'Ótima experiência com  o  melhor chope de Rio das Ostras'
+          'content': 'Ótima experiência com  o  melhor chope de Rio das Ostras',
         },
         {
           'id': 'abc2ef60-4807-4b16-8d3e-95223abe0524',
           'title': 'BAR DA BOCA',
           'lang': 'en',
           'content':
-              'Great experience with the best draft beer in Rio das Ostras'
-        }
+              'Great experience with the best draft beer in Rio das Ostras',
+        },
       ],
       'midias': [
         {
@@ -79,8 +79,8 @@ var testDoc = {
           'link':
               'http://localhost:4002/storage/turismo/midias/acd13d50-15af-45fd-98f9-0903d1bb3ea5.jpg',
           'mimeType': 'image/jpeg',
-          'tipo': null
-        }
+          'tipo': null,
+        },
       ],
       'ativo': true,
       'dataCadastro': '2021-02-11 19:51:26.702',
@@ -113,14 +113,14 @@ var testDoc = {
             {
               'id': '632a34a2-30b5-4589-b696-ab023dcd742f',
               'title': 'Ar Condicionado',
-              'lang': 'pt'
+              'lang': 'pt',
             },
             {
               'id': '274a0116-218f-4148-bd54-fa1840c5a0d0',
               'title': 'Air Conditioner',
-              'lang': 'en'
-            }
-          ]
+              'lang': 'en',
+            },
+          ],
         },
         {
           'id': '6ef1036c-87fd-4a0b-a6e3-026fb8599431',
@@ -129,14 +129,14 @@ var testDoc = {
             {
               'id': '2a83927e-7da9-4a8b-bd02-e8fc2006430e',
               'title': 'Wifi',
-              'lang': 'pt'
+              'lang': 'pt',
             },
             {
               'id': 'ebf3cd36-c0bf-4549-967c-0e55817c585c',
               'title': 'Wifi',
-              'lang': 'en'
-            }
-          ]
+              'lang': 'en',
+            },
+          ],
         },
         {
           'id': 'ce40ef4a-f96a-4376-9319-0858429a8692',
@@ -145,18 +145,18 @@ var testDoc = {
             {
               'id': '5b11a221-f728-4414-9ad4-e999b855a92d',
               'title': 'Área de fumantes',
-              'lang': 'pt'
+              'lang': 'pt',
             },
             {
               'id': 'a0d8ad50-49fb-4d9c-b7ca-75b198b13e30',
               'title': 'Smoking area',
-              'lang': 'en'
-            }
-          ]
-        }
-      ]
-    }
-  ]
+              'lang': 'en',
+            },
+          ],
+        },
+      ],
+    },
+  ],
 };
 
 final Matcher throwsMongoDartError = throwsA(TypeMatcher<MongoDartError>());
@@ -214,45 +214,64 @@ void main() async {
       var (ret, _, _, _) = await collection.insertOne(testDoc);
       expect(ret.isSuccess, isTrue);
 
-      var result = await collection.find(filter: {
-        'pontosGastronomicos.id': '208a3f93-9fcb-4db7-ac44-bb11b86a2d31'
-      }, projection: {
-        '_id': 0,
-        'pontosGastronomicos': {
-          r'$elemMatch': {'id': '208a3f93-9fcb-4db7-ac44-bb11b86a2d31'}
-        }
-      }).toList();
+      var result = await collection
+          .find(
+            filter: {
+              'pontosGastronomicos.id': '208a3f93-9fcb-4db7-ac44-bb11b86a2d31',
+            },
+            projection: {
+              '_id': 0,
+              'pontosGastronomicos': {
+                r'$elemMatch': {'id': '208a3f93-9fcb-4db7-ac44-bb11b86a2d31'},
+              },
+            },
+          )
+          .toList();
       expect(result.length, 1);
-      expect(result.first['pontosGastronomicos'].first['id'],
-          '208a3f93-9fcb-4db7-ac44-bb11b86a2d31');
+      expect(
+        result.first['pontosGastronomicos'].first['id'],
+        '208a3f93-9fcb-4db7-ac44-bb11b86a2d31',
+      );
 
       var resultOne = await collection.findOne(
-          filter: where
-            ..$eq('pontosGastronomicos.id',
-                '208a3f93-9fcb-4db7-ac44-bb11b86a2d31'),
-          projection: {
-            '_id': 0,
-            'pontosGastronomicos': {
-              r'$elemMatch': {'id': '208a3f93-9fcb-4db7-ac44-bb11b86a2d31'}
-            }
-          });
-      expect(resultOne?['pontosGastronomicos'].first['id'],
-          '208a3f93-9fcb-4db7-ac44-bb11b86a2d31');
-      expect(result.first['pontosGastronomicos'].first['id'],
-          resultOne?['pontosGastronomicos'].first['id']);
+        filter: where
+          ..$eq(
+            'pontosGastronomicos.id',
+            '208a3f93-9fcb-4db7-ac44-bb11b86a2d31',
+          ),
+        projection: {
+          '_id': 0,
+          'pontosGastronomicos': {
+            r'$elemMatch': {'id': '208a3f93-9fcb-4db7-ac44-bb11b86a2d31'},
+          },
+        },
+      );
+      expect(
+        resultOne?['pontosGastronomicos'].first['id'],
+        '208a3f93-9fcb-4db7-ac44-bb11b86a2d31',
+      );
+      expect(
+        result.first['pontosGastronomicos'].first['id'],
+        resultOne?['pontosGastronomicos'].first['id'],
+      );
 
-      resultOne = await collection.findOne(filter: {
-        'pontosGastronomicos': {
-          r'$elemMatch': {'id': '208a3f93-9fcb-4db7-ac44-bb11b86a2d31'}
-        }
-      }, projection: {
-        '_id': 0,
-        'pontosGastronomicos': {
-          r'$elemMatch': {'id': '208a3f93-9fcb-4db7-ac44-bb11b86a2d31'}
-        }
-      });
-      expect(resultOne?['pontosGastronomicos'].first['id'],
-          '208a3f93-9fcb-4db7-ac44-bb11b86a2d31');
+      resultOne = await collection.findOne(
+        filter: {
+          'pontosGastronomicos': {
+            r'$elemMatch': {'id': '208a3f93-9fcb-4db7-ac44-bb11b86a2d31'},
+          },
+        },
+        projection: {
+          '_id': 0,
+          'pontosGastronomicos': {
+            r'$elemMatch': {'id': '208a3f93-9fcb-4db7-ac44-bb11b86a2d31'},
+          },
+        },
+      );
+      expect(
+        resultOne?['pontosGastronomicos'].first['id'],
+        '208a3f93-9fcb-4db7-ac44-bb11b86a2d31',
+      );
 
       var cursor = collection.aggregate([
         {
@@ -267,16 +286,16 @@ void main() async {
                       /* resolve to a boolean value and determine if an element should be included in the output array. */
                       r'$eq': [
                         r'$$pontosGastronomicos.id',
-                        '208a3f93-9fcb-4db7-ac44-bb11b86a2d31'
-                      ]
-                    }
-                  }
+                        '208a3f93-9fcb-4db7-ac44-bb11b86a2d31',
+                      ],
+                    },
+                  },
                 },
-                0 /* the element at the specified array index */
-              ]
-            }
-          }
-        }
+                0 /* the element at the specified array index */,
+              ],
+            },
+          },
+        },
       ]);
       var doc = await cursor.onlyFirst();
       expect(doc?['id'], '208a3f93-9fcb-4db7-ac44-bb11b86a2d31');
@@ -289,10 +308,15 @@ void main() async {
       var ret = await insertManyDocuments(collection, 10000);
       expect(ret.isSuccess, isTrue);
 
-      var result = await collection.find(filter: {
-        r'$where': 'function() { '
-            ' return (this.a < 100) }'
-      }).toList();
+      var result = await collection
+          .find(
+            filter: {
+              r'$where':
+                  'function() { '
+                  ' return (this.a < 100) }',
+            },
+          )
+          .toList();
       expect(result.length, 100);
     }, skip: cannotRunTests);
 
@@ -306,9 +330,11 @@ void main() async {
       // instead of 100
       var fromUser = '1 || "" == "" ';
 
-      var result = await collection.find(filter: {
-        r'$where': 'function() { return (this.a < $fromUser) }'
-      }).toList();
+      var result = await collection
+          .find(
+            filter: {r'$where': 'function() { return (this.a < $fromUser) }'},
+          )
+          .toList();
 
       expect(result.length, 10000);
     }, skip: cannotRunTests);
@@ -366,9 +392,14 @@ void main() async {
 
     test('Simple read from capped collection', () async {
       var collectionName = getRandomCollectionName();
-      var resultMap = await db.createCollection(collectionName,
-          createCollectionOptions:
-              CreateCollectionOptions(capped: true, size: 5242880, max: 5000));
+      var resultMap = await db.createCollection(
+        collectionName,
+        createCollectionOptions: CreateCollectionOptions(
+          capped: true,
+          size: 5242880,
+          max: 5000,
+        ),
+      );
       expect(resultMap[keyOk], 1.0);
       var collection = db.collection(collectionName);
 
@@ -381,16 +412,23 @@ void main() async {
     group('Normal Cursor', () {
       test('Simple read from capped collection', () async {
         var collectionName = getRandomCollectionName();
-        var resultMap = await db.createCollection(collectionName,
-            createCollectionOptions: CreateCollectionOptions(
-                capped: true, size: 5242880, max: 5000));
+        var resultMap = await db.createCollection(
+          collectionName,
+          createCollectionOptions: CreateCollectionOptions(
+            capped: true,
+            size: 5242880,
+            max: 5000,
+          ),
+        );
         expect(resultMap[keyOk], 1.0);
         var collection = db.collection(collectionName);
 
         await insertManyDocuments(collection, 120);
 
-        var cursor =
-            Cursor(FindOperation(collection, QueryUnion({})), db.server);
+        var cursor = Cursor(
+          FindOperation(collection, QueryUnion({})),
+          db.server,
+        );
 
         expect(cursor.state, CursorState.init);
 
@@ -403,8 +441,11 @@ void main() async {
         // but, internally, the cursor have already fetched from the server
         // a default 101 documents, so, when we run the getMore command
         // only 19 can be retrieved.
-        var command = GetMoreCommand(collection, cursor.cursorId,
-            session: cursor.cursorSession);
+        var command = GetMoreCommand(
+          collection,
+          cursor.cursorId,
+          session: cursor.cursorSession,
+        );
         var resultCommand = await command.process();
         expect(resultCommand, isNotNull);
         expect(resultCommand[keyCursor], isNotNull);
@@ -423,25 +464,33 @@ void main() async {
     group('Tailable Cursor', () {
       test('Simple read from capped collection', () async {
         var collectionName = getRandomCollectionName();
-        var resultMap = await db.createCollection(collectionName,
-            createCollectionOptions: CreateCollectionOptions(
-                capped: true, size: 5242880, max: 5000));
+        var resultMap = await db.createCollection(
+          collectionName,
+          createCollectionOptions: CreateCollectionOptions(
+            capped: true,
+            size: 5242880,
+            max: 5000,
+          ),
+        );
         expect(resultMap[keyOk], 1.0);
         var collection = db.collection(collectionName);
 
         await insertManyDocuments(collection, 110);
         FindResult fr;
         MongoDocument doc;
-        (fr, doc) = await FindOperation(collection, QueryUnion({}),
-                findOptions: FindOptions(tailable: true))
-            .executeDocument();
+        (fr, doc) = await FindOperation(
+          collection,
+          QueryUnion({}),
+          findOptions: FindOptions(tailable: true),
+        ).executeDocument();
 
         var cursor = Cursor.fromOpenId(
-            collection,
-            (doc[keyCursor] as Map)[keyId] as Int64,
-            db.server,
-            fr.cursorResult.session,
-            tailable: true);
+          collection,
+          (doc[keyCursor] as Map)[keyId] as Int64,
+          db.server,
+          fr.cursorResult.session,
+          tailable: true,
+        );
 
         expect(cursor.state, CursorState.open);
 
@@ -479,25 +528,33 @@ void main() async {
       });
       test('Simple read from capped collection with awaitData', () async {
         var collectionName = getRandomCollectionName();
-        var resultMap = await db.createCollection(collectionName,
-            createCollectionOptions: CreateCollectionOptions(
-                capped: true, size: 5242880, max: 5000));
+        var resultMap = await db.createCollection(
+          collectionName,
+          createCollectionOptions: CreateCollectionOptions(
+            capped: true,
+            size: 5242880,
+            max: 5000,
+          ),
+        );
         expect(resultMap[keyOk], 1.0);
         var collection = db.collection(collectionName);
 
         await insertManyDocuments(collection, 110);
         FindResult fr;
         MongoDocument doc;
-        (fr, doc) = await FindOperation(collection, QueryUnion({}),
-                findOptions: FindOptions(tailable: true, awaitData: true))
-            .executeDocument();
+        (fr, doc) = await FindOperation(
+          collection,
+          QueryUnion({}),
+          findOptions: FindOptions(tailable: true, awaitData: true),
+        ).executeDocument();
 
         var cursor = Cursor.fromOpenId(
-            collection,
-            (doc[keyCursor] as Map)[keyId] as Int64,
-            db.server,
-            fr.cursorResult.session,
-            tailable: true);
+          collection,
+          (doc[keyCursor] as Map)[keyId] as Int64,
+          db.server,
+          fr.cursorResult.session,
+          tailable: true,
+        );
 
         expect(cursor.state, CursorState.open);
 
@@ -544,16 +601,25 @@ void main() async {
       // automatically closes the cursor if the result of the selection is empty
       test('Read from empty collection', () async {
         var collectionName = getRandomCollectionName();
-        var resultMap = await db.createCollection(collectionName,
-            createCollectionOptions: CreateCollectionOptions(
-                capped: true, size: 5242880, max: 5000));
+        var resultMap = await db.createCollection(
+          collectionName,
+          createCollectionOptions: CreateCollectionOptions(
+            capped: true,
+            size: 5242880,
+            max: 5000,
+          ),
+        );
         expect(resultMap[keyOk], 1.0);
         var collection = db.collection(collectionName);
 
         var cursor = Cursor(
-            FindOperation(collection, QueryUnion({}),
-                findOptions: FindOptions(tailable: true)),
-            db.server);
+          FindOperation(
+            collection,
+            QueryUnion({}),
+            findOptions: FindOptions(tailable: true),
+          ),
+          db.server,
+        );
         expect(cursor.state, CursorState.init);
 
         expect(() => cursor.nextObject(), throwsMongoDartError);
@@ -561,9 +627,14 @@ void main() async {
 
       test('Read from empty selection', () async {
         var collectionName = getRandomCollectionName();
-        var resultMap = await db.createCollection(collectionName,
-            createCollectionOptions: CreateCollectionOptions(
-                capped: true, size: 5242880, max: 5000));
+        var resultMap = await db.createCollection(
+          collectionName,
+          createCollectionOptions: CreateCollectionOptions(
+            capped: true,
+            size: 5242880,
+            max: 5000,
+          ),
+        );
         expect(resultMap[keyOk], 1.0);
         var collection = db.collection(collectionName);
 
@@ -571,13 +642,16 @@ void main() async {
           {'test': 1, 'state': 'A'},
           {'test': 2, 'state': 'B'},
           {'test': 3, 'state': 'A'},
-          {'test': 4, 'state': 'A'}
+          {'test': 4, 'state': 'A'},
         ]);
         var cursor = Cursor(
-            FindOperation(
-                collection, QueryUnion(<String, Object>{'state': 'C'}),
-                findOptions: FindOptions(tailable: true)),
-            db.server);
+          FindOperation(
+            collection,
+            QueryUnion(<String, Object>{'state': 'C'}),
+            findOptions: FindOptions(tailable: true),
+          ),
+          db.server,
+        );
         expect(cursor.state, CursorState.init);
 
         var cursorResult = await cursor.nextObject();
@@ -610,14 +684,16 @@ void main() async {
       await collection.insertMany(<Map<String, dynamic>>[
         {'game': 'At the Gates of Loyang', 'cost': Decimal.parse('15.20')},
         {'game': 'Age of Steam', 'cost': Decimal.parse('16.80')},
-        {'game': 'Fresco', 'cost': Decimal.parse('13')}
+        {'game': 'Fresco', 'cost': Decimal.parse('13')},
       ]);
 
       var pipeline = AggregationPipelineBuilder()
-        ..addStage($group(id: 'games', fields: {
-          'total': $sum(Field('cost')),
-          'avg': $avg(Field('cost'))
-        }));
+        ..addStage(
+          $group(
+            id: 'games',
+            fields: {'total': $sum(Field('cost')), 'avg': $avg(Field('cost'))},
+          ),
+        );
 
       var result = await collection.aggregateToStream(pipeline).toList();
       expect(result.first[key_id], 'games');
@@ -629,7 +705,7 @@ void main() async {
       test('currentOp', () async {
         var stream = db.aggregateToStream([
           {
-            r'$currentOp': {'allUsers': true, 'idleConnections': true}
+            r'$currentOp': {'allUsers': true, 'idleConnections': true},
           },
           {
             r'$match': {
@@ -640,9 +716,9 @@ void main() async {
                 else
                   'op': 'getmore'
               else
-                'command.aggregate': 1
-            }
-          }
+                'command.aggregate': 1,
+            },
+          },
         ]);
 
         var resultList = await stream.toList();
@@ -676,11 +752,11 @@ void main() async {
       test('listLocalSessions', () async {
         var result = db.aggregateToStream([
           {
-            r'$listLocalSessions': {'allUsers': true}
+            r'$listLocalSessions': {'allUsers': true},
           },
           {
-            r'$match': {'active': true, 'command.aggregate': 1}
-          }
+            r'$match': {'active': true, 'command.aggregate': 1},
+          },
         ]);
 
         var resultList = await result.toList();
@@ -700,57 +776,97 @@ void main() async {
           'game': 'At the Gates of Loyang',
           'player': 'Dallas',
           'rating': 1,
-          'v': 1
+          'v': 1,
         });
 
         // Avg 3 with 1 rating
-        toInsert.add(
-            {'game': 'Age of Steam', 'player': 'Paul', 'rating': 3, 'v': 1});
+        toInsert.add({
+          'game': 'Age of Steam',
+          'player': 'Paul',
+          'rating': 3,
+          'v': 1,
+        });
 
         // Avg 2 with 2 ratings
         toInsert.add({'game': 'Fresco', 'player': 'Erin', 'rating': 3, 'v': 1});
-        toInsert
-            .add({'game': 'Fresco', 'player': 'Dallas', 'rating': 1, 'v': 1});
+        toInsert.add({
+          'game': 'Fresco',
+          'player': 'Dallas',
+          'rating': 1,
+          'v': 1,
+        });
 
         // Avg 3.5 with 4 ratings
-        toInsert.add(
-            {'game': 'Ticket To Ride', 'player': 'Paul', 'rating': 4, 'v': 1});
-        toInsert.add(
-            {'game': 'Ticket To Ride', 'player': 'Erin', 'rating': 5, 'v': 1});
+        toInsert.add({
+          'game': 'Ticket To Ride',
+          'player': 'Paul',
+          'rating': 4,
+          'v': 1,
+        });
+        toInsert.add({
+          'game': 'Ticket To Ride',
+          'player': 'Erin',
+          'rating': 5,
+          'v': 1,
+        });
         toInsert.add({
           'game': 'Ticket To Ride',
           'player': 'Dallas',
           'rating': 4,
-          'v': 1
+          'v': 1,
         });
         toInsert.add({
           'game': 'Ticket To Ride',
           'player': 'Anthony',
           'rating': 2,
-          'v': 1
+          'v': 1,
         });
 
         // Avg 4.5 with 4 ratings (counting only highest v)
-        toInsert
-            .add({'game': 'Dominion', 'player': 'Paul', 'rating': 5, 'v': 2});
-        toInsert
-            .add({'game': 'Dominion', 'player': 'Erin', 'rating': 4, 'v': 1});
-        toInsert
-            .add({'game': 'Dominion', 'player': 'Dallas', 'rating': 4, 'v': 1});
-        toInsert.add(
-            {'game': 'Dominion', 'player': 'Anthony', 'rating': 5, 'v': 1});
+        toInsert.add({
+          'game': 'Dominion',
+          'player': 'Paul',
+          'rating': 5,
+          'v': 2,
+        });
+        toInsert.add({
+          'game': 'Dominion',
+          'player': 'Erin',
+          'rating': 4,
+          'v': 1,
+        });
+        toInsert.add({
+          'game': 'Dominion',
+          'player': 'Dallas',
+          'rating': 4,
+          'v': 1,
+        });
+        toInsert.add({
+          'game': 'Dominion',
+          'player': 'Anthony',
+          'rating': 5,
+          'v': 1,
+        });
 
         // Avg 5 with 2 ratings
-        toInsert
-            .add({'game': 'Pandemic', 'player': 'Erin', 'rating': 5, 'v': 1});
-        toInsert
-            .add({'game': 'Pandemic', 'player': 'Dallas', 'rating': 5, 'v': 1});
+        toInsert.add({
+          'game': 'Pandemic',
+          'player': 'Erin',
+          'rating': 5,
+          'v': 1,
+        });
+        toInsert.add({
+          'game': 'Pandemic',
+          'player': 'Dallas',
+          'rating': 5,
+          'v': 1,
+        });
 
         await collection.insertMany(toInsert);
 
         // Avg player ratings
         // Dallas = 3, Anthony 3.5, Paul = 4, Erin = 4.25
-/* We want equivalent of this when used on the mongo shell.
+        /* We want equivalent of this when used on the mongo shell.
  * (Should be able to just copy and paste below once test is run and failed once)
 db.runCommand(
 { aggregate : "testAggregate", pipeline : [
@@ -767,17 +883,17 @@ db.runCommand(
         var p1 = {
           r'$group': {
             '_id': {'game': r'$game', 'player': r'$player'},
-            'rating': {r'$sum': r'$rating'}
-          }
+            'rating': {r'$sum': r'$rating'},
+          },
         };
         var p2 = {
           r'$group': {
             '_id': r'$_id.game',
-            'avgRating': {r'$avg': r'$rating'}
-          }
+            'avgRating': {r'$avg': r'$rating'},
+          },
         };
         var p3 = {
-          r'$sort': {'_id': 1}
+          r'$sort': {'_id': 1},
         };
 
         pipeline.add(p1);
@@ -787,8 +903,10 @@ db.runCommand(
         expect(p1['\u0024group'], isNotNull);
         expect(p1[r'$group'], isNotNull);
 
-        var aggregateOperation =
-            AggregateOperation(pipeline, collection: collection);
+        var aggregateOperation = AggregateOperation(
+          pipeline,
+          collection: collection,
+        );
         var v = await aggregateOperation.process();
         var cursor = v[keyCursor] as Map;
         var result = cursor[keyFirstBatch] as List;
@@ -807,57 +925,97 @@ db.runCommand(
           'game': 'At the Gates of Loyang',
           'player': 'Dallas',
           'rating': 1,
-          'v': 1
+          'v': 1,
         });
 
         // Avg 3 with 1 rating
-        toInsert.add(
-            {'game': 'Age of Steam', 'player': 'Paul', 'rating': 3, 'v': 1});
+        toInsert.add({
+          'game': 'Age of Steam',
+          'player': 'Paul',
+          'rating': 3,
+          'v': 1,
+        });
 
         // Avg 2 with 2 ratings
         toInsert.add({'game': 'Fresco', 'player': 'Erin', 'rating': 3, 'v': 1});
-        toInsert
-            .add({'game': 'Fresco', 'player': 'Dallas', 'rating': 1, 'v': 1});
+        toInsert.add({
+          'game': 'Fresco',
+          'player': 'Dallas',
+          'rating': 1,
+          'v': 1,
+        });
 
         // Avg 3.5 with 4 ratings
-        toInsert.add(
-            {'game': 'Ticket To Ride', 'player': 'Paul', 'rating': 4, 'v': 1});
-        toInsert.add(
-            {'game': 'Ticket To Ride', 'player': 'Erin', 'rating': 5, 'v': 1});
+        toInsert.add({
+          'game': 'Ticket To Ride',
+          'player': 'Paul',
+          'rating': 4,
+          'v': 1,
+        });
+        toInsert.add({
+          'game': 'Ticket To Ride',
+          'player': 'Erin',
+          'rating': 5,
+          'v': 1,
+        });
         toInsert.add({
           'game': 'Ticket To Ride',
           'player': 'Dallas',
           'rating': 4,
-          'v': 1
+          'v': 1,
         });
         toInsert.add({
           'game': 'Ticket To Ride',
           'player': 'Anthony',
           'rating': 2,
-          'v': 1
+          'v': 1,
         });
 
         // Avg 4.5 with 4 ratings (counting only highest v)
-        toInsert
-            .add({'game': 'Dominion', 'player': 'Paul', 'rating': 5, 'v': 2});
-        toInsert
-            .add({'game': 'Dominion', 'player': 'Erin', 'rating': 4, 'v': 1});
-        toInsert
-            .add({'game': 'Dominion', 'player': 'Dallas', 'rating': 4, 'v': 1});
-        toInsert.add(
-            {'game': 'Dominion', 'player': 'Anthony', 'rating': 5, 'v': 1});
+        toInsert.add({
+          'game': 'Dominion',
+          'player': 'Paul',
+          'rating': 5,
+          'v': 2,
+        });
+        toInsert.add({
+          'game': 'Dominion',
+          'player': 'Erin',
+          'rating': 4,
+          'v': 1,
+        });
+        toInsert.add({
+          'game': 'Dominion',
+          'player': 'Dallas',
+          'rating': 4,
+          'v': 1,
+        });
+        toInsert.add({
+          'game': 'Dominion',
+          'player': 'Anthony',
+          'rating': 5,
+          'v': 1,
+        });
 
         // Avg 5 with 2 ratings
-        toInsert
-            .add({'game': 'Pandemic', 'player': 'Erin', 'rating': 5, 'v': 1});
-        toInsert
-            .add({'game': 'Pandemic', 'player': 'Dallas', 'rating': 5, 'v': 1});
+        toInsert.add({
+          'game': 'Pandemic',
+          'player': 'Erin',
+          'rating': 5,
+          'v': 1,
+        });
+        toInsert.add({
+          'game': 'Pandemic',
+          'player': 'Dallas',
+          'rating': 5,
+          'v': 1,
+        });
 
         await collection.insertMany(toInsert);
 
         // Avg player ratings
         // Dallas = 3, Anthony 3.5, Paul = 4, Erin = 4.25
-/* We want equivalent of this when used on the mongo shell.
+        /* We want equivalent of this when used on the mongo shell.
  * (Should be able to just copy and paste below once test is run and failed once)
 db.runCommand(
 { aggregate : "testAggregate", pipeline : [
@@ -874,17 +1032,17 @@ db.runCommand(
         var p1 = {
           r'$group': {
             '_id': {'game': r'$game', 'player': r'$player'},
-            'rating': {r'$sum': r'$rating'}
-          }
+            'rating': {r'$sum': r'$rating'},
+          },
         };
         var p2 = {
           r'$group': {
             '_id': r'$_id.game',
-            'avgRating': {r'$avg': r'$rating'}
-          }
+            'avgRating': {r'$avg': r'$rating'},
+          },
         };
         var p3 = {
-          r'$sort': {'_id': 1}
+          r'$sort': {'_id': 1},
         };
 
         pipeline.add(p1);
@@ -894,8 +1052,11 @@ db.runCommand(
         expect(p1['\u0024group'], isNotNull);
         expect(p1['\$group'], isNotNull);
 
-        var aggregateOperation = AggregateOperation(pipeline,
-            collection: collection, cursor: {'batchSize': 3});
+        var aggregateOperation = AggregateOperation(
+          pipeline,
+          collection: collection,
+          cursor: {'batchSize': 3},
+        );
         var v = await aggregateOperation.process();
         final cursor = v[keyCursor] as Map;
         expect(cursor['id'], const TypeMatcher<Int64>());
@@ -916,57 +1077,97 @@ db.runCommand(
           'game': 'At the Gates of Loyang',
           'player': 'Dallas',
           'rating': 1,
-          'v': 1
+          'v': 1,
         });
 
         // Avg 3 with 1 rating
-        toInsert.add(
-            {'game': 'Age of Steam', 'player': 'Paul', 'rating': 3, 'v': 1});
+        toInsert.add({
+          'game': 'Age of Steam',
+          'player': 'Paul',
+          'rating': 3,
+          'v': 1,
+        });
 
         // Avg 2 with 2 ratings
         toInsert.add({'game': 'Fresco', 'player': 'Erin', 'rating': 3, 'v': 1});
-        toInsert
-            .add({'game': 'Fresco', 'player': 'Dallas', 'rating': 1, 'v': 1});
+        toInsert.add({
+          'game': 'Fresco',
+          'player': 'Dallas',
+          'rating': 1,
+          'v': 1,
+        });
 
         // Avg 3.5 with 4 ratings
-        toInsert.add(
-            {'game': 'Ticket To Ride', 'player': 'Paul', 'rating': 4, 'v': 1});
-        toInsert.add(
-            {'game': 'Ticket To Ride', 'player': 'Erin', 'rating': 5, 'v': 1});
+        toInsert.add({
+          'game': 'Ticket To Ride',
+          'player': 'Paul',
+          'rating': 4,
+          'v': 1,
+        });
+        toInsert.add({
+          'game': 'Ticket To Ride',
+          'player': 'Erin',
+          'rating': 5,
+          'v': 1,
+        });
         toInsert.add({
           'game': 'Ticket To Ride',
           'player': 'Dallas',
           'rating': 4,
-          'v': 1
+          'v': 1,
         });
         toInsert.add({
           'game': 'Ticket To Ride',
           'player': 'Anthony',
           'rating': 2,
-          'v': 1
+          'v': 1,
         });
 
         // Avg 4.5 with 4 ratings (counting only highest v)
-        toInsert
-            .add({'game': 'Dominion', 'player': 'Paul', 'rating': 5, 'v': 2});
-        toInsert
-            .add({'game': 'Dominion', 'player': 'Erin', 'rating': 4, 'v': 1});
-        toInsert
-            .add({'game': 'Dominion', 'player': 'Dallas', 'rating': 4, 'v': 1});
-        toInsert.add(
-            {'game': 'Dominion', 'player': 'Anthony', 'rating': 5, 'v': 1});
+        toInsert.add({
+          'game': 'Dominion',
+          'player': 'Paul',
+          'rating': 5,
+          'v': 2,
+        });
+        toInsert.add({
+          'game': 'Dominion',
+          'player': 'Erin',
+          'rating': 4,
+          'v': 1,
+        });
+        toInsert.add({
+          'game': 'Dominion',
+          'player': 'Dallas',
+          'rating': 4,
+          'v': 1,
+        });
+        toInsert.add({
+          'game': 'Dominion',
+          'player': 'Anthony',
+          'rating': 5,
+          'v': 1,
+        });
 
         // Avg 5 with 2 ratings
-        toInsert
-            .add({'game': 'Pandemic', 'player': 'Erin', 'rating': 5, 'v': 1});
-        toInsert
-            .add({'game': 'Pandemic', 'player': 'Dallas', 'rating': 5, 'v': 1});
+        toInsert.add({
+          'game': 'Pandemic',
+          'player': 'Erin',
+          'rating': 5,
+          'v': 1,
+        });
+        toInsert.add({
+          'game': 'Pandemic',
+          'player': 'Dallas',
+          'rating': 5,
+          'v': 1,
+        });
 
         await collection.insertMany(toInsert);
 
         // Avg player ratings
         // Dallas = 3, Anthony 3.5, Paul = 4, Erin = 4.25
-/* We want equivalent of this when used on the mongo shell.
+        /* We want equivalent of this when used on the mongo shell.
  * (Should be able to just copy and paste below once test is run and failed once)
 db.runCommand(
 { aggregate : "testAggregate", pipeline : [
@@ -983,17 +1184,17 @@ db.runCommand(
         var p1 = {
           r'$group': {
             key_id: {'game': r'$game', 'player': r'$player'},
-            'rating': {r'$sum': r'$rating'}
-          }
+            'rating': {r'$sum': r'$rating'},
+          },
         };
         var p2 = {
           r'$group': {
             key_id: r'$_id.game',
-            'avgRating': {r'$avg': r'$rating'}
-          }
+            'avgRating': {r'$avg': r'$rating'},
+          },
         };
         var p3 = {
-          r'$sort': {key_id: 1}
+          r'$sort': {key_id: 1},
         };
 
         pipeline.add(p1);
@@ -1008,9 +1209,13 @@ db.runCommand(
                 cursorOptions: {'batchSize': 1}, allowDiskUse: true)
             .toList(); */
         var cursor = Cursor(
-            AggregateOperation(pipeline,
-                collection: collection, cursor: {'batchSize': 1}),
-            db.server);
+          AggregateOperation(
+            pipeline,
+            collection: collection,
+            cursor: {'batchSize': 1},
+          ),
+          db.server,
+        );
         var aggregate = await cursor.stream.toList();
 
         expect(aggregate.isNotEmpty, isTrue);
@@ -1022,8 +1227,10 @@ db.runCommand(
     tearDownAll(() async {
       await client.connect();
       db = client.db();
-      await Future.forEach(usedCollectionNames,
-          (String collectionName) => db.collection(collectionName).drop());
+      await Future.forEach(
+        usedCollectionNames,
+        (String collectionName) => db.collection(collectionName).drop(),
+      );
       await client.close();
     });
   });
@@ -1054,16 +1261,16 @@ db.runCommand(
       var collection = db.collection(collectionName);
       await insertManyDocuments(collection, 3);
 
-      var pipeline =
-          AggregationPipelineBuilder() /* .addStage(Group(
+      var pipeline = AggregationPipelineBuilder() /* .addStage(Group(
           id: 'games',
-          fields: {'total': Sum(Field('cost')), 'avg': Avg(Field('cost'))})) */
-          ;
+          fields: {'total': Sum(Field('cost')), 'avg': Avg(Field('cost'))})) */;
 
       //List<Map<String, Object>> pipeMap = pipeline.build();
       //pipeMap.insert(0, {aggregateChangeStream: {}});
       var cursor = Cursor(
-          ChangeStreamOperation(pipeline, collection: collection), db.server);
+        ChangeStreamOperation(pipeline, collection: collection),
+        db.server,
+      );
       var stream = cursor.changeStream;
 
       var gotFourth = false;
@@ -1134,7 +1341,9 @@ db.runCommand(
             ..addStage($match((where..$lt('fullDocument.a', 15)).rawFilter));
 
       var cursor = Cursor(
-          ChangeStreamOperation(pipeline, collection: collection), db.server);
+        ChangeStreamOperation(pipeline, collection: collection),
+        db.server,
+      );
       var stream = cursor.changeStream;
 
       var gotFourth = false;
@@ -1168,9 +1377,10 @@ db.runCommand(
 
       await Future.delayed(Duration(seconds: 2));
 
-      await collection.insertOne({'a': 3},
-          insertOneOptions:
-              InsertOneOptions(writeConcern: WriteConcern.majority));
+      await collection.insertOne(
+        {'a': 3},
+        insertOneOptions: InsertOneOptions(writeConcern: WriteConcern.majority),
+      );
 
       await Future.doWhile(() async {
         if (gotFifth) {
@@ -1231,9 +1441,10 @@ db.runCommand(
 
       await Future.delayed(Duration(seconds: 2));
 
-      await collection.insertOne({'a': 3},
-          insertOneOptions:
-              InsertOneOptions(writeConcern: WriteConcern.majority));
+      await collection.insertOne(
+        {'a': 3},
+        insertOneOptions: InsertOneOptions(writeConcern: WriteConcern.majority),
+      );
 
       await Future.doWhile(() async {
         if (gotFifth) {
@@ -1256,8 +1467,10 @@ db.runCommand(
     tearDownAll(() async {
       await client.connect();
       client.db();
-      await Future.forEach(usedCollectionNames,
-          (String collectionName) => db.collection(collectionName).drop());
+      await Future.forEach(
+        usedCollectionNames,
+        (String collectionName) => db.collection(collectionName).drop(),
+      );
       await client.close();
     });
   });
@@ -1283,7 +1496,7 @@ db.runCommand(
         await collection.insertMany(<Map<String, dynamic>>[
           {'game': 'At the Gates of Loyang', 'cost': Decimal.parse('15.20')},
           {'game': 'Age of Steam', 'cost': Decimal.parse('16.80')},
-          {'game': 'Fresco', 'cost': Decimal.parse('13')}
+          {'game': 'Fresco', 'cost': Decimal.parse('13')},
         ]);
 
         var operation = CountOperation(collection);
@@ -1300,7 +1513,7 @@ db.runCommand(
         await collection.insertMany(<Map<String, dynamic>>[
           {'game': 'At the Gates of Loyang', 'cost': Decimal.parse('15.20')},
           {'game': 'Age of Steam', 'cost': Decimal.parse('16.80')},
-          {'game': 'Fresco', 'cost': Decimal.parse('13')}
+          {'game': 'Fresco', 'cost': Decimal.parse('13')},
         ]);
 
         var operation = CountOperation(collection);
@@ -1317,45 +1530,56 @@ db.runCommand(
         await collection.insertMany(<Map<String, dynamic>>[
           {'game': 'At the Gates of Loyang', 'cost': Decimal.parse('15.20')},
           {'game': 'Age of Steam', 'cost': Decimal.parse('16.80')},
-          {'game': 'Fresco', 'cost': Decimal.parse('13')}
+          {'game': 'Fresco', 'cost': Decimal.parse('13')},
         ]);
 
-        var operation = CountOperation(collection,
-            query: (where..$gt('cost', Decimal.fromInt(15))).rawFilter);
+        var operation = CountOperation(
+          collection,
+          query: (where..$gt('cost', Decimal.fromInt(15))).rawFilter,
+        );
 
         var result = await operation.executeDocument(db.server);
 
         expect(result.ok, 1.0);
         expect(result.count, 2);
       }, skip: cannotRunTests);
-      test('Skip documents and majority read concern - Class result', () async {
-        var collectionName = getRandomCollectionName();
-        var collection = db.collection(collectionName);
+      test(
+        'Skip documents and majority read concern - Class result',
+        () async {
+          var collectionName = getRandomCollectionName();
+          var collection = db.collection(collectionName);
 
-        await collection.insertMany(<Map<String, dynamic>>[
-          {'game': 'At the Gates of Loyang', 'cost': Decimal.parse('15.20')},
-          {'game': 'Age of Steam', 'cost': Decimal.parse('16.80')},
-          {'game': 'Fresco', 'cost': Decimal.parse('13')}
-        ]);
+          await collection.insertMany(<Map<String, dynamic>>[
+            {'game': 'At the Gates of Loyang', 'cost': Decimal.parse('15.20')},
+            {'game': 'Age of Steam', 'cost': Decimal.parse('16.80')},
+            {'game': 'Fresco', 'cost': Decimal.parse('13')},
+          ]);
 
-        var operation = CountOperation(collection,
+          var operation = CountOperation(
+            collection,
             // It seems that skip does not work with a selection
             //query: where.gt('cost', Decimal.fromInt(15)).map[key$Query],
             skip: 1,
             countOptions: CountOptions(
-                readConcern: ReadConcern(ReadConcernLevel.majority)));
+              readConcern: ReadConcern(ReadConcernLevel.majority),
+            ),
+          );
 
-        var result = await operation.executeDocument(db.server);
+          var result = await operation.executeDocument(db.server);
 
-        expect(result.ok, 1.0);
-        expect(result.count, 2);
-      }, skip: cannotRunTests);
+          expect(result.ok, 1.0);
+          expect(result.count, 2);
+        },
+        skip: cannotRunTests,
+      );
 
       tearDownAll(() async {
         await client.connect();
         db = client.db();
-        await Future.forEach(usedCollectionNames,
-            (String collectionName) => db.collection(collectionName).drop());
+        await Future.forEach(
+          usedCollectionNames,
+          (String collectionName) => db.collection(collectionName).drop(),
+        );
         await client.close();
       });
     });
@@ -1393,26 +1617,26 @@ db.runCommand(
             '_id': 1,
             'dept': 'A',
             'item': {'sku': '111', 'color': 'red'},
-            'sizes': ['S', 'M']
+            'sizes': ['S', 'M'],
           },
           {
             '_id': 2,
             'dept': 'A',
             'item': {'sku': '111', 'color': 'blue'},
-            'sizes': ['M', 'L']
+            'sizes': ['M', 'L'],
           },
           {
             '_id': 3,
             'dept': 'B',
             'item': {'sku': '222', 'color': 'blue'},
-            'sizes': 'S'
+            'sizes': 'S',
           },
           {
             '_id': 4,
             'dept': 'A',
             'item': {'sku': '333', 'color': 'black'},
-            'sizes': ['S']
-          }
+            'sizes': ['S'],
+          },
         ]);
 
         var operation = DistinctOperation(collection, 'dept');
@@ -1435,26 +1659,26 @@ db.runCommand(
             '_id': 1,
             'dept': 'A',
             'item': {'sku': '111', 'color': 'red'},
-            'sizes': ['S', 'M']
+            'sizes': ['S', 'M'],
           },
           {
             '_id': 2,
             'dept': 'A',
             'item': {'sku': '111', 'color': 'blue'},
-            'sizes': ['M', 'L']
+            'sizes': ['M', 'L'],
           },
           {
             '_id': 3,
             'dept': 'B',
             'item': {'sku': '222', 'color': 'blue'},
-            'sizes': 'S'
+            'sizes': 'S',
           },
           {
             '_id': 4,
             'dept': 'A',
             'item': {'sku': '333', 'color': 'black'},
-            'sizes': ['S']
-          }
+            'sizes': ['S'],
+          },
         ]);
 
         var operation = DistinctOperation(collection, 'dept');
@@ -1468,149 +1692,164 @@ db.runCommand(
         expect(result.values.last, 'B');
       }, skip: cannotRunTests);
 
-      test('Return Distinct Values for an Embedded Field - Class result',
-          () async {
-        var collectionName = getRandomCollectionName();
-        var collection = db.collection(collectionName);
+      test(
+        'Return Distinct Values for an Embedded Field - Class result',
+        () async {
+          var collectionName = getRandomCollectionName();
+          var collection = db.collection(collectionName);
 
-        await collection.insertMany(<Map<String, dynamic>>[
-          {
-            '_id': 1,
-            'dept': 'A',
-            'item': {'sku': '111', 'color': 'red'},
-            'sizes': ['S', 'M']
-          },
-          {
-            '_id': 2,
-            'dept': 'A',
-            'item': {'sku': '111', 'color': 'blue'},
-            'sizes': ['M', 'L']
-          },
-          {
-            '_id': 3,
-            'dept': 'B',
-            'item': {'sku': '222', 'color': 'blue'},
-            'sizes': 'S'
-          },
-          {
-            '_id': 4,
-            'dept': 'A',
-            'item': {'sku': '333', 'color': 'black'},
-            'sizes': ['S']
-          }
-        ]);
+          await collection.insertMany(<Map<String, dynamic>>[
+            {
+              '_id': 1,
+              'dept': 'A',
+              'item': {'sku': '111', 'color': 'red'},
+              'sizes': ['S', 'M'],
+            },
+            {
+              '_id': 2,
+              'dept': 'A',
+              'item': {'sku': '111', 'color': 'blue'},
+              'sizes': ['M', 'L'],
+            },
+            {
+              '_id': 3,
+              'dept': 'B',
+              'item': {'sku': '222', 'color': 'blue'},
+              'sizes': 'S',
+            },
+            {
+              '_id': 4,
+              'dept': 'A',
+              'item': {'sku': '333', 'color': 'black'},
+              'sizes': ['S'],
+            },
+          ]);
 
-        var operation = DistinctOperation(collection, 'item.sku');
+          var operation = DistinctOperation(collection, 'item.sku');
 
-        var result = await operation.executeDocument();
+          var result = await operation.executeDocument();
 
-        expect(result.ok, 1.0);
-        expect(result.values, isNotNull);
-        expect(result.values.length, 3);
-        expect(result.values.first, '111');
-        expect(result.values.last, '333');
-      }, skip: cannotRunTests);
-
-      test('Return Distinct Values for an Array Field - Class result',
-          () async {
-        var collectionName = getRandomCollectionName();
-        var collection = db.collection(collectionName);
-
-        await collection.insertMany(<Map<String, dynamic>>[
-          {
-            '_id': 1,
-            'dept': 'A',
-            'item': {'sku': '111', 'color': 'red'},
-            'sizes': ['S', 'M']
-          },
-          {
-            '_id': 2,
-            'dept': 'A',
-            'item': {'sku': '111', 'color': 'blue'},
-            'sizes': ['M', 'L']
-          },
-          {
-            '_id': 3,
-            'dept': 'B',
-            'item': {'sku': '222', 'color': 'blue'},
-            'sizes': 'S'
-          },
-          {
-            '_id': 4,
-            'dept': 'A',
-            'item': {'sku': '333', 'color': 'black'},
-            'sizes': ['S']
-          }
-        ]);
-
-        var operation = DistinctOperation(collection, 'sizes');
-
-        var result = await operation.executeDocument();
-
-        expect(result.ok, 1.0);
-        expect(result.values, isNotNull);
-        expect(result.values.length, 3);
-        if (running3_6 && !isSharded) {
-          expect(result.values.first, 'M');
-          expect(result.values.last, 'L');
-        } else {
-          expect(result.values.first, 'L');
-          expect(result.values.last, 'S');
-        }
-      }, skip: cannotRunTests);
+          expect(result.ok, 1.0);
+          expect(result.values, isNotNull);
+          expect(result.values.length, 3);
+          expect(result.values.first, '111');
+          expect(result.values.last, '333');
+        },
+        skip: cannotRunTests,
+      );
 
       test(
-          'Selection with Distinct Values for an Embedded Field - Class result',
-          () async {
-        var collectionName = getRandomCollectionName();
-        var collection = db.collection(collectionName);
+        'Return Distinct Values for an Array Field - Class result',
+        () async {
+          var collectionName = getRandomCollectionName();
+          var collection = db.collection(collectionName);
 
-        await collection.insertMany(<Map<String, dynamic>>[
-          {
-            '_id': 1,
-            'dept': 'A',
-            'item': {'sku': '111', 'color': 'red'},
-            'sizes': ['S', 'M']
-          },
-          {
-            '_id': 2,
-            'dept': 'A',
-            'item': {'sku': '111', 'color': 'blue'},
-            'sizes': ['M', 'L']
-          },
-          {
-            '_id': 3,
-            'dept': 'B',
-            'item': {'sku': '222', 'color': 'blue'},
-            'sizes': 'S'
-          },
-          {
-            '_id': 4,
-            'dept': 'A',
-            'item': {'sku': '333', 'color': 'black'},
-            'sizes': ['S']
+          await collection.insertMany(<Map<String, dynamic>>[
+            {
+              '_id': 1,
+              'dept': 'A',
+              'item': {'sku': '111', 'color': 'red'},
+              'sizes': ['S', 'M'],
+            },
+            {
+              '_id': 2,
+              'dept': 'A',
+              'item': {'sku': '111', 'color': 'blue'},
+              'sizes': ['M', 'L'],
+            },
+            {
+              '_id': 3,
+              'dept': 'B',
+              'item': {'sku': '222', 'color': 'blue'},
+              'sizes': 'S',
+            },
+            {
+              '_id': 4,
+              'dept': 'A',
+              'item': {'sku': '333', 'color': 'black'},
+              'sizes': ['S'],
+            },
+          ]);
+
+          var operation = DistinctOperation(collection, 'sizes');
+
+          var result = await operation.executeDocument();
+
+          expect(result.ok, 1.0);
+          expect(result.values, isNotNull);
+          expect(result.values.length, 3);
+          if (running3_6 && !isSharded) {
+            expect(result.values.first, 'M');
+            expect(result.values.last, 'L');
+          } else {
+            expect(result.values.first, 'L');
+            expect(result.values.last, 'S');
           }
-        ]);
+        },
+        skip: cannotRunTests,
+      );
 
-        var operation =
-            DistinctOperation(collection, 'item.sku', query: {'dept': 'A'});
-        var result = await operation.executeDocument();
+      test(
+        'Selection with Distinct Values for an Embedded Field - Class result',
+        () async {
+          var collectionName = getRandomCollectionName();
+          var collection = db.collection(collectionName);
 
-        expect(result.ok, 1.0);
-        expect(result.values, isNotNull);
-        expect(result.values.length, 2);
-        expect(result.values.first, '111');
-        expect(result.values.last, '333');
-      }, skip: cannotRunTests);
+          await collection.insertMany(<Map<String, dynamic>>[
+            {
+              '_id': 1,
+              'dept': 'A',
+              'item': {'sku': '111', 'color': 'red'},
+              'sizes': ['S', 'M'],
+            },
+            {
+              '_id': 2,
+              'dept': 'A',
+              'item': {'sku': '111', 'color': 'blue'},
+              'sizes': ['M', 'L'],
+            },
+            {
+              '_id': 3,
+              'dept': 'B',
+              'item': {'sku': '222', 'color': 'blue'},
+              'sizes': 'S',
+            },
+            {
+              '_id': 4,
+              'dept': 'A',
+              'item': {'sku': '333', 'color': 'black'},
+              'sizes': ['S'],
+            },
+          ]);
+
+          var operation = DistinctOperation(
+            collection,
+            'item.sku',
+            query: {'dept': 'A'},
+          );
+          var result = await operation.executeDocument();
+
+          expect(result.ok, 1.0);
+          expect(result.values, isNotNull);
+          expect(result.values.length, 2);
+          expect(result.values.first, '111');
+          expect(result.values.last, '333');
+        },
+        skip: cannotRunTests,
+      );
       test('Specify a collation - Class result', () async {
         var collectionName = getRandomCollectionName();
         var collection = db.collection(collectionName);
 
         await insertFrenchCafe(collection);
 
-        var operation = DistinctOperation(collection, 'category',
-            distinctOptions: DistinctOptions(
-                collation: CollationOptions('fr', strength: 1)));
+        var operation = DistinctOperation(
+          collection,
+          'category',
+          distinctOptions: DistinctOptions(
+            collation: CollationOptions('fr', strength: 1),
+          ),
+        );
         var result = await operation.executeDocument();
 
         expect(result.ok, 1.0);
@@ -1622,8 +1861,10 @@ db.runCommand(
       tearDownAll(() async {
         await client.connect();
         db = client.db();
-        await Future.forEach(usedCollectionNames,
-            (String collectionName) => db.collection(collectionName).drop());
+        await Future.forEach(
+          usedCollectionNames,
+          (String collectionName) => db.collection(collectionName).drop(),
+        );
         await client.close();
       });
     });
@@ -1638,26 +1879,26 @@ db.runCommand(
             '_id': 1,
             'dept': 'A',
             'item': {'sku': '111', 'color': 'red'},
-            'sizes': ['S', 'M']
+            'sizes': ['S', 'M'],
           },
           {
             '_id': 2,
             'dept': 'A',
             'item': {'sku': '111', 'color': 'blue'},
-            'sizes': ['M', 'L']
+            'sizes': ['M', 'L'],
           },
           {
             '_id': 3,
             'dept': 'B',
             'item': {'sku': '222', 'color': 'blue'},
-            'sizes': 'S'
+            'sizes': 'S',
           },
           {
             '_id': 4,
             'dept': 'A',
             'item': {'sku': '333', 'color': 'black'},
-            'sizes': ['S']
-          }
+            'sizes': ['S'],
+          },
         ]);
 
         var result = await collection.distinctMap('dept');
@@ -1678,26 +1919,26 @@ db.runCommand(
             '_id': 1,
             'dept': 'A',
             'item': {'sku': '111', 'color': 'red'},
-            'sizes': ['S', 'M']
+            'sizes': ['S', 'M'],
           },
           {
             '_id': 2,
             'dept': 'A',
             'item': {'sku': '111', 'color': 'blue'},
-            'sizes': ['M', 'L']
+            'sizes': ['M', 'L'],
           },
           {
             '_id': 3,
             'dept': 'B',
             'item': {'sku': '222', 'color': 'blue'},
-            'sizes': 'S'
+            'sizes': 'S',
           },
           {
             '_id': 4,
             'dept': 'A',
             'item': {'sku': '333', 'color': 'black'},
-            'sizes': ['S']
-          }
+            'sizes': ['S'],
+          },
         ]);
 
         var result = await collection.distinct('dept');
@@ -1709,146 +1950,159 @@ db.runCommand(
         expect(result.values.last, 'B');
       }, skip: cannotRunTests);
 
-      test('Return Distinct Values for an Embedded Field - Class result',
-          () async {
-        var collectionName = getRandomCollectionName();
-        var collection = db.collection(collectionName);
+      test(
+        'Return Distinct Values for an Embedded Field - Class result',
+        () async {
+          var collectionName = getRandomCollectionName();
+          var collection = db.collection(collectionName);
 
-        await collection.insertMany(<Map<String, dynamic>>[
-          {
-            '_id': 1,
-            'dept': 'A',
-            'item': {'sku': '111', 'color': 'red'},
-            'sizes': ['S', 'M']
-          },
-          {
-            '_id': 2,
-            'dept': 'A',
-            'item': {'sku': '111', 'color': 'blue'},
-            'sizes': ['M', 'L']
-          },
-          {
-            '_id': 3,
-            'dept': 'B',
-            'item': {'sku': '222', 'color': 'blue'},
-            'sizes': 'S'
-          },
-          {
-            '_id': 4,
-            'dept': 'A',
-            'item': {'sku': '333', 'color': 'black'},
-            'sizes': ['S']
-          }
-        ]);
+          await collection.insertMany(<Map<String, dynamic>>[
+            {
+              '_id': 1,
+              'dept': 'A',
+              'item': {'sku': '111', 'color': 'red'},
+              'sizes': ['S', 'M'],
+            },
+            {
+              '_id': 2,
+              'dept': 'A',
+              'item': {'sku': '111', 'color': 'blue'},
+              'sizes': ['M', 'L'],
+            },
+            {
+              '_id': 3,
+              'dept': 'B',
+              'item': {'sku': '222', 'color': 'blue'},
+              'sizes': 'S',
+            },
+            {
+              '_id': 4,
+              'dept': 'A',
+              'item': {'sku': '333', 'color': 'black'},
+              'sizes': ['S'],
+            },
+          ]);
 
-        var result = await collection.distinct('item.sku');
+          var result = await collection.distinct('item.sku');
 
-        expect(result.ok, 1.0);
-        expect(result.values, isNotNull);
-        expect(result.values.length, 3);
-        expect(result.values.first, '111');
-        expect(result.values.last, '333');
-      }, skip: cannotRunTests);
-
-      test('Return Distinct Values for an Array Field - Class result',
-          () async {
-        var collectionName = getRandomCollectionName();
-        var collection = db.collection(collectionName);
-
-        await collection.insertMany(<Map<String, dynamic>>[
-          {
-            '_id': 1,
-            'dept': 'A',
-            'item': {'sku': '111', 'color': 'red'},
-            'sizes': ['S', 'M']
-          },
-          {
-            '_id': 2,
-            'dept': 'A',
-            'item': {'sku': '111', 'color': 'blue'},
-            'sizes': ['M', 'L']
-          },
-          {
-            '_id': 3,
-            'dept': 'B',
-            'item': {'sku': '222', 'color': 'blue'},
-            'sizes': 'S'
-          },
-          {
-            '_id': 4,
-            'dept': 'A',
-            'item': {'sku': '333', 'color': 'black'},
-            'sizes': ['S']
-          }
-        ]);
-
-        var operation = DistinctOperation(collection, 'sizes');
-
-        var result = await operation.executeDocument();
-
-        expect(result.ok, 1.0);
-        expect(result.values, isNotNull);
-        expect(result.values.length, 3);
-        if (running3_6 && !isSharded) {
-          expect(result.values.first, 'M');
-          expect(result.values.last, 'L');
-        } else {
-          expect(result.values.first, 'L');
-          expect(result.values.last, 'S');
-        }
-      }, skip: cannotRunTests);
+          expect(result.ok, 1.0);
+          expect(result.values, isNotNull);
+          expect(result.values.length, 3);
+          expect(result.values.first, '111');
+          expect(result.values.last, '333');
+        },
+        skip: cannotRunTests,
+      );
 
       test(
-          'Selection with Distinct Values for an Embedded Field - Class result',
-          () async {
-        var collectionName = getRandomCollectionName();
-        var collection = db.collection(collectionName);
+        'Return Distinct Values for an Array Field - Class result',
+        () async {
+          var collectionName = getRandomCollectionName();
+          var collection = db.collection(collectionName);
 
-        await collection.insertMany(<Map<String, dynamic>>[
-          {
-            '_id': 1,
-            'dept': 'A',
-            'item': {'sku': '111', 'color': 'red'},
-            'sizes': ['S', 'M']
-          },
-          {
-            '_id': 2,
-            'dept': 'A',
-            'item': {'sku': '111', 'color': 'blue'},
-            'sizes': ['M', 'L']
-          },
-          {
-            '_id': 3,
-            'dept': 'B',
-            'item': {'sku': '222', 'color': 'blue'},
-            'sizes': 'S'
-          },
-          {
-            '_id': 4,
-            'dept': 'A',
-            'item': {'sku': '333', 'color': 'black'},
-            'sizes': ['S']
+          await collection.insertMany(<Map<String, dynamic>>[
+            {
+              '_id': 1,
+              'dept': 'A',
+              'item': {'sku': '111', 'color': 'red'},
+              'sizes': ['S', 'M'],
+            },
+            {
+              '_id': 2,
+              'dept': 'A',
+              'item': {'sku': '111', 'color': 'blue'},
+              'sizes': ['M', 'L'],
+            },
+            {
+              '_id': 3,
+              'dept': 'B',
+              'item': {'sku': '222', 'color': 'blue'},
+              'sizes': 'S',
+            },
+            {
+              '_id': 4,
+              'dept': 'A',
+              'item': {'sku': '333', 'color': 'black'},
+              'sizes': ['S'],
+            },
+          ]);
+
+          var operation = DistinctOperation(collection, 'sizes');
+
+          var result = await operation.executeDocument();
+
+          expect(result.ok, 1.0);
+          expect(result.values, isNotNull);
+          expect(result.values.length, 3);
+          if (running3_6 && !isSharded) {
+            expect(result.values.first, 'M');
+            expect(result.values.last, 'L');
+          } else {
+            expect(result.values.first, 'L');
+            expect(result.values.last, 'S');
           }
-        ]);
+        },
+        skip: cannotRunTests,
+      );
 
-        var result =
-            await collection.distinct('item.sku', query: {'dept': 'A'});
+      test(
+        'Selection with Distinct Values for an Embedded Field - Class result',
+        () async {
+          var collectionName = getRandomCollectionName();
+          var collection = db.collection(collectionName);
 
-        expect(result.ok, 1.0);
-        expect(result.values, isNotNull);
-        expect(result.values.length, 2);
-        expect(result.values.first, '111');
-        expect(result.values.last, '333');
-      }, skip: cannotRunTests);
+          await collection.insertMany(<Map<String, dynamic>>[
+            {
+              '_id': 1,
+              'dept': 'A',
+              'item': {'sku': '111', 'color': 'red'},
+              'sizes': ['S', 'M'],
+            },
+            {
+              '_id': 2,
+              'dept': 'A',
+              'item': {'sku': '111', 'color': 'blue'},
+              'sizes': ['M', 'L'],
+            },
+            {
+              '_id': 3,
+              'dept': 'B',
+              'item': {'sku': '222', 'color': 'blue'},
+              'sizes': 'S',
+            },
+            {
+              '_id': 4,
+              'dept': 'A',
+              'item': {'sku': '333', 'color': 'black'},
+              'sizes': ['S'],
+            },
+          ]);
+
+          var result = await collection.distinct(
+            'item.sku',
+            query: {'dept': 'A'},
+          );
+
+          expect(result.ok, 1.0);
+          expect(result.values, isNotNull);
+          expect(result.values.length, 2);
+          expect(result.values.first, '111');
+          expect(result.values.last, '333');
+        },
+        skip: cannotRunTests,
+      );
       test('Specify a collation - Class result', () async {
         var collectionName = getRandomCollectionName();
         var collection = db.collection(collectionName);
 
         await insertFrenchCafe(collection);
 
-        var result = await collection.distinct('category',
-            distinctOptions: DistinctOptions(
-                collation: CollationOptions('fr', strength: 1)));
+        var result = await collection.distinct(
+          'category',
+          distinctOptions: DistinctOptions(
+            collation: CollationOptions('fr', strength: 1),
+          ),
+        );
 
         expect(result.ok, 1.0);
         expect(result.values, isNotNull);
@@ -1859,8 +2113,10 @@ db.runCommand(
       tearDownAll(() async {
         await client.connect();
         db = client.db();
-        await Future.forEach(usedCollectionNames,
-            (String collectionName) => db.collection(collectionName).drop());
+        await Future.forEach(
+          usedCollectionNames,
+          (String collectionName) => db.collection(collectionName).drop(),
+        );
         await client.close();
       });
     });

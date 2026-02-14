@@ -11,41 +11,55 @@ import '../v1/update_one_operation_v1.dart';
 
 typedef UpdateOneDocumentRec = (
   WriteResult writeResult,
-  MongoDocument serverDocument
+  MongoDocument serverDocument,
 );
 
 abstract base class UpdateOneOperation extends UpdateOperation {
   @protected
   UpdateOneOperation.protected(
-      MongoCollection collection, UpdateOneStatement updateOneStatement,
-      {super.session, UpdateOneOptions? updateOneOptions, super.rawOptions})
-      : super.protected(collection, [updateOneStatement],
-            ordered: false, updateOptions: updateOneOptions);
+    MongoCollection collection,
+    UpdateOneStatement updateOneStatement, {
+    super.session,
+    UpdateOneOptions? updateOneOptions,
+    super.rawOptions,
+  }) : super.protected(
+         collection,
+         [updateOneStatement],
+         ordered: false,
+         updateOptions: updateOneOptions,
+       );
 
   factory UpdateOneOperation(
-      MongoCollection collection, UpdateOneStatement updateOneStatement,
-      {ClientSession? session,
-      UpdateOneOptions? updateOneOptions,
-      Options? rawOptions}) {
+    MongoCollection collection,
+    UpdateOneStatement updateOneStatement, {
+    ClientSession? session,
+    UpdateOneOptions? updateOneOptions,
+    Options? rawOptions,
+  }) {
     if (collection.serverApi != null) {
       switch (collection.serverApi!.version) {
         case ServerApiVersion.v1:
           return UpdateOneOperationV1(
-              collection, updateOneStatement.toUpdateOneV1,
-              session: session,
-              updateOneOptions: updateOneOptions?.toUpdateOneV1,
-              rawOptions: rawOptions);
+            collection,
+            updateOneStatement.toUpdateOneV1,
+            session: session,
+            updateOneOptions: updateOneOptions?.toUpdateOneV1,
+            rawOptions: rawOptions,
+          );
         // ignore: unreachable_switch_default
         default:
           throw MongoDartError(
-              'Stable Api ${collection.serverApi!.version} not managed');
+            'Stable Api ${collection.serverApi!.version} not managed',
+          );
       }
     }
     return UpdateOneOperationOpen(
-        collection, updateOneStatement.toUpdateOneOpen,
-        session: session,
-        updateOneOptions: updateOneOptions?.toUpdateOneOpen,
-        rawOptions: rawOptions);
+      collection,
+      updateOneStatement.toUpdateOneOpen,
+      session: session,
+      updateOneOptions: updateOneOptions?.toUpdateOneOpen,
+      rawOptions: rawOptions,
+    );
   }
 
   /*  Future<WriteResult> executeDocument() async =>

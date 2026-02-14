@@ -33,7 +33,8 @@ abstract class MongoBaseMessage {
     var opcodeFromWire = buffer.readInt32();
     if (opcodeFromWire != opcode) {
       throw MongoDartError(
-          'Expected $opcode in Message header. Got $opcodeFromWire');
+        'Expected $opcode in Message header. Got $opcodeFromWire',
+      );
     }
   }
 

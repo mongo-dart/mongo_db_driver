@@ -20,7 +20,7 @@ class ListIndexesOptions {
   const ListIndexesOptions({this.batchSize, this.comment});
 
   Options get options => <String, dynamic>{
-        if (batchSize != null) keyCursor: {keyBatchSize: batchSize},
-        if (comment != null) keyComment: comment!,
-      };
+    if (batchSize != null) keyCursor: {keyBatchSize: batchSize},
+    keyComment: ?comment,
+  };
 }

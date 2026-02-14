@@ -20,9 +20,10 @@ void main() async {
   // ************************
   await coll
       .find(
-          filter: where
-            ..$gt('my_field', 995)
-            ..sortBy('my_field'))
+        filter: where
+          ..$gt('my_field', 995)
+          ..sortBy('my_field'),
+      )
       .forEach((v) => print(v));
   // ************************
   var val = await coll.findOne(filter: where..$eq('my_field', 17));
@@ -35,9 +36,10 @@ void main() async {
     return;
   }
   val = await coll.findOne(
-      filter: where
-        ..$eq('my_field', 17)
-        ..fields.includeField('str_field'));
+    filter: where
+      ..$eq('my_field', 17)
+      ..fields.includeField('str_field'),
+  );
   print("findOne with fields clause 'str_field' $val");
   // ************************
   val = await coll.findOne(filter: where..id(id));
@@ -50,86 +52,101 @@ void main() async {
   // ************************
   await coll
       .find(
-          filter: (where
-                ..$gt('my_field', 995)
-                ..$or
-                ..$lt('my_field', 10)
-                ..$and
-                ..$regex('str_field', '99'))
-              .rawFilter)
+        filter:
+            (where
+                  ..$gt('my_field', 995)
+                  ..$or
+                  ..$lt('my_field', 10)
+                  ..$and
+                  ..$regex('str_field', '99'))
+                .rawFilter,
+      )
       .forEach((v) => print(v));
   print(
-      "Filtered by (my_field gt 995 or my_field lt 10) and str_field like '99' ");
+    "Filtered by (my_field gt 995 or my_field lt 10) and str_field like '99' ",
+  );
   // ************************
   print('---');
   await coll
       .find(
-          filter: where
-            ..$gt('my_field', 995)
-            ..$or
-            ..$lt('my_field', 10)
-            ..$and
-            ..$regex('str_field', 'Str', caseInsensitive: false))
+        filter: where
+          ..$gt('my_field', 995)
+          ..$or
+          ..$lt('my_field', 10)
+          ..$and
+          ..$regex('str_field', 'Str', caseInsensitive: false),
+      )
       .forEach((v) => print(v));
   print(
-      "Filtered by (my_field gt 995 or my_field lt 10) and str_field like 'Str' caseInsensitive false");
+    "Filtered by (my_field gt 995 or my_field lt 10) and str_field like 'Str' caseInsensitive false",
+  );
   print('---');
   await coll
       .find(
-          filter: where
-            ..$gt('my_field', 995)
-            ..$or
-            ..$lt('my_field', 10)
-            ..$and
-            ..$regex('str_field', 'Str', caseInsensitive: true))
+        filter: where
+          ..$gt('my_field', 995)
+          ..$or
+          ..$lt('my_field', 10)
+          ..$and
+          ..$regex('str_field', 'Str', caseInsensitive: true),
+      )
       .forEach((v) => print(v));
   print(
-      "Filtered by (my_field gt 995 or my_field lt 10) and str_field like 'Str' caseInsensitive true");
+    "Filtered by (my_field gt 995 or my_field lt 10) and str_field like 'Str' caseInsensitive true",
+  );
   await coll
       .find(
-          filter: where
-            ..inRange('my_field', 700, 703, minInclude: false)
-            ..sortBy('my_field'))
+        filter: where
+          ..inRange('my_field', 700, 703, minInclude: false)
+          ..sortBy('my_field'),
+      )
       .forEach((v) => print(v));
   print('Filtered by my_field gt 700, lte 703');
   // ************************
   await coll
       .find(
-          filter: where
-            ..inRange('my_field', 700, 703, minInclude: false)
-            ..sortBy('my_field'))
+        filter: where
+          ..inRange('my_field', 700, 703, minInclude: false)
+          ..sortBy('my_field'),
+      )
       .forEach((v) => print(v));
   print("Filtered by str_field match '^str_(5|7|8)17\$'");
   // ************************
   await coll
       .find(
-          filter: where
-            ..$regex('str_field', 'str_(5|7|8)17\$')
-            ..sortBy({'str_field': -1})
-            ..sortBy('my_field'))
+        filter: where
+          ..$regex('str_field', 'str_(5|7|8)17\$')
+          ..sortBy({'str_field': -1})
+          ..sortBy('my_field'),
+      )
       .forEach((v) => print(v));
   // ************************
   // TODO Check
   var explanation = await coll.findOne(
-      filter: where
-        ..$regex('str_field', 'str_(5|7|8)17\$')
-        ..sortBy({'str_field': -1})
-        ..sortBy('my_field')
-        ..explain());
+    filter: where
+      ..$regex('str_field', 'str_(5|7|8)17\$')
+      ..sortBy({'str_field': -1})
+      ..sortBy('my_field')
+      ..explain(),
+  );
   print('Query explained: $explanation');
   // ************************
-  print('Now where clause with jscript code: '
-      "where..\$where('this.my_field % 100 == 35')");
+  print(
+    'Now where clause with jscript code: '
+    "where..\$where('this.my_field % 100 == 35')",
+  );
   await coll
       .find(filter: where..$where('this.my_field % 100 == 35'))
       .forEach((v) => print(v));
   // ************************
-  print('Now where clause with jscript code: '
-      "where..\$where('function() {return this.my_field % 100 == 10}')");
+  print(
+    'Now where clause with jscript code: '
+    "where..\$where('function() {return this.my_field % 100 == 10}')",
+  );
   await coll
       .find(
-          filter: where
-            ..$where('function() {return this.my_field % 100 == 10}'))
+        filter: where..$where('function() {return this.my_field % 100 == 10}'),
+      )
       .forEach((v) => print(v));
   // ************************
   var count = await coll.count(selector: where..$gt('my_field', 995));

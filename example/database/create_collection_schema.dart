@@ -23,29 +23,33 @@ void main() async {
 
   var collectionName = 'create-collection-schema';
   await db.drop(collectionName);
-  var resultMap = await db.createCollection(collectionName,
-      createCollectionOptions: CreateCollectionOptions(validator: {
+  var resultMap = await db.createCollection(
+    collectionName,
+    createCollectionOptions: CreateCollectionOptions(
+      validator: {
         r'$jsonSchema': {
           'bsonType': 'object',
           'required': ['phone'],
           'properties': {
             'phone': {
               'bsonType': 'string',
-              'description': 'must be a string and is required'
+              'description': 'must be a string and is required',
             },
             'email': {
               'bsonType': 'string',
               'pattern': r'@mongodb\.com$',
               'description':
-                  'must be a string and match the regular expression pattern'
+                  'must be a string and match the regular expression pattern',
             },
             'status': {
               'enum': ['Unknown', 'Incomplete'],
-              'description': 'can only be one of the enum values'
-            }
-          }
-        }
-      }));
+              'description': 'can only be one of the enum values',
+            },
+          },
+        },
+      },
+    ),
+  );
 
   if (resultMap[keyOk] != 1.0) {
     print(resultMap[keyErrmsg]);
@@ -54,17 +58,20 @@ void main() async {
   }
   var collection = db.collection(collectionName);
 
-  var (ret, _, _, _) = await collection.insertOne(
-      {'name': 'Anand', 'phone': '451 3874643', 'status': 'Incomplete'},
-      insertOneOptions: InsertOneOptions(writeConcern: WriteConcern.majority));
+  var (ret, _, _, _) = await collection.insertOne({
+    'name': 'Anand',
+    'phone': '451 3874643',
+    'status': 'Incomplete',
+  }, insertOneOptions: InsertOneOptions(writeConcern: WriteConcern.majority));
 
   if (!ret.isSuccess) {
     print('Error detected in record insertion');
   }
 
-  (ret, _, _, _) = await collection.insertOne(
-      {'name': 'Amanda', 'status': 'Updated'},
-      insertOneOptions: InsertOneOptions(writeConcern: WriteConcern.majority));
+  (ret, _, _, _) = await collection.insertOne({
+    'name': 'Amanda',
+    'status': 'Updated',
+  }, insertOneOptions: InsertOneOptions(writeConcern: WriteConcern.majority));
 
   if (!ret.isSuccess) {
     print(ret.writeError?.errmsg);

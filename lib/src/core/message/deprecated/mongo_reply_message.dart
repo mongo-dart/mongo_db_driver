@@ -26,7 +26,9 @@ class MongoReplyMessage extends MongoResponseMessage {
     startingFrom = buffer.readInt32();
     numberReturned = buffer.readInt32();
     documents = List<Map<String, dynamic>>.filled(
-        numberReturned, const <String, dynamic>{});
+      numberReturned,
+      const <String, dynamic>{},
+    );
     for (var n = 0; n < numberReturned; n++) {
       var doc = BsonMap.fromBuffer(buffer);
       documents![n] = doc.value;

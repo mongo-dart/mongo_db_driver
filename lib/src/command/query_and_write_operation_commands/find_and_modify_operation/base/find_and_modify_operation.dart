@@ -19,89 +19,99 @@ import '../../return_classes/find_and_modify_result.dart';
 
 typedef FindAndModifyDocumentRec = (
   FindAndModifyResult findAndModifyResult,
-  MongoDocument serverDocument
+  MongoDocument serverDocument,
 );
 
 base class FindAndModifyOperation extends CommandOperation {
-  FindAndModifyOperation.protected(MongoCollection collection,
-      {QueryUnion? query,
-      this.sort,
-      bool? remove,
-      this.update,
-      bool? returnNew,
-      this.fields,
-      bool? upsert,
-      this.arrayFilters,
-      super.session,
-      this.hint,
-      FindAndModifyOptions? findAndModifyOptions,
-      Options? rawOptions})
-      : query = query ?? QueryUnion(emptyQueryFilter),
-        remove = remove ?? false,
-        returnNew = returnNew ?? false,
-        upsert = upsert ?? false,
-        super(
-            collection.db,
-            {},
-            <String, dynamic>{
-              ...?findAndModifyOptions?.getOptions(collection.db),
-              ...?rawOptions
-            },
-            collection: collection,
-            aspect: Aspect.writeOperation) {
+  FindAndModifyOperation.protected(
+    MongoCollection collection, {
+    QueryUnion? query,
+    this.sort,
+    bool? remove,
+    this.update,
+    bool? returnNew,
+    this.fields,
+    bool? upsert,
+    this.arrayFilters,
+    super.session,
+    this.hint,
+    FindAndModifyOptions? findAndModifyOptions,
+    Options? rawOptions,
+  }) : query = query ?? QueryUnion(emptyQueryFilter),
+       remove = remove ?? false,
+       returnNew = returnNew ?? false,
+       upsert = upsert ?? false,
+       super(
+         collection.db,
+         {},
+         <String, dynamic>{
+           ...?findAndModifyOptions?.getOptions(collection.db),
+           ...?rawOptions,
+         },
+         collection: collection,
+         aspect: Aspect.writeOperation,
+       ) {
     if (arrayFilters != null && arrayFilters is! List && arrayFilters is! Map) {
       throw MongoDartError(
-          'The arrayFilters parameter must be either a List or a Map');
+        'The arrayFilters parameter must be either a List or a Map',
+      );
     }
   }
 
-  factory FindAndModifyOperation(MongoCollection collection,
-      {QueryUnion? query,
-      SortUnion? sort,
-      bool? remove,
-      UpdateUnion? update,
-      bool? returnNew,
-      ProjectionUnion? fields,
-      bool? upsert,
-      List<ArrayFilter>? arrayFilters,
-      ClientSession? session,
-      HintUnion? hint,
-      FindAndModifyOptions? findAndModifyOptions,
-      Options? rawOptions}) {
+  factory FindAndModifyOperation(
+    MongoCollection collection, {
+    QueryUnion? query,
+    SortUnion? sort,
+    bool? remove,
+    UpdateUnion? update,
+    bool? returnNew,
+    ProjectionUnion? fields,
+    bool? upsert,
+    List<ArrayFilter>? arrayFilters,
+    ClientSession? session,
+    HintUnion? hint,
+    FindAndModifyOptions? findAndModifyOptions,
+    Options? rawOptions,
+  }) {
     query ??= QueryUnion(emptyQueryFilter);
     if (collection.serverApi != null) {
       switch (collection.serverApi!.version) {
         case ServerApiVersion.v1:
-          return FindAndModifyOperationV1(collection,
-              query: query,
-              sort: sort,
-              remove: remove,
-              update: update,
-              returnNew: returnNew,
-              fields: fields,
-              upsert: upsert,
-              arrayFilters: arrayFilters,
-              session: session,
-              findAndModifyOptionsV1: findAndModifyOptions?.toFindAndModifyV1,
-              rawOptions: rawOptions);
+          return FindAndModifyOperationV1(
+            collection,
+            query: query,
+            sort: sort,
+            remove: remove,
+            update: update,
+            returnNew: returnNew,
+            fields: fields,
+            upsert: upsert,
+            arrayFilters: arrayFilters,
+            session: session,
+            findAndModifyOptionsV1: findAndModifyOptions?.toFindAndModifyV1,
+            rawOptions: rawOptions,
+          );
         // ignore: unreachable_switch_default
         default:
           throw MongoDartError(
-              'Stable Api ${collection.serverApi!.version} not managed');
+            'Stable Api ${collection.serverApi!.version} not managed',
+          );
       }
     }
-    return FindAndModifyOperationOpen(collection,
-        query: query,
-        sort: sort,
-        remove: remove,
-        update: update,
-        returnNew: returnNew,
-        fields: fields,
-        upsert: upsert,
-        arrayFilters: arrayFilters,
-        session: session,
-        findAndModifyOptionsOpen: findAndModifyOptions?.toFindAndModifyOpen,
-        rawOptions: rawOptions);
+    return FindAndModifyOperationOpen(
+      collection,
+      query: query,
+      sort: sort,
+      remove: remove,
+      update: update,
+      returnNew: returnNew,
+      fields: fields,
+      upsert: upsert,
+      arrayFilters: arrayFilters,
+      session: session,
+      findAndModifyOptionsOpen: findAndModifyOptions?.toFindAndModifyOpen,
+      rawOptions: rawOptions,
+    );
   }
 
   /// The selection criteria for the modification. The query field employs
@@ -253,18 +263,18 @@ base class FindAndModifyOperation extends CommandOperation {
 
   @override
   Command $buildCommand() => <String, dynamic>{
-        keyFindAndModify: collection!.collectionName,
-        if (!query.isNull) keyQuery: query.query,
-        if (sort != null) keySort: sort!.sort,
-        if (remove) keyRemove: remove,
-        if (update != null && !update!.isNull && !update!.specs.isNull)
-          keyUpdate: update!.specs.value,
-        if (returnNew) keyNew: returnNew,
-        if (fields != null) keyFields: fields!.projection,
-        if (upsert) keyUpsert: upsert,
-        if (arrayFilters != null) keyArrayFilters: arrayFilters!,
-        if (hint != null && !hint!.isNull) keyHint: hint!.value
-      };
+    keyFindAndModify: collection!.collectionName,
+    if (!query.isNull) keyQuery: query.query,
+    if (sort != null) keySort: sort!.sort,
+    if (remove) keyRemove: remove,
+    if (update != null && !update!.isNull && !update!.specs.isNull)
+      keyUpdate: update!.specs.value,
+    if (returnNew) keyNew: returnNew,
+    if (fields != null) keyFields: fields!.projection,
+    if (upsert) keyUpsert: upsert,
+    keyArrayFilters: ?arrayFilters,
+    if (hint != null && !hint!.isNull) keyHint: hint!.value,
+  };
 
   /*       Future<MongoDocument> executeFindAndModify() async => process(); 
 

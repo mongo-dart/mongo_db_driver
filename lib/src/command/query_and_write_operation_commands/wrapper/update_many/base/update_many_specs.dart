@@ -5,8 +5,15 @@ import 'package:type_utils/union.dart';
 
 import '../../../../../core/error/mongo_dart_error.dart';
 
-class UpdateManySpecs extends MultiUnionType<UpdateDocument,
-    List<UpdateDocument>, UpdateExpression, AggregationPipelineBuilder, Never> {
+class UpdateManySpecs
+    extends
+        MultiUnionType<
+          UpdateDocument,
+          List<UpdateDocument>,
+          UpdateExpression,
+          AggregationPipelineBuilder,
+          Never
+        > {
   UpdateManySpecs(super.value) {
     if (isNull) {
       throw MongoDartError('The update Spec cannpt be null');
@@ -21,14 +28,15 @@ class UpdateManySpecs extends MultiUnionType<UpdateDocument,
         return value;
       case const (UpdateExpression):
         return <UpdateDocument>[
-          (value as UpdateExpression).build() as UpdateDocument
+          (value as UpdateExpression).build() as UpdateDocument,
         ];
       case const (AggregationPipelineBuilder):
         return (value as AggregationPipelineBuilder).build()
             as List<UpdateDocument>;
       default:
         throw MongoDartError(
-            'Unexpected value type ${value.runtimeType} in UpdateManySpecs');
+          'Unexpected value type ${value.runtimeType} in UpdateManySpecs',
+        );
     }
   }
 }

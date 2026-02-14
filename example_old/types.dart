@@ -19,7 +19,7 @@ void main() async {
     'regexp': RegExp('.?dim'),
     'boolean': true,
     'where': JsCode('this.x == 3'),
-    'null': null
+    'null': null,
   });
   var v = await collection.findOne();
   print(v);

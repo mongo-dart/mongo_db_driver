@@ -25,19 +25,22 @@ void main() async {
     {'_id': 4, 'name': 'George', 'state': 'active', 'rating': 95, 'score': 8},
     {'_id': 5, 'name': 'Jim', 'state': 'idle', 'rating': 40, 'score': 3},
     {'_id': 6, 'name': 'Laureen', 'state': 'busy', 'rating': 87, 'score': 8},
-    {'_id': 7, 'name': 'John', 'state': 'idle', 'rating': 72, 'score': 7}
+    {'_id': 7, 'name': 'John', 'state': 'idle', 'rating': 72, 'score': 7},
   ]);
 
   if (!ret.isSuccess) {
     print('Error detected in record insertion');
   }
 
-  var res = await collection.find(filter: {
-    'rating': {r'$gt': 60}
-  }, sort: {
-    'state': 1,
-    'name': 1
-  }, findOptions: FindOptions(maxTimeMS: 5000)).toList();
+  var res = await collection
+      .find(
+        filter: {
+          'rating': {r'$gt': 60},
+        },
+        sort: {'state': 1, 'name': 1},
+        findOptions: FindOptions(maxTimeMS: 5000),
+      )
+      .toList();
 
   print('First document fetched: ${res.first['name']} - ${res.first['state']}');
   // George - active

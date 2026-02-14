@@ -27,12 +27,15 @@ class MessageHandler {
   void handleDone(EventSink<MongoResponseMessage> sink) {
     if (!converter.isClear) {
       _log.warning(
-          'Invalid state of PacketConverter in handleDone: $converter');
+        'Invalid state of PacketConverter in handleDone: $converter',
+      );
     }
     sink.close();
   }
 
   StreamTransformer<Uint8List, MongoMessage> get transformer =>
       StreamTransformer<Uint8List, MongoMessage>.fromHandlers(
-          handleData: handleData, handleDone: handleDone);
+        handleData: handleData,
+        handleDone: handleDone,
+      );
 }

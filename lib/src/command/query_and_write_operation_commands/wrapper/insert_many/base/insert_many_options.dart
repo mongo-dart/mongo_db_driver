@@ -9,27 +9,30 @@ import '../v1/insert_many_options_v1.dart';
 
 class InsertManyOptions extends InsertOptions {
   @protected
-  InsertManyOptions.protected(
-      {super.writeConcern,
-      super.ordered = null,
-      super.bypassDocumentValidation = null})
-      : super.protected();
+  InsertManyOptions.protected({
+    super.writeConcern,
+    super.ordered = null,
+    super.bypassDocumentValidation = null,
+  }) : super.protected();
 
-  factory InsertManyOptions(
-      {ServerApi? serverApi,
-      WriteConcern? writeConcern,
-      bool? ordered,
-      bool? bypassDocumentValidation = false}) {
+  factory InsertManyOptions({
+    ServerApi? serverApi,
+    WriteConcern? writeConcern,
+    bool? ordered,
+    bool? bypassDocumentValidation = false,
+  }) {
     if (serverApi != null && serverApi.version == ServerApiVersion.v1) {
       return InsertManyOptionsV1(
-          writeConcern: writeConcern,
-          ordered: ordered,
-          bypassDocumentValidation: bypassDocumentValidation);
-    }
-    return InsertManyOptionsOpen(
         writeConcern: writeConcern,
         ordered: ordered,
-        bypassDocumentValidation: bypassDocumentValidation);
+        bypassDocumentValidation: bypassDocumentValidation,
+      );
+    }
+    return InsertManyOptionsOpen(
+      writeConcern: writeConcern,
+      ordered: ordered,
+      bypassDocumentValidation: bypassDocumentValidation,
+    );
   }
 
   InsertManyOptionsOpen get toManyOpen => this is InsertManyOptionsOpen
@@ -37,12 +40,14 @@ class InsertManyOptions extends InsertOptions {
       : InsertManyOptionsOpen(
           writeConcern: writeConcern,
           ordered: ordered,
-          bypassDocumentValidation: bypassDocumentValidation);
+          bypassDocumentValidation: bypassDocumentValidation,
+        );
 
   InsertManyOptionsV1 get toManyV1 => this is InsertManyOptionsV1
       ? this as InsertManyOptionsV1
       : InsertManyOptionsV1(
           writeConcern: writeConcern,
           ordered: ordered,
-          bypassDocumentValidation: bypassDocumentValidation);
+          bypassDocumentValidation: bypassDocumentValidation,
+        );
 }

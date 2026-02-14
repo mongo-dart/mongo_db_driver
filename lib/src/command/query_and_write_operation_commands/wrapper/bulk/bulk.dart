@@ -18,23 +18,25 @@ import 'bulk_options.dart';
 
 typedef BulkDocumentRec = (
   BulkWriteResult writeResult,
-  List<MongoDocument> serverDocument
+  List<MongoDocument> serverDocument,
 );
 
 abstract base class Bulk extends CommandOperation {
-  Bulk(MongoCollection collection,
-      {super.session,
-      BulkOptions? bulkOptions,
-      Map<String, Object>? rawOptions})
-      : super(
-            collection.db,
-            {},
-            <String, dynamic>{
-              ...?bulkOptions?.getOptions(collection.db),
-              ...?rawOptions
-            },
-            collection: collection,
-            aspect: Aspect.writeOperation);
+  Bulk(
+    MongoCollection collection, {
+    super.session,
+    BulkOptions? bulkOptions,
+    Map<String, Object>? rawOptions,
+  }) : super(
+         collection.db,
+         {},
+         <String, dynamic>{
+           ...?bulkOptions?.getOptions(collection.db),
+           ...?rawOptions,
+         },
+         collection: collection,
+         aspect: Aspect.writeOperation,
+       );
 
   var overallInsertDocuments = <Map<String, dynamic>>[];
   var ids = [];
@@ -77,25 +79,34 @@ abstract base class Bulk extends CommandOperation {
   void deleteOneFromMap(Map<String, Object> docMap, {int? index}) {
     var contentMap = docMap[bulkFilter];
     if (contentMap is! Map<String, Object>) {
-      throw MongoDartError('The "$bulkFilter" key of the '
-          '"$bulkDeleteOne" element '
-          '${index == null ? '' : 'at index $index '}must contain a Map');
+      throw MongoDartError(
+        'The "$bulkFilter" key of the '
+        '"$bulkDeleteOne" element '
+        '${index == null ? '' : 'at index $index '}must contain a Map',
+      );
     }
     if (docMap[bulkCollation] != null &&
         docMap[bulkCollation] is! CollationOptions &&
         docMap[bulkCollation] is! Map<String, dynamic>) {
-      throw MongoDartError('The "$bulkCollation" key of the '
-          '"$bulkDeleteOne" element ${index == null ? '' : 'at index $index '}must '
-          'contain a CollationOptions element or a Map representation '
-          'of a collation');
+      throw MongoDartError(
+        'The "$bulkCollation" key of the '
+        '"$bulkDeleteOne" element ${index == null ? '' : 'at index $index '}must '
+        'contain a CollationOptions element or a Map representation '
+        'of a collation',
+      );
     }
 
-    deleteOne(DeleteOneStatement(QueryUnion(contentMap),
+    deleteOne(
+      DeleteOneStatement(
+        QueryUnion(contentMap),
         collation: docMap[bulkCollation] is Map<String, dynamic>
             ? CollationOptions.fromMap(
-                docMap[bulkCollation] as Map<String, Object>)
+                docMap[bulkCollation] as Map<String, Object>,
+              )
             : docMap[bulkCollation] as CollationOptions?,
-        hint: HintUnion(docMap[bulkHint])));
+        hint: HintUnion(docMap[bulkHint]),
+      ),
+    );
   }
 
   /// deleteMany deletes all documents in the collection that match the filter.
@@ -113,26 +124,35 @@ abstract base class Bulk extends CommandOperation {
   void deleteManyFromMap(Map<String, Object> docMap, {int? index}) {
     var contentMap = docMap[bulkFilter];
     if (contentMap is! Map<String, Object>) {
-      throw MongoDartError('The "$bulkFilter" key of the '
-          '"$bulkDeleteMany" element '
-          '${index == null ? '' : 'at index $index '}must contain a Map');
+      throw MongoDartError(
+        'The "$bulkFilter" key of the '
+        '"$bulkDeleteMany" element '
+        '${index == null ? '' : 'at index $index '}must contain a Map',
+      );
     }
     if (docMap[bulkCollation] != null &&
         docMap[bulkCollation] is! CollationOptions &&
         docMap[bulkCollation] is! Map<String, dynamic>) {
-      throw MongoDartError('The "$bulkCollation" key of the '
-          '"$bulkDeleteMany" element '
-          '${index == null ? '' : 'at index $index '}must '
-          'contain a CollationOptions element or a Map representation '
-          'of a collation');
+      throw MongoDartError(
+        'The "$bulkCollation" key of the '
+        '"$bulkDeleteMany" element '
+        '${index == null ? '' : 'at index $index '}must '
+        'contain a CollationOptions element or a Map representation '
+        'of a collation',
+      );
     }
 
-    deleteMany(DeleteManyStatement(QueryUnion(contentMap),
+    deleteMany(
+      DeleteManyStatement(
+        QueryUnion(contentMap),
         collation: docMap[bulkCollation] is Map
             ? CollationOptions.fromMap(
-                docMap[bulkCollation] as Map<String, Object>)
+                docMap[bulkCollation] as Map<String, Object>,
+              )
             : docMap[bulkCollation] as CollationOptions?,
-        hint: HintUnion(docMap[bulkHint])));
+        hint: HintUnion(docMap[bulkHint]),
+      ),
+    );
   }
 
   /// replaceOne replaces a single document in the collection that matches
@@ -155,41 +175,54 @@ abstract base class Bulk extends CommandOperation {
   void replaceOneFromMap(Map<String, Object> docMap, {int? index}) {
     var filterMap = docMap[bulkFilter];
     if (filterMap is! Map<String, Object>) {
-      throw MongoDartError('The "$bulkFilter" key of the '
-          '"$bulkReplaceOne" element '
-          '${index == null ? '' : 'at index $index '}must '
-          'contain a Map');
+      throw MongoDartError(
+        'The "$bulkFilter" key of the '
+        '"$bulkReplaceOne" element '
+        '${index == null ? '' : 'at index $index '}must '
+        'contain a Map',
+      );
     }
     if (docMap[bulkReplacement] is! Map<String, Object>) {
-      throw MongoDartError('The "$bulkReplacement" key of the '
-          '"$bulkReplaceOne" element '
-          '${index == null ? '' : 'at index $index '}must '
-          'contain a Map');
+      throw MongoDartError(
+        'The "$bulkReplacement" key of the '
+        '"$bulkReplaceOne" element '
+        '${index == null ? '' : 'at index $index '}must '
+        'contain a Map',
+      );
     }
     if (docMap[bulkUpsert] != null && docMap[bulkUpsert] is! bool) {
-      throw MongoDartError('The "$bulkUpsert" key of the '
-          '"$bulkReplaceOne" element '
-          '${index == null ? '' : 'at index $index '}must '
-          'contain a bool');
+      throw MongoDartError(
+        'The "$bulkUpsert" key of the '
+        '"$bulkReplaceOne" element '
+        '${index == null ? '' : 'at index $index '}must '
+        'contain a bool',
+      );
     }
     if (docMap[bulkCollation] != null &&
         docMap[bulkCollation] is! CollationOptions &&
         docMap[bulkCollation] is! Map<String, dynamic>) {
-      throw MongoDartError('The "$bulkCollation" key of the '
-          '"$bulkReplaceOne" element '
-          '${index == null ? '' : 'at index $index '}must '
-          'contain a CollationOptions element or a Map representation '
-          'of a collation');
+      throw MongoDartError(
+        'The "$bulkCollation" key of the '
+        '"$bulkReplaceOne" element '
+        '${index == null ? '' : 'at index $index '}must '
+        'contain a CollationOptions element or a Map representation '
+        'of a collation',
+      );
     }
 
-    replaceOne(ReplaceOneStatement(
-        QueryUnion(filterMap), docMap[bulkReplacement] as MongoDocument,
+    replaceOne(
+      ReplaceOneStatement(
+        QueryUnion(filterMap),
+        docMap[bulkReplacement] as MongoDocument,
         upsert: docMap[bulkUpsert] as bool?,
         collation: docMap[bulkCollation] is Map<String, dynamic>
             ? CollationOptions.fromMap(
-                docMap[bulkCollation] as Map<String, Object>)
+                docMap[bulkCollation] as Map<String, Object>,
+              )
             : docMap[bulkCollation] as CollationOptions?,
-        hint: HintUnion(docMap[bulkHint])));
+        hint: HintUnion(docMap[bulkHint]),
+      ),
+    );
   }
 
   /// updateOne updates a single document in the collection that matches
@@ -213,50 +246,65 @@ abstract base class Bulk extends CommandOperation {
   void updateOneFromMap(Map<String, Object> docMap, {int? index}) {
     var filterMap = docMap[bulkFilter];
     if (filterMap is! QueryFilter) {
-      throw MongoDartError('The "$bulkFilter" key of the '
-          '"$bulkUpdateOne" element '
-          '${index == null ? '' : 'at index $index '}must '
-          'contain a Map');
+      throw MongoDartError(
+        'The "$bulkFilter" key of the '
+        '"$bulkUpdateOne" element '
+        '${index == null ? '' : 'at index $index '}must '
+        'contain a Map',
+      );
     }
     if (docMap[bulkUpdate] is! Map<String, Object> &&
         docMap[bulkUpdate] is! List<Map<String, dynamic>>) {
-      throw MongoDartError('The "$bulkUpdate" key of the '
-          '"$bulkUpdateOne" element '
-          '${index == null ? '' : 'at index $index '}must '
-          'contain a Map or a pipeline (List<Map>)');
+      throw MongoDartError(
+        'The "$bulkUpdate" key of the '
+        '"$bulkUpdateOne" element '
+        '${index == null ? '' : 'at index $index '}must '
+        'contain a Map or a pipeline (List<Map>)',
+      );
     }
     if (docMap[bulkUpsert] != null && docMap[bulkUpsert] is! bool) {
-      throw MongoDartError('The "$bulkUpsert" key of the '
-          '"$bulkUpdateOne" element '
-          '${index == null ? '' : 'at index $index '}must '
-          'contain a bool');
+      throw MongoDartError(
+        'The "$bulkUpsert" key of the '
+        '"$bulkUpdateOne" element '
+        '${index == null ? '' : 'at index $index '}must '
+        'contain a bool',
+      );
     }
     if (docMap[bulkCollation] != null &&
         docMap[bulkCollation] is! CollationOptions &&
         docMap[bulkCollation] is! Map<String, dynamic>) {
-      throw MongoDartError('The "$bulkCollation" key of the '
-          '"$bulkUpdateOne" element '
-          '${index == null ? '' : 'at index $index '}must '
-          'contain a CollationOptions element or a Map representation '
-          'of a collation');
+      throw MongoDartError(
+        'The "$bulkCollation" key of the '
+        '"$bulkUpdateOne" element '
+        '${index == null ? '' : 'at index $index '}must '
+        'contain a CollationOptions element or a Map representation '
+        'of a collation',
+      );
     }
     if (docMap[bulkArrayFilters] != null &&
         docMap[bulkArrayFilters] is! List<Map<String, dynamic>>) {
-      throw MongoDartError('The "$bulkArrayFilters" key of the '
-          '"$bulkUpdateOne" element '
-          '${index == null ? '' : 'at index $index '}must '
-          'contain a List<Map<String, dynamic>> Object');
+      throw MongoDartError(
+        'The "$bulkArrayFilters" key of the '
+        '"$bulkUpdateOne" element '
+        '${index == null ? '' : 'at index $index '}must '
+        'contain a List<Map<String, dynamic>> Object',
+      );
     }
 
-    updateOne(UpdateOneStatement(QueryUnion(filterMap),
+    updateOne(
+      UpdateOneStatement(
+        QueryUnion(filterMap),
         UpdateUnion(docMap[bulkUpdate] as UpdateDocument),
         upsert: docMap[bulkUpsert] as bool?,
         collation: docMap[bulkCollation] is Map<String, dynamic>
             ? CollationOptions.fromMap(
-                docMap[bulkCollation] as Map<String, Object>)
+                docMap[bulkCollation] as Map<String, Object>,
+              )
             : docMap[bulkCollation] as CollationOptions?,
         arrayFilters: docMap[bulkArrayFilters] as List?,
-        hint: HintUnion(docMap[bulkHint])));
+        hint: HintUnion(docMap[bulkHint]),
+      ),
+    );
   }
 
   /// updateMany updates all documents in the collection that match the filter.
@@ -278,49 +326,64 @@ abstract base class Bulk extends CommandOperation {
   void updateManyFromMap(Map<String, Object> docMap, {int? index}) {
     var filterMap = docMap[bulkFilter];
     if (filterMap is! Map<String, Object>) {
-      throw MongoDartError('The "$bulkFilter" key of the '
-          '"$bulkUpdateMany" element '
-          '${index == null ? '' : 'at index $index '}must '
-          'contain a Map');
+      throw MongoDartError(
+        'The "$bulkFilter" key of the '
+        '"$bulkUpdateMany" element '
+        '${index == null ? '' : 'at index $index '}must '
+        'contain a Map',
+      );
     }
     if (docMap[bulkUpdate] is! Map<String, Object> &&
         docMap[bulkUpdate] is! List<Map<String, dynamic>>) {
-      throw MongoDartError('The "$bulkUpdate" key of the '
-          '"$bulkUpdateMany" element '
-          '${index == null ? '' : 'at index $index '}must '
-          'contain a Map or a pipeline (List<Map>)');
+      throw MongoDartError(
+        'The "$bulkUpdate" key of the '
+        '"$bulkUpdateMany" element '
+        '${index == null ? '' : 'at index $index '}must '
+        'contain a Map or a pipeline (List<Map>)',
+      );
     }
     if (docMap[bulkUpsert] != null && docMap[bulkUpsert] is! bool) {
-      throw MongoDartError('The "$bulkUpsert" key of the '
-          '"$bulkUpdateMany" element at index $index must '
-          'contain a bool');
+      throw MongoDartError(
+        'The "$bulkUpsert" key of the '
+        '"$bulkUpdateMany" element at index $index must '
+        'contain a bool',
+      );
     }
     if (docMap[bulkCollation] != null &&
         docMap[bulkCollation] is! CollationOptions &&
         docMap[bulkCollation] is! Map<String, dynamic>) {
-      throw MongoDartError('The "$bulkCollation" key of the '
-          '"$bulkUpdateMany" element '
-          '${index == null ? '' : 'at index $index '}must '
-          'contain a CollationOptions element or a Map representation '
-          'of a collation');
+      throw MongoDartError(
+        'The "$bulkCollation" key of the '
+        '"$bulkUpdateMany" element '
+        '${index == null ? '' : 'at index $index '}must '
+        'contain a CollationOptions element or a Map representation '
+        'of a collation',
+      );
     }
     if (docMap[bulkArrayFilters] != null &&
         docMap[bulkArrayFilters] is! List<Map<String, dynamic>>) {
-      throw MongoDartError('The "$bulkArrayFilters" key of the '
-          '"$bulkUpdateMany" element '
-          '${index == null ? '' : 'at index $index '}must '
-          'contain a List<Map<String, dynamic>> Object');
+      throw MongoDartError(
+        'The "$bulkArrayFilters" key of the '
+        '"$bulkUpdateMany" element '
+        '${index == null ? '' : 'at index $index '}must '
+        'contain a List<Map<String, dynamic>> Object',
+      );
     }
 
-    updateMany(UpdateManyStatement(QueryUnion(filterMap),
+    updateMany(
+      UpdateManyStatement(
+        QueryUnion(filterMap),
         UpdateUnion(docMap[bulkUpdate] as UpdateDocument),
         upsert: docMap[bulkUpsert] as bool?,
         collation: docMap[bulkCollation] is Map<String, dynamic>
             ? CollationOptions.fromMap(
-                docMap[bulkCollation] as Map<String, Object>)
+                docMap[bulkCollation] as Map<String, Object>,
+              )
             : docMap[bulkCollation] as CollationOptions?,
         arrayFilters: docMap[bulkArrayFilters] as List?,
-        hint: HintUnion(docMap[bulkHint])));
+        hint: HintUnion(docMap[bulkHint]),
+      ),
+    );
   }
 
   void _setCommand(CommandOperation operation) =>
@@ -336,8 +399,10 @@ abstract base class Bulk extends CommandOperation {
   Command $buildCommand() =>
       throw StateError('Call getBulkCommands() for bulk operations');
 
-  Future<List<MongoDocument>> executeBulk(Server server,
-      {ClientSession? session}) async {
+  Future<List<MongoDocument>> executeBulk(
+    Server server, {
+    ClientSession? session,
+  }) async {
     var retList = <Map<String, dynamic>>[];
     var isOrdered = options[keyOrdered] as bool? ?? true;
 
@@ -370,7 +435,7 @@ abstract base class Bulk extends CommandOperation {
         for (Map error in writeErrors ?? []) {
           var selectedKey = 0;
           var origin = origins[batchIndex];
-          for (var key in origin.keys /* ?? <int>[] */) {
+          for (var key in origin.keys /* ?? <int>[] */ ) {
             if (key <= error[keyIndex] && key > selectedKey) {
               selectedKey = key;
             }
@@ -384,10 +449,8 @@ abstract base class Bulk extends CommandOperation {
       retList.add(ret);
       if (isOrdered) {
         if (ret[keyOk] == 0.0 ||
-                ret.containsKey(
-                    keyWriteErrors) /* ||
-            ret.containsKey(keyWriteConcernError) */
-            ) {
+            ret.containsKey(keyWriteErrors) /* ||
+            ret.containsKey(keyWriteConcernError) */ ) {
           return retList;
         }
       }
@@ -397,8 +460,10 @@ abstract base class Bulk extends CommandOperation {
     return retList;
   }
 
-  Future<BulkDocumentRec> executeDocument(Server server,
-      {ClientSession? session}) async {
+  Future<BulkDocumentRec> executeDocument(
+    Server server, {
+    ClientSession? session,
+  }) async {
     var executionRetList = await executeBulk(server, session: session);
     BulkWriteResult? ret;
     WriteCommandType writeCommandType;
@@ -431,7 +496,9 @@ abstract base class Bulk extends CommandOperation {
   }
 
   List<Map<int, int>> splitInputOrigins(
-      Map<int, int> origins, int commandsLength) {
+    Map<int, int> origins,
+    int commandsLength,
+  ) {
     if (origins.isEmpty) {
       return [origins];
     }
@@ -488,8 +555,10 @@ abstract base class Bulk extends CommandOperation {
       Map<String, Object> splittedDocument;
       while (rest > 0) {
         splittedDocument = Map.from(command);
-        splittedDocument[command.keys.last] =
-            documents.sublist(offset, endSubList);
+        splittedDocument[command.keys.last] = documents.sublist(
+          offset,
+          endSubList,
+        );
         ret.add(<String, dynamic>{...splittedDocument});
         rest = documentsNum - endSubList;
         offset = endSubList;

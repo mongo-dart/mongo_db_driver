@@ -23,18 +23,10 @@ void main() async {
       '_id': 1,
       'admin': 'Tom',
       'state': 'active',
-      'employers': [ObjectId.fromHexString('624f96b5210107050e87565a')]
+      'employers': [ObjectId.fromHexString('624f96b5210107050e87565a')],
     },
-    {
-      '_id': 2,
-      'admin': 'William',
-      'state': 'busy',
-    },
-    {
-      '_id': 3,
-      'admin': 'Liz',
-      'state': 'on hold',
-    },
+    {'_id': 2, 'admin': 'William', 'state': 'busy'},
+    {'_id': 3, 'admin': 'Liz', 'state': 'on hold'},
     {
       '_id': 4,
       'admin': 'George',
@@ -42,14 +34,10 @@ void main() async {
       'employers': [
         ObjectId.fromHexString('624f96b5210107050e875687'),
         ObjectId.fromHexString('624f96b5210107050e875692'),
-        ObjectId.fromHexString('624f96b5210107050e875698')
-      ]
+        ObjectId.fromHexString('624f96b5210107050e875698'),
+      ],
     },
-    {
-      '_id': 5,
-      'admin': 'Jim',
-      'state': 'idle',
-    },
+    {'_id': 5, 'admin': 'Jim', 'state': 'idle'},
     {
       '_id': 6,
       'admin': 'Laureen',
@@ -57,14 +45,10 @@ void main() async {
       'employers': [
         ObjectId.fromHexString('624f96b52101070512875687'),
         ObjectId.fromHexString('624f96b52101070512875692'),
-        ObjectId.fromHexString('624f96b5210112050e875698')
-      ]
+        ObjectId.fromHexString('624f96b5210112050e875698'),
+      ],
     },
-    {
-      '_id': 7,
-      'admin': 'John',
-      'state': 'idle',
-    }
+    {'_id': 7, 'admin': 'John', 'state': 'idle'},
   ]);
 
   if (!ret.isSuccess) {
@@ -73,13 +57,17 @@ void main() async {
 
   var res = await collection
       .find(
-          filter: where
-            ..$eq('employers',
-                ObjectId.fromHexString('624f96b5210112050e875698')))
+        filter: where
+          ..$eq(
+            'employers',
+            ObjectId.fromHexString('624f96b5210112050e875698'),
+          ),
+      )
       .toList();
   print('Number of documents fetched: ${res.length}'); // 1
   print(
-      'First document fetched: ${res.first['admin']} - ${res.first['state']}');
+    'First document fetched: ${res.first['admin']} - ${res.first['state']}',
+  );
   // Laureen - busy
 
   await cleanupDatabase();

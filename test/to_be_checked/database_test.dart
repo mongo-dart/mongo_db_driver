@@ -1815,7 +1815,7 @@ Future testFindOneWhileStateIsOpening() async {
   var client = MongoClient(defaultUri);
   return Future.sync(() async {
     // ignore: unawaited_futures
-    client
+    await client
         .connect()
         .then((_) {
           return client.db().collection(collectionName).findOne();

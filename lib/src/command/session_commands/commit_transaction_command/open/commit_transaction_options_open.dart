@@ -2,5 +2,5 @@ import 'package:mongo_db_driver/src/command/session_commands/commit_transaction_
 
 class CommitTransactionOptionsOpen extends CommitTransactionOptions {
   const CommitTransactionOptionsOpen({super.writeConcern, super.comment})
-      : super.protected();
+    : super.protected();
 }

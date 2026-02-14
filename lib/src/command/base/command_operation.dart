@@ -10,9 +10,15 @@ import '../command_exp.dart';
 import 'operation_base.dart' show Aspect, Command, Options;
 
 base class CommandOperation extends SimpleCommand {
-  CommandOperation(this.db, Command command, Options options,
-      {this.collection, super.session, super.readPreference, super.aspect})
-      : super(db.mongoClient, command, options: options);
+  CommandOperation(
+    this.db,
+    Command command,
+    Options options, {
+    this.collection,
+    super.session,
+    super.readPreference,
+    super.aspect,
+  }) : super(db.mongoClient, command, options: options);
 
   MongoDatabase db;
   MongoCollection? collection;
@@ -29,7 +35,8 @@ base class CommandOperation extends SimpleCommand {
   @override
   void processOptions(Command command) {
     // Get the db name we are executing against
-    final dbName = (options[keyDbName] as String?) ??
+    final dbName =
+        (options[keyDbName] as String?) ??
         ((options[keyAuthdb] as String?) ?? db.databaseName);
     if (dbName == null) {
       throw MongoDartError('Database name not specified');
@@ -39,8 +46,12 @@ base class CommandOperation extends SimpleCommand {
     command[key$Db] = dbName;
     //}
     if (hasAspect(Aspect.writeOperation)) {
-      applyWriteConcern(options,
-          options: options, db: db, collection: collection);
+      applyWriteConcern(
+        options,
+        options: options,
+        db: db,
+        collection: collection,
+      );
       readPreference = ReadPreference.primary;
     } else {
       options.remove(keyWriteConcern);
@@ -48,14 +59,20 @@ base class CommandOperation extends SimpleCommand {
       // even if not necessary, waiting for the future check of the session
       // value.
       if (collection != null) {
-        readPreference = resolveReadPreference(collection,
-                options: options,
-                inheritReadPreference: !hasAspect(Aspect.noInheritOptions)) ??
+        readPreference =
+            resolveReadPreference(
+              collection,
+              options: options,
+              inheritReadPreference: !hasAspect(Aspect.noInheritOptions),
+            ) ??
             ReadPreference.primary;
       } else {
-        readPreference = resolveReadPreference(db,
-                options: options,
-                inheritReadPreference: !hasAspect(Aspect.noInheritOptions)) ??
+        readPreference =
+            resolveReadPreference(
+              db,
+              options: options,
+              inheritReadPreference: !hasAspect(Aspect.noInheritOptions),
+            ) ??
             ReadPreference.primary;
       }
     }
@@ -76,8 +93,12 @@ base class CommandOperation extends SimpleCommand {
 /// @param {Object} sources sources where we can inherit default write concerns from
 /// @param {Object} [options] optional settings passed into a command for write concern overrides
 /// @returns {Object} the (now) decorated target
-Options applyWriteConcern(Options target,
-    {Options? options, MongoDatabase? db, MongoCollection? collection}) {
+Options applyWriteConcern(
+  Options target, {
+  Options? options,
+  MongoDatabase? db,
+  MongoCollection? collection,
+}) {
   options ??= <String, dynamic>{};
 
   //Todo Session not yet implemented
@@ -105,14 +126,15 @@ Options applyWriteConcern(Options target,
   }
 
   // Todo WriteConcern class not yet assigned to DbCollection
-/*  if (collection != null && collection.writeConcern != null) {
+  /*  if (collection != null && collection.writeConcern != null) {
     target[keyWriteConcern] = collection.writeConcern;
     return target;
   }*/
 
   if (db != null && db.writeConcern != null) {
-    target[keyWriteConcern] = db.writeConcern!
-        .asMap(db.mongoClient.topology!.getServer().serverStatus);
+    target[keyWriteConcern] = db.writeConcern!.asMap(
+      db.mongoClient.topology!.getServer().serverStatus,
+    );
     return target;
   }
 

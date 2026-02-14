@@ -27,7 +27,7 @@ class GetLastErrorOptions {
   GetLastErrorOptions({this.wtimeout, this.comment});
 
   Options get options => <String, dynamic>{
-        if (wtimeout != null) keyWtimeout: wtimeout!,
-        if (comment != null) keyComment: comment!,
-      };
+    keyWtimeout: ?wtimeout,
+    keyComment: ?comment,
+  };
 }

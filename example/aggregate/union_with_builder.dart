@@ -41,11 +41,18 @@ void main() async {
   }
 
   var aggregateResult = await collection
-      .aggregateToStream(pipelineBuilder
-        ..addStage($project.raw({'state': 1, '_id': 0}))
-        ..addStage($unionWith(coll: collection2Name, pipeline: [
-          $project.raw({'state': 1, '_id': 0})
-        ])))
+      .aggregateToStream(
+        pipelineBuilder
+          ..addStage($project.raw({'state': 1, '_id': 0}))
+          ..addStage(
+            $unionWith(
+              coll: collection2Name,
+              pipeline: [
+                $project.raw({'state': 1, '_id': 0}),
+              ],
+            ),
+          ),
+      )
       .toList();
 
   print('Documents number: ${aggregateResult.length}'); // 6

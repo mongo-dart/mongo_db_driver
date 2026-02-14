@@ -7,8 +7,9 @@ import '../../../session/client_session.dart';
 
 class GetMoreResult with BasicResult, TimingResult {
   GetMoreResult(Map<String, dynamic> document, ClientSession session)
-      : cursorResult = CursorResult(
-            <String, Object>{...?(document[keyCursor] as Map?)}, session) {
+    : cursorResult = CursorResult(<String, Object>{
+        ...?(document[keyCursor] as Map?),
+      }, session) {
     // TODO throw error if document contains error
     extractBasic(document);
     extractTiming(document);

@@ -4,5 +4,5 @@ import '../../../client/mongo_client.dart';
 
 base class PingCommand extends SimpleCommand {
   PingCommand(MongoClient mongoClient, {super.session})
-      : super(mongoClient, {'ping': 1});
+    : super(mongoClient, {'ping': 1});
 }

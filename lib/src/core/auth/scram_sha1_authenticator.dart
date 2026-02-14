@@ -12,12 +12,15 @@ class ScramSha1Authenticator extends SaslAuthenticator {
   static String name = 'SCRAM-SHA-1';
 
   ScramSha1Authenticator(
-      UsernamePasswordCredential credential, ConnectionBase connection)
-      : super(
-            ScramMechanism(
-                'SCRAM-SHA-1', // Optionally choose hash method from a list provided by the server
-                crypto.sha1,
-                credential,
-                CryptoStrengthStringGenerator()),
-            connection);
+    UsernamePasswordCredential credential,
+    ConnectionBase connection,
+  ) : super(
+        ScramMechanism(
+          'SCRAM-SHA-1', // Optionally choose hash method from a list provided by the server
+          crypto.sha1,
+          credential,
+          CryptoStrengthStringGenerator(),
+        ),
+        connection,
+      );
 }

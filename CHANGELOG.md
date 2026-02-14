@@ -5,6 +5,7 @@
 - Updated error hierarchy (from type_utils).
 - Removed HelloOptions Class (Hello Command)
 - Added Client Metadata
+- Updated Lints
 
 ## 0.1.0-1.4.dev
 

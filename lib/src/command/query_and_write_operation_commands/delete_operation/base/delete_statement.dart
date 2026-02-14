@@ -13,22 +13,35 @@ import '../v1/delete_statement_v1.dart';
 
 abstract class DeleteStatement {
   @protected
-  DeleteStatement.protected(QueryUnion deleteFilter,
-      {this.collation, this.hint, int? limit})
-      : filter = deleteFilter.query,
-        limit = limit ?? 1;
+  DeleteStatement.protected(
+    QueryUnion deleteFilter, {
+    this.collation,
+    this.hint,
+    int? limit,
+  }) : filter = deleteFilter.query,
+       limit = limit ?? 1;
 
-  factory DeleteStatement(QueryUnion filter,
-      {ServerApi? serverApi,
-      CollationOptions? collation,
-      HintUnion? hint,
-      int? limit}) {
+  factory DeleteStatement(
+    QueryUnion filter, {
+    ServerApi? serverApi,
+    CollationOptions? collation,
+    HintUnion? hint,
+    int? limit,
+  }) {
     if (serverApi != null && serverApi.version == ServerApiVersion.v1) {
-      return DeleteStatementV1(filter,
-          collation: collation, hint: hint, limit: limit);
+      return DeleteStatementV1(
+        filter,
+        collation: collation,
+        hint: hint,
+        limit: limit,
+      );
     }
-    return DeleteStatementOpen(filter,
-        collation: collation, hint: hint, limit: limit);
+    return DeleteStatementOpen(
+      filter,
+      collation: collation,
+      hint: hint,
+      limit: limit,
+    );
   }
 
   /// Optional. The query predicate. If unspecified, then all documents in the
@@ -84,20 +97,28 @@ abstract class DeleteStatement {
 
   DeleteStatementOpen get toOpen => this is DeleteStatementOpen
       ? this as DeleteStatementOpen
-      : DeleteStatementOpen(QueryUnion(filter),
-          collation: collation, hint: hint, limit: limit);
+      : DeleteStatementOpen(
+          QueryUnion(filter),
+          collation: collation,
+          hint: hint,
+          limit: limit,
+        );
 
   DeleteStatementV1 get toV1 => this is DeleteStatementV1
       ? this as DeleteStatementV1
-      : DeleteStatementV1(QueryUnion(filter),
-          collation: collation, hint: hint, limit: limit);
+      : DeleteStatementV1(
+          QueryUnion(filter),
+          collation: collation,
+          hint: hint,
+          limit: limit,
+        );
 
   Options toMap() {
     return <String, dynamic>{
       keyQ: filter,
       keyLimit: limit,
       if (collation != null) keyCollation: collation!.options,
-      if (hint != null && !hint!.isNull) keyHint: hint!.value
+      if (hint != null && !hint!.isNull) keyHint: hint!.value,
     };
   }
 }

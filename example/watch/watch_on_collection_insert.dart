@@ -37,13 +37,14 @@ void main() async {
   /// *** Note ***
   /// In our case, if we do not specify 'updateLookup' the returned document
   /// will not contain the 'custId' field (for updates)
-  var stream = collection.watch(<Map<String, Object>>[
-    {
-      r'$match': {'operationType': 'insert'}
-    }
-  ] /* ,
-      changeStreamOptions: ChangeStreamOptions(fullDocument: 'updateLookup') */
-      );
+  var stream = collection.watch(
+    <Map<String, Object>>[
+      {
+        r'$match': {'operationType': 'insert'},
+      },
+    ] /* ,
+      changeStreamOptions: ChangeStreamOptions(fullDocument: 'updateLookup') */,
+  );
 
   var pleaseClose = false;
 
@@ -53,8 +54,10 @@ void main() async {
     Map<String, dynamic> fullDocument =
         changeEvent.fullDocument ?? <String, dynamic>{};
 
-    print('Detected change for "custId" '
-        '${fullDocument['custId']}: "${fullDocument['name']}"');
+    print(
+      'Detected change for "custId" '
+      '${fullDocument['custId']}: "${fullDocument['name']}"',
+    );
 
     pleaseClose = true;
   });
@@ -64,11 +67,15 @@ void main() async {
   /// This is default behavior starting from 4.2, in 4.0 and earlier you have
   /// to set the writeConcern to 'majority' or the events will not be emitted
   await collection.updateOne(
-      where..$eq('custId', 1), UpdateExpression()..$set('name', 'Harry'),
-      writeConcern: WriteConcern.majority);
+    where..$eq('custId', 1),
+    UpdateExpression()..$set('name', 'Harry'),
+    writeConcern: WriteConcern.majority,
+  );
 
-  await collection.insertOne({'custId': 4, 'name': 'Nathan'},
-      insertOneOptions: InsertOneOptions(writeConcern: WriteConcern.majority));
+  await collection.insertOne({
+    'custId': 4,
+    'name': 'Nathan',
+  }, insertOneOptions: InsertOneOptions(writeConcern: WriteConcern.majority));
 
   var waitingCount = 0;
   await Future.doWhile(() async {

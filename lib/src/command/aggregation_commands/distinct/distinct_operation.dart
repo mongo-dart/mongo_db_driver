@@ -11,14 +11,20 @@ import 'distinct_result.dart';
 /// In case of admin/diagnostic pipeline which does not require an underlying
 /// collection, the db parameter must be passed instead.
 base class DistinctOperation extends CommandOperation {
-  DistinctOperation(MongoCollection collection, this.key,
-      {this.query,
-      super.session,
-      DistinctOptions? distinctOptions,
-      Map<String, Object>? rawOptions})
-      : super(collection.db, {},
-            <String, dynamic>{...?distinctOptions?.options, ...?rawOptions},
-            collection: collection, aspect: Aspect.readOperation);
+  DistinctOperation(
+    MongoCollection collection,
+    this.key, {
+    this.query,
+    super.session,
+    DistinctOptions? distinctOptions,
+    Map<String, Object>? rawOptions,
+  }) : super(
+         collection.db,
+         {},
+         <String, dynamic>{...?distinctOptions?.options, ...?rawOptions},
+         collection: collection,
+         aspect: Aspect.readOperation,
+       );
 
   /// The field for which to return distinct values.
   String key;
@@ -29,10 +35,10 @@ base class DistinctOperation extends CommandOperation {
 
   @override
   Command $buildCommand() => <String, dynamic>{
-        keyDistinct: collection!.collectionName,
-        keyKey: key,
-        if (query != null) keyQuery: query!,
-      };
+    keyDistinct: collection!.collectionName,
+    keyKey: key,
+    keyQuery: ?query,
+  };
 
   Future<DistinctResult> executeDocument({ClientSession? session}) async =>
       DistinctResult(await super.process());

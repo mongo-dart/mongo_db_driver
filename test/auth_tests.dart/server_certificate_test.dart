@@ -26,8 +26,9 @@ void main() async {
   bool isVer3_2 = false;
   bool isVer3_6 = false;
   bool isNoMoreMongodbCR = false;
-  var caCertFile =
-      File('test/certificates_for_testing/mongo-test-ca-full-chain.crt');
+  var caCertFile = File(
+    'test/certificates_for_testing/mongo-test-ca-full-chain.crt',
+  );
 
   Future<bool> findServer(String uriString) async {
     var clientOptions = MongoClientOptions()

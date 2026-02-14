@@ -11,49 +11,63 @@ import '../../../../command_exp.dart';
 typedef InsertOneRec = (
   MongoDocument serverDocument,
   MongoDocument insertedDocument,
-  dynamic id
+  dynamic id,
 );
 typedef InsertOneDocumentRec = (
   WriteResult writeResult,
   MongoDocument serverDocument,
   MongoDocument insertedDocument,
-  dynamic id
+  dynamic id,
 );
 
 abstract base class InsertOneOperation extends InsertOperation {
   Map<String, dynamic> document;
 
   @protected
-  InsertOneOperation.protected(MongoCollection collection, this.document,
-      {super.session, InsertOneOptions? insertOneOptions, Options? rawOptions})
-      : super.protected(
-          collection,
-          [document],
-          insertOptions: insertOneOptions,
-          rawOptions: rawOptions,
-        );
+  InsertOneOperation.protected(
+    MongoCollection collection,
+    this.document, {
+    super.session,
+    InsertOneOptions? insertOneOptions,
+    Options? rawOptions,
+  }) : super.protected(
+         collection,
+         [document],
+         insertOptions: insertOneOptions,
+         rawOptions: rawOptions,
+       );
 
-  factory InsertOneOperation(MongoCollection collection, MongoDocument document,
-      {ClientSession? session,
-      InsertOneOptions? insertOneOptions,
-      Options? rawOptions}) {
+  factory InsertOneOperation(
+    MongoCollection collection,
+    MongoDocument document, {
+    ClientSession? session,
+    InsertOneOptions? insertOneOptions,
+    Options? rawOptions,
+  }) {
     if (collection.serverApi != null) {
       switch (collection.serverApi!.version) {
         case ServerApiVersion.v1:
-          return InsertOneOperationV1(collection, document,
-              session: session,
-              insertOneOptions: insertOneOptions?.toOneV1,
-              rawOptions: rawOptions);
+          return InsertOneOperationV1(
+            collection,
+            document,
+            session: session,
+            insertOneOptions: insertOneOptions?.toOneV1,
+            rawOptions: rawOptions,
+          );
         // ignore: unreachable_switch_default
         default:
           throw MongoDartError(
-              'Stable Api ${collection.serverApi!.version} not managed');
+            'Stable Api ${collection.serverApi!.version} not managed',
+          );
       }
     }
-    return InsertOneOperationOpen(collection, document,
-        session: session,
-        insertOneOptions: insertOneOptions?.toOneOpen,
-        rawOptions: rawOptions);
+    return InsertOneOperationOpen(
+      collection,
+      document,
+      session: session,
+      insertOneOptions: insertOneOptions?.toOneOpen,
+      rawOptions: rawOptions,
+    );
   }
 
   Future<InsertOneRec> executeInsertOne() async {
@@ -67,7 +81,7 @@ abstract base class InsertOneOperation extends InsertOperation {
       WriteResult.fromMap(WriteCommandType.insert, ret),
       ret,
       document,
-      id
+      id,
     );
   }
 }

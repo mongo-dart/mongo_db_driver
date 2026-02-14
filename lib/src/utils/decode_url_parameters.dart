@@ -49,7 +49,9 @@ Future<ClientAuth> decodeUrlParameters(
       case ConnectionStringOptions.retryReads:
         options.retryReads = bool.tryParse(value) ?? true;
         break;
-
+      case ConnectionStringOptions.loadBalanced:
+        options.loadBalanced = bool.tryParse(value) ?? true;
+        break;
       case ConnectionStringOptions.appName:
         options.appName = value;
         break;

@@ -25,7 +25,7 @@ void main() async {
       'status': 'A',
       'points': 1,
       'misc1': 'note to self: confirm status',
-      'misc2': 'Need to activate'
+      'misc2': 'Need to activate',
     },
     {
       '_id': 2,
@@ -33,7 +33,7 @@ void main() async {
       'status': 'D',
       'points': 59,
       'misc1': 'reminder: ping me at 100pts',
-      'misc2': 'Some random comment'
+      'misc2': 'Some random comment',
     },
   ]);
   if (!ret.isSuccess) {
@@ -41,11 +41,12 @@ void main() async {
   }
 
   var (res, _) = await collection.updateMany(
-      where,
-      UpdateExpression()
-        ..$set('status', 'A')
-        ..$inc('points', 1),
-      writeConcern: WriteConcern(w: wMajority, wtimeout: 5000));
+    where,
+    UpdateExpression()
+      ..$set('status', 'A')
+      ..$inc('points', 1),
+    writeConcern: WriteConcern(w: wMajority, wtimeout: 5000),
+  );
 
   print('Modified documents: ${res.nModified}'); // 2
 

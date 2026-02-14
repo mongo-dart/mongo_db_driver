@@ -8,13 +8,14 @@ import '../v1/delete_one_options_v1.dart';
 abstract class DeleteOneOptions extends DeleteOptions {
   @protected
   DeleteOneOptions.protected({super.writeConcern, super.comment})
-      : super.protected();
+    : super.protected();
 
-  factory DeleteOneOptions(
-      {ServerApi? serverApi,
-      WriteConcern? writeConcern,
-      bool? bypassDocumentValidation = false,
-      String? comment}) {
+  factory DeleteOneOptions({
+    ServerApi? serverApi,
+    WriteConcern? writeConcern,
+    bool? bypassDocumentValidation = false,
+    String? comment,
+  }) {
     if (serverApi != null && serverApi.version == ServerApiVersion.v1) {
       return DeleteOneOptionsV1(writeConcern: writeConcern, comment: comment);
     }

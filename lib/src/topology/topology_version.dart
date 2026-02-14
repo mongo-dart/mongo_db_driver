@@ -6,7 +6,7 @@ import 'package:mongo_db_query/mongo_db_query.dart';
 class TopologyVersion implements Comparable {
   TopologyVersion(this.processId, this.counter);
   TopologyVersion.document(Map<String, dynamic> document)
-      : this(document['processId'], document['counter']);
+    : this(document['processId'], document['counter']);
 
   final ObjectId processId;
   final Int64 counter;

@@ -19,7 +19,5 @@ class KillCursorsOptions {
   final String? comment;
 
   KillCursorsOptions({this.comment});
-  Options get options => <String, dynamic>{
-        if (comment != null) keyComment: comment!,
-      };
+  Options get options => <String, dynamic>{keyComment: ?comment};
 }

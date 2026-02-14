@@ -13,7 +13,7 @@ void main() {
       var converter = PacketConverter();
       converter.packets.addAll([
         [1, 2, 3],
-        [4, 5, 6, 7]
+        [4, 5, 6, 7],
       ]);
       expect(converter.bytesAvailable(), 7);
       converter.readPos = 2;
@@ -24,7 +24,7 @@ void main() {
       var buffer = List<int>.filled(7, 0);
       converter.packets.addAll([
         [1, 2, 3],
-        [4, 5, 6, 7]
+        [4, 5, 6, 7],
       ]);
       converter.readIntoBuffer(buffer, 0);
       expect(buffer, [1, 2, 3, 4, 5, 6, 7]);
@@ -36,7 +36,7 @@ void main() {
       var buffer = List<int>.filled(5, 0);
       converter.packets.addAll([
         [1, 2, 3],
-        [4, 5, 6, 7]
+        [4, 5, 6, 7],
       ]);
       converter.readPos = 2;
       converter.readIntoBuffer(buffer, 0);
@@ -49,7 +49,7 @@ void main() {
       var buffer = List<int>.filled(3, 0);
       converter.packets.addAll([
         [1, 2, 3],
-        [4, 5, 6, 7]
+        [4, 5, 6, 7],
       ]);
       converter.readPos = 2;
       converter.readIntoBuffer(buffer, 0);

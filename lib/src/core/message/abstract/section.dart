@@ -40,7 +40,7 @@ abstract class Section {
 
 class SectionType0 extends Section {
   SectionType0.fromDocument(int payloadType, MongoDocument document)
-      : super._(payloadType, Payload0(document));
+    : super._(payloadType, Payload0(document));
 
   SectionType0(super.payloadType, Payload0 super.payload) : super._();
 }
@@ -48,12 +48,15 @@ class SectionType0 extends Section {
 class SectionType1 extends Section {
   factory SectionType1.fromDocument(int payloadType, MongoDocument document) {
     if (document.length > 1) {
-      throw MongoDartError('Expected only one element in the '
-          'document while generating section 1');
+      throw MongoDartError(
+        'Expected only one element in the '
+        'document while generating section 1',
+      );
     }
     if (document.values.first is! List) {
       throw MongoDartError(
-          'The value of the document parameter must be a List of documents');
+        'The value of the document parameter must be a List of documents',
+      );
     }
     var identifier = document.keys.first;
     var documents = document.values.first as List<Map<String, dynamic>>;

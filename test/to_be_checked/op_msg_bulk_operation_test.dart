@@ -123,7 +123,7 @@ void main() async {
         bulk.insertMany([
           {'_id': 3, 'name': 'John', 'age': 32},
           {'_id': 4, 'name': 'Mira', 'age': 27},
-          {'_id': 7, 'name': 'Luis', 'age': 42}
+          {'_id': 7, 'name': 'Luis', 'age': 42},
         ]);
         bulk.insertOne({'_id': 5, 'name': 'Mandy', 'age': 21});
 
@@ -197,7 +197,7 @@ void main() async {
         bulk.insertMany([
           {'_id': 3, 'name': 'John', 'age': 32},
           {'_id': 4, 'name': 'Mira', 'age': 27},
-          {'_id': 7, 'name': 'Luis', 'age': 42}
+          {'_id': 7, 'name': 'Luis', 'age': 42},
         ]);
         bulk.insertOne({'_id': 5, 'name': 'Mandy', 'age': 21});
 
@@ -266,12 +266,17 @@ void main() async {
         expect(retOrders.ok, 1.0);
         expect(retOrders.isSuccess, isTrue);
 
-        var bulk = UnorderedBulk(collection,
-            writeConcern: WriteConcern(w: primaryAcknowledged));
+        var bulk = UnorderedBulk(
+          collection,
+          writeConcern: WriteConcern(w: primaryAcknowledged),
+        );
         bulk.deleteMany(DeleteManyStatement(QueryUnion({'status': 'D'})));
 
-        bulk.deleteOne(DeleteOneStatement(
-            QueryUnion({'cust_num': 99999, 'item': 'abc123', 'status': 'A'})));
+        bulk.deleteOne(
+          DeleteOneStatement(
+            QueryUnion({'cust_num': 99999, 'item': 'abc123', 'status': 'A'}),
+          ),
+        );
 
         var (ret, _) = await bulk.executeDocument(db.server);
 
@@ -302,13 +307,13 @@ void main() async {
           {
             bulkDeleteMany: {
               bulkFilter: {'status': 'D'},
-            }
+            },
           },
           {
             'deleteOne': {
-              'filter': {'cust_num': 99999, 'item': 'abc123', 'status': 'A'}
-            }
-          }
+              'filter': {'cust_num': 99999, 'item': 'abc123', 'status': 'A'},
+            },
+          },
         ], ordered: false);
 
         /* var bulk = UnorderedBulk(collection, writeConcern: WriteConcern(w: 1));
@@ -342,12 +347,17 @@ void main() async {
         expect(retOrders.ok, 1.0);
         expect(retOrders.isSuccess, isTrue);
 
-        var bulk = OrderedBulk(collection,
-            writeConcern: WriteConcern(w: primaryAcknowledged));
+        var bulk = OrderedBulk(
+          collection,
+          writeConcern: WriteConcern(w: primaryAcknowledged),
+        );
         bulk.deleteMany(DeleteManyStatement(QueryUnion({'status': 'D'})));
 
-        bulk.deleteOne(DeleteOneStatement(
-            QueryUnion({'cust_num': 99999, 'item': 'abc123', 'status': 'A'})));
+        bulk.deleteOne(
+          DeleteOneStatement(
+            QueryUnion({'cust_num': 99999, 'item': 'abc123', 'status': 'A'}),
+          ),
+        );
 
         var (ret, _) = await bulk.executeDocument(db.server);
 
@@ -377,20 +387,31 @@ void main() async {
         expect(retOrders.ok, 1.0);
         expect(retOrders.isSuccess, isTrue);
 
-        var bulk = UnorderedBulk(collection,
-            writeConcern: WriteConcern(w: primaryAcknowledged));
-        bulk.updateMany(UpdateManyStatement(
+        var bulk = UnorderedBulk(
+          collection,
+          writeConcern: WriteConcern(w: primaryAcknowledged),
+        );
+        bulk.updateMany(
+          UpdateManyStatement(
             QueryUnion(where..$eq('status', 'D')),
-            UpdateUnion(UpdateExpression()..$set('status', 'd'))));
+            UpdateUnion(UpdateExpression()..$set('status', 'd')),
+          ),
+        );
 
-        bulk.updateOne(UpdateOneStatement(
+        bulk.updateOne(
+          UpdateOneStatement(
             QueryUnion({'cust_num': 99999, 'item': 'abc123', 'status': 'A'}),
-            UpdateUnion(UpdateExpression()..$inc('ordered', 1))));
+            UpdateUnion(UpdateExpression()..$inc('ordered', 1)),
+          ),
+        );
 
-        bulk.replaceOne(ReplaceOneStatement(
+        bulk.replaceOne(
+          ReplaceOneStatement(
             QueryUnion({'cust_num': 12345, 'item': 'tst24', 'status': 'D'}),
             {'cust_num': 12345, 'item': 'tst24', 'status': 'Replaced'},
-            upsert: true));
+            upsert: true,
+          ),
+        );
         var (ret, _) = await bulk.executeDocument(db.server);
 
         expect(ret.ok, 1.0);
@@ -416,19 +437,30 @@ void main() async {
         expect(retOrders.ok, 1.0);
         expect(retOrders.isSuccess, isTrue);
 
-        var bulk = OrderedBulk(collection,
-            writeConcern: WriteConcern(w: primaryAcknowledged));
-        bulk.updateMany(UpdateManyStatement(
+        var bulk = OrderedBulk(
+          collection,
+          writeConcern: WriteConcern(w: primaryAcknowledged),
+        );
+        bulk.updateMany(
+          UpdateManyStatement(
             QueryUnion(where..$eq('status', 'D')),
-            UpdateUnion(UpdateExpression()..$set('status', 'd'))));
+            UpdateUnion(UpdateExpression()..$set('status', 'd')),
+          ),
+        );
 
-        bulk.updateOne(UpdateOneStatement(
+        bulk.updateOne(
+          UpdateOneStatement(
             QueryUnion({'cust_num': 99999, 'item': 'abc123', 'status': 'A'}),
-            UpdateUnion(UpdateExpression()..$inc('ordered', 1))));
-        bulk.replaceOne(ReplaceOneStatement(
+            UpdateUnion(UpdateExpression()..$inc('ordered', 1)),
+          ),
+        );
+        bulk.replaceOne(
+          ReplaceOneStatement(
             QueryUnion({'cust_num': 12345, 'item': 'tst24', 'status': 'D'}),
             {'cust_num': 12345, 'item': 'tst24', 'status': 'Replaced'},
-            upsert: true));
+            upsert: true,
+          ),
+        );
         var (ret, _) = await bulk.executeDocument(db.server);
 
         expect(ret.ok, 1.0);
@@ -459,17 +491,17 @@ void main() async {
             bulkUpdateMany: {
               bulkFilter: {'status': 'D'},
               bulkUpdate: {
-                r'$set': {'status': 'd'}
-              }
-            }
+                r'$set': {'status': 'd'},
+              },
+            },
           },
           {
             bulkUpdateOne: {
               bulkFilter: {'cust_num': 99999, 'item': 'abc123', 'status': 'A'},
               bulkUpdate: {
-                r'$inc': {'ordered': 1}
-              }
-            }
+                r'$inc': {'ordered': 1},
+              },
+            },
           },
           {
             bulkReplaceOne: {
@@ -477,11 +509,11 @@ void main() async {
               bulkReplacement: {
                 'cust_num': 12345,
                 'item': 'tst24',
-                'status': 'Replaced'
+                'status': 'Replaced',
               },
-              bulkUpsert: true
-            }
-          }
+              bulkUpsert: true,
+            },
+          },
         ], ordered: true);
 
         /* var bulk = OrderedBulk(collection, writeConcern: WriteConcern(w: 1));
@@ -531,7 +563,7 @@ void main() async {
         bulk.insertMany([
           {'_id': 3, 'name': 'John', 'age': 32},
           {'_id': 4, 'name': 'Mira', 'age': 27},
-          {'_id': 7, 'name': 'Luis', 'age': 42}
+          {'_id': 7, 'name': 'Luis', 'age': 42},
         ]);
         bulk.deleteOne(DeleteOneStatement(QueryUnion({'_id': 4})));
         bulk.insertOne({'_id': 5, 'name': 'Mandy', 'age': 21});
@@ -559,8 +591,7 @@ void main() async {
         expect(findResult.last['name'], 'Mandy');
       }, skip: cannotRunTests);
 
-      test(
-          'Ordered Bulk - Insert, delete one and delete many '
+      test('Ordered Bulk - Insert, delete one and delete many '
           'with collection helper', () async {
         var collectionName = getRandomCollectionName();
         var collection = db.collection(collectionName);
@@ -568,35 +599,35 @@ void main() async {
         var (ret, _) = await collection.bulkWrite([
           {
             bulkInsertOne: {
-              bulkDocument: {'_id': 2, 'name': 'Stephen', 'age': 54}
-            }
+              bulkDocument: {'_id': 2, 'name': 'Stephen', 'age': 54},
+            },
           },
           {
             bulkDeleteOne: {
-              bulkFilter: {'_id': 2}
-            }
+              bulkFilter: {'_id': 2},
+            },
           },
           {
             bulkInsertMany: {
               bulkDocuments: [
                 {'_id': 3, 'name': 'John', 'age': 32},
                 {'_id': 4, 'name': 'Mira', 'age': 27},
-                {'_id': 7, 'name': 'Luis', 'age': 42}
-              ]
-            }
+                {'_id': 7, 'name': 'Luis', 'age': 42},
+              ],
+            },
           },
           {
             bulkDeleteMany: {
               bulkFilter: {
-                'age': {r'$gt': 28}
-              }
-            }
+                'age': {r'$gt': 28},
+              },
+            },
           },
           {
             bulkInsertOne: {
-              bulkDocument: {'_id': 5, 'name': 'Mandy', 'age': 21}
-            }
-          }
+              bulkDocument: {'_id': 5, 'name': 'Mandy', 'age': 21},
+            },
+          },
         ]);
 
         expect(ret.ok, 1.0);
@@ -630,11 +661,15 @@ void main() async {
         bulk.insertMany([
           {'_id': 3, 'name': 'John', 'age': 32},
           {'_id': 4, 'name': 'Mira', 'age': 27},
-          {'_id': 7, 'name': 'Luis', 'age': 42}
+          {'_id': 7, 'name': 'Luis', 'age': 42},
         ]);
-        bulk.deleteMany(DeleteManyStatement(QueryUnion({
-          'age': {r'$gt': 28}
-        })));
+        bulk.deleteMany(
+          DeleteManyStatement(
+            QueryUnion({
+              'age': {r'$gt': 28},
+            }),
+          ),
+        );
         bulk.insertOne({'_id': 5, 'name': 'Mandy', 'age': 21});
 
         var (ret, _) = await bulk.executeDocument(db.server);
@@ -666,7 +701,7 @@ void main() async {
         await collection.insertMany([
           {'_id': 1, 'char': 'Brisbane', 'class': 'monk', 'lvl': 4},
           {'_id': 2, 'char': 'Eldon', 'class': 'alchemist', 'lvl': 3},
-          {'_id': 3, 'char': 'Meldane', 'class': 'ranger', 'lvl': 3}
+          {'_id': 3, 'char': 'Meldane', 'class': 'ranger', 'lvl': 3},
         ]);
 
         var (ret, _) = await collection.bulkWrite([
@@ -676,9 +711,9 @@ void main() async {
                 '_id': 4,
                 'char': 'Dithras',
                 'class': 'barbarian',
-                'lvl': 4
-              }
-            }
+                'lvl': 4,
+              },
+            },
           },
           {
             'insertOne': {
@@ -686,29 +721,29 @@ void main() async {
                 '_id': 5,
                 'char': 'Taeln',
                 'class': 'fighter',
-                'lvl': 3
-              }
-            }
+                'lvl': 3,
+              },
+            },
           },
           {
             'updateOne': {
               'filter': {'char': 'Eldon'},
               'update': {
-                r'$set': {'status': 'Critical Injury'}
-              }
-            }
+                r'$set': {'status': 'Critical Injury'},
+              },
+            },
           },
           {
             'deleteOne': {
-              'filter': {'char': 'Brisbane'}
-            }
+              'filter': {'char': 'Brisbane'},
+            },
           },
           {
             'replaceOne': {
               'filter': {'char': 'Meldane'},
-              'replacement': {'char': 'Tanys', 'class': 'oracle', 'lvl': 4}
-            }
-          }
+              'replacement': {'char': 'Tanys', 'class': 'oracle', 'lvl': 4},
+            },
+          },
         ]);
 
         expect(ret.ok, 1.0);
@@ -741,7 +776,7 @@ void main() async {
         await collection.insertMany([
           {'_id': 1, 'char': 'Brisbane', 'class': 'monk', 'lvl': 4},
           {'_id': 2, 'char': 'Eldon', 'class': 'alchemist', 'lvl': 3},
-          {'_id': 5, 'char': 'Meldane', 'class': 'ranger', 'lvl': 3}
+          {'_id': 5, 'char': 'Meldane', 'class': 'ranger', 'lvl': 3},
         ]);
 
         var (ret, _) = await collection.bulkWrite([
@@ -751,9 +786,9 @@ void main() async {
                 '_id': 4,
                 'char': 'Dithras',
                 'class': 'barbarian',
-                'lvl': 4
-              }
-            }
+                'lvl': 4,
+              },
+            },
           },
           {
             'insertOne': {
@@ -761,29 +796,29 @@ void main() async {
                 '_id': 5,
                 'char': 'Taeln',
                 'class': 'fighter',
-                'lvl': 3
-              }
-            }
+                'lvl': 3,
+              },
+            },
           },
           {
             'updateOne': {
               'filter': {'char': 'Eldon'},
               'update': {
-                r'$set': {'status': 'Critical Injury'}
-              }
-            }
+                r'$set': {'status': 'Critical Injury'},
+              },
+            },
           },
           {
             'deleteOne': {
-              'filter': {'char': 'Brisbane'}
-            }
+              'filter': {'char': 'Brisbane'},
+            },
           },
           {
             'replaceOne': {
               'filter': {'char': 'Meldane'},
-              'replacement': {'char': 'Tanys', 'class': 'oracle', 'lvl': 4}
-            }
-          }
+              'replacement': {'char': 'Tanys', 'class': 'oracle', 'lvl': 4},
+            },
+          },
         ]);
 
         expect(ret.ok, 1.0);
@@ -824,9 +859,9 @@ void main() async {
               bulkDocuments: [
                 {'_id': 1, 'char': 'Brisbane', 'class': 'monk', 'lvl': 4},
                 {'_id': 2, 'char': 'Eldon', 'class': 'alchemist', 'lvl': 3},
-                {'_id': 3, 'char': 'Meldane', 'class': 'ranger', 'lvl': 3}
-              ]
-            }
+                {'_id': 3, 'char': 'Meldane', 'class': 'ranger', 'lvl': 3},
+              ],
+            },
           },
           {
             'insertOne': {
@@ -834,9 +869,9 @@ void main() async {
                 '_id': 4,
                 'char': 'Dithras',
                 'class': 'barbarian',
-                'lvl': 4
-              }
-            }
+                'lvl': 4,
+              },
+            },
           },
           {
             'insertOne': {
@@ -844,29 +879,29 @@ void main() async {
                 '_id': 5,
                 'char': 'Taeln',
                 'class': 'fighter',
-                'lvl': 3
-              }
-            }
+                'lvl': 3,
+              },
+            },
           },
           {
             'updateOne': {
               'filter': {'char': 'Eldon'},
               'update': {
-                r'$set': {'status': 'Critical Injury'}
-              }
-            }
+                r'$set': {'status': 'Critical Injury'},
+              },
+            },
           },
           {
             'deleteOne': {
-              'filter': {'char': 'Brisbane'}
-            }
+              'filter': {'char': 'Brisbane'},
+            },
           },
           {
             'replaceOne': {
               'filter': {'char': 'Meldane'},
-              'replacement': {'char': 'Tanys', 'class': 'oracle', 'lvl': 4}
-            }
-          }
+              'replacement': {'char': 'Tanys', 'class': 'oracle', 'lvl': 4},
+            },
+          },
         ]);
 
         expect(ret.ok, 1.0);
@@ -904,25 +939,33 @@ void main() async {
         bulk.insertMany([
           {'_id': 1, 'char': 'Brisbane', 'class': 'monk', 'lvl': 4},
           {'_id': 2, 'char': 'Eldon', 'class': 'alchemist', 'lvl': 3},
-          {'_id': 3, 'char': 'Meldane', 'class': 'ranger', 'lvl': 3}
+          {'_id': 3, 'char': 'Meldane', 'class': 'ranger', 'lvl': 3},
         ]);
 
-        bulk.insertOne(
-            {'_id': 4, 'char': 'Dithras', 'class': 'barbarian', 'lvl': 4});
-        bulk.insertOne(
-            {'_id': 5, 'char': 'Taeln', 'class': 'fighter', 'lvl': 3});
+        bulk.insertOne({
+          '_id': 4,
+          'char': 'Dithras',
+          'class': 'barbarian',
+          'lvl': 4,
+        });
+        bulk.insertOne({
+          '_id': 5,
+          'char': 'Taeln',
+          'class': 'fighter',
+          'lvl': 3,
+        });
         bulk.updateOneFromMap({
           'filter': {'char': 'Eldon'},
           'update': {
-            r'$set': {'status': 'Critical Injury'}
-          }
+            r'$set': {'status': 'Critical Injury'},
+          },
         });
         bulk.deleteOneFromMap({
-          'filter': {'char': 'Brisbane'}
+          'filter': {'char': 'Brisbane'},
         });
         bulk.replaceOneFromMap({
           'filter': {'char': 'Meldane'},
-          'replacement': {'char': 'Tanys', 'class': 'oracle', 'lvl': 4}
+          'replacement': {'char': 'Tanys', 'class': 'oracle', 'lvl': 4},
         });
 
         var (ret, _) = await bulk.executeDocument(db.server);
@@ -959,7 +1002,7 @@ void main() async {
         await collection.insertMany([
           {'_id': 1, 'char': 'Brisbane', 'class': 'monk', 'lvl': 4},
           {'_id': 2, 'char': 'Eldon', 'class': 'alchemist', 'lvl': 3},
-          {'_id': 3, 'char': 'Meldane', 'class': 'ranger', 'lvl': 3}
+          {'_id': 3, 'char': 'Meldane', 'class': 'ranger', 'lvl': 3},
         ]);
 
         var (ret, _) = await collection.bulkWrite([
@@ -969,9 +1012,9 @@ void main() async {
                 '_id': 4,
                 'char': 'Dithras',
                 'class': 'barbarian',
-                'lvl': 4
-              }
-            }
+                'lvl': 4,
+              },
+            },
           },
           {
             'insertOne': {
@@ -979,33 +1022,38 @@ void main() async {
                 '_id': 5,
                 'char': 'Taeln',
                 'class': 'fighter',
-                'lvl': 3
-              }
-            }
+                'lvl': 3,
+              },
+            },
           },
           {
             'updateOne': {
               'filter': {'char': 'Eldon'},
               'update': {
-                r'$set': {'status': 'Critical Injury'}
-              }
-            }
+                r'$set': {'status': 'Critical Injury'},
+              },
+            },
           },
           {
             'deleteOne': {
-              'filter': {'char': 'Brisbane'}
-            }
+              'filter': {'char': 'Brisbane'},
+            },
           },
           {
             'replaceOne': {
               'filter': {'char': 'Meldane'},
-              'replacement': {'char': 'Tanys', 'class': 'oracle', 'lvl': 4}
-            }
+              'replacement': {'char': 'Tanys', 'class': 'oracle', 'lvl': 4},
+            },
           },
           {
             'insertOne': {
-              'document': {'_id': 4, 'char': 'Amber', 'class': 'monk', 'lvl': 3}
-            }
+              'document': {
+                '_id': 4,
+                'char': 'Amber',
+                'class': 'monk',
+                'lvl': 3,
+              },
+            },
           },
         ]);
 
@@ -1042,7 +1090,7 @@ void main() async {
         await collection.insertMany([
           {'_id': 1, 'char': 'Brisbane', 'class': 'monk', 'lvl': 4},
           {'_id': 2, 'char': 'Eldon', 'class': 'alchemist', 'lvl': 3},
-          {'_id': 5, 'char': 'Meldane', 'class': 'ranger', 'lvl': 3}
+          {'_id': 5, 'char': 'Meldane', 'class': 'ranger', 'lvl': 3},
         ]);
 
         var (ret, _) = await collection.bulkWrite([
@@ -1052,9 +1100,9 @@ void main() async {
                 '_id': 4,
                 'char': 'Dithras',
                 'class': 'barbarian',
-                'lvl': 4
-              }
-            }
+                'lvl': 4,
+              },
+            },
           },
           {
             'insertOne': {
@@ -1062,29 +1110,29 @@ void main() async {
                 '_id': 5,
                 'char': 'Taeln',
                 'class': 'fighter',
-                'lvl': 3
-              }
-            }
+                'lvl': 3,
+              },
+            },
           },
           {
             'updateOne': {
               'filter': {'char': 'Eldon'},
               'update': {
-                r'$set': {'status': 'Critical Injury'}
-              }
-            }
+                r'$set': {'status': 'Critical Injury'},
+              },
+            },
           },
           {
             'deleteOne': {
-              'filter': {'char': 'Brisbane'}
-            }
+              'filter': {'char': 'Brisbane'},
+            },
           },
           {
             'replaceOne': {
               'filter': {'char': 'Meldane'},
-              'replacement': {'char': 'Tanys', 'class': 'oracle', 'lvl': 4}
-            }
-          }
+              'replacement': {'char': 'Tanys', 'class': 'oracle', 'lvl': 4},
+            },
+          },
         ], ordered: false);
 
         expect(ret.ok, 1.0);
@@ -1114,89 +1162,98 @@ void main() async {
         expect(findResult.last['char'], 'Dithras');
       }, skip: cannotRunTests);
 
-      test('Unordered Bulk - "One" method types - with error - 2', () async {
-        var collectionName = getRandomCollectionName();
-        var collection = db.collection(collectionName);
+      test(
+        'Unordered Bulk - "One" method types - with error - 2',
+        () async {
+          var collectionName = getRandomCollectionName();
+          var collection = db.collection(collectionName);
 
-        await collection.insertMany([
-          {'_id': 1, 'char': 'Brisbane', 'class': 'monk', 'lvl': 4},
-          {'_id': 2, 'char': 'Eldon', 'class': 'alchemist', 'lvl': 3},
-          {'_id': 3, 'char': 'Meldane', 'class': 'ranger', 'lvl': 3}
-        ]);
+          await collection.insertMany([
+            {'_id': 1, 'char': 'Brisbane', 'class': 'monk', 'lvl': 4},
+            {'_id': 2, 'char': 'Eldon', 'class': 'alchemist', 'lvl': 3},
+            {'_id': 3, 'char': 'Meldane', 'class': 'ranger', 'lvl': 3},
+          ]);
 
-        var (ret, _) = await collection.bulkWrite([
-          {
-            'insertOne': {
-              'document': {
-                '_id': 4,
-                'char': 'Dithras',
-                'class': 'barbarian',
-                'lvl': 4
-              }
-            }
-          },
-          {
-            'insertOne': {
-              'document': {
-                '_id': 5,
-                'char': 'Taeln',
-                'class': 'fighter',
-                'lvl': 3
-              }
-            }
-          },
-          {
-            'updateOne': {
-              'filter': {'char': 'Eldon'},
-              'update': {
-                r'$set': {'status': 'Critical Injury'}
-              }
-            }
-          },
-          {
-            'deleteOne': {
-              'filter': {'char': 'Brisbane'}
-            }
-          },
-          {
-            'replaceOne': {
-              'filter': {'char': 'Meldane'},
-              'replacement': {'char': 'Tanys', 'class': 'oracle', 'lvl': 4}
-            }
-          },
-          {
-            'insertOne': {
-              'document': {'_id': 4, 'char': 'Amber', 'class': 'monk', 'lvl': 3}
-            }
-          },
-        ], ordered: false);
+          var (ret, _) = await collection.bulkWrite([
+            {
+              'insertOne': {
+                'document': {
+                  '_id': 4,
+                  'char': 'Dithras',
+                  'class': 'barbarian',
+                  'lvl': 4,
+                },
+              },
+            },
+            {
+              'insertOne': {
+                'document': {
+                  '_id': 5,
+                  'char': 'Taeln',
+                  'class': 'fighter',
+                  'lvl': 3,
+                },
+              },
+            },
+            {
+              'updateOne': {
+                'filter': {'char': 'Eldon'},
+                'update': {
+                  r'$set': {'status': 'Critical Injury'},
+                },
+              },
+            },
+            {
+              'deleteOne': {
+                'filter': {'char': 'Brisbane'},
+              },
+            },
+            {
+              'replaceOne': {
+                'filter': {'char': 'Meldane'},
+                'replacement': {'char': 'Tanys', 'class': 'oracle', 'lvl': 4},
+              },
+            },
+            {
+              'insertOne': {
+                'document': {
+                  '_id': 4,
+                  'char': 'Amber',
+                  'class': 'monk',
+                  'lvl': 3,
+                },
+              },
+            },
+          ], ordered: false);
 
-        expect(ret.ok, 1.0);
-        expect(ret.operationSucceeded, isTrue);
-        expect(ret.hasWriteErrors, isTrue);
-        expect(ret.hasWriteConcernError, isFalse);
-        expect(ret.nInserted, 2);
-        expect(ret.isSuccess, isFalse);
-        expect(ret.isPartialSuccess, isTrue);
-        expect(ret.writeCommandType, null);
-        expect(ret.nUpserted, 0);
-        expect(ret.nModified, 2);
-        expect(ret.nMatched, 2);
-        expect(ret.nRemoved, 1);
-        // TODO update record logic
-        //expect(ret.ids, isNotNull);
-        //expect(ret.ids?.length, 2);
-        //expect(ret.ids?.first, 4);
-        expect(ret.upserted, isEmpty);
-        expect(ret.writeErrors.first.index, 2);
-        expect(ret.writeErrors.first.operationInputIndex, 5);
+          expect(ret.ok, 1.0);
+          expect(ret.operationSucceeded, isTrue);
+          expect(ret.hasWriteErrors, isTrue);
+          expect(ret.hasWriteConcernError, isFalse);
+          expect(ret.nInserted, 2);
+          expect(ret.isSuccess, isFalse);
+          expect(ret.isPartialSuccess, isTrue);
+          expect(ret.writeCommandType, null);
+          expect(ret.nUpserted, 0);
+          expect(ret.nModified, 2);
+          expect(ret.nMatched, 2);
+          expect(ret.nRemoved, 1);
+          // TODO update record logic
+          //expect(ret.ids, isNotNull);
+          //expect(ret.ids?.length, 2);
+          //expect(ret.ids?.first, 4);
+          expect(ret.upserted, isEmpty);
+          expect(ret.writeErrors.first.index, 2);
+          expect(ret.writeErrors.first.operationInputIndex, 5);
 
-        var findResult = await collection.find().toList();
-        expect(findResult.length, 4);
-        expect(findResult.first['char'], 'Eldon');
-        expect(findResult[1]['char'], 'Tanys');
-        expect(findResult.last['char'], 'Taeln');
-      }, skip: cannotRunTests);
+          var findResult = await collection.find().toList();
+          expect(findResult.length, 4);
+          expect(findResult.first['char'], 'Eldon');
+          expect(findResult[1]['char'], 'Tanys');
+          expect(findResult.last['char'], 'Taeln');
+        },
+        skip: cannotRunTests,
+      );
       test('Unordered Bulk - "One" method types', () async {
         var collectionName = getRandomCollectionName();
         var collection = db.collection(collectionName);
@@ -1204,7 +1261,7 @@ void main() async {
         await collection.insertMany([
           {'_id': 1, 'char': 'Brisbane', 'class': 'monk', 'lvl': 4},
           {'_id': 2, 'char': 'Eldon', 'class': 'alchemist', 'lvl': 3},
-          {'_id': 3, 'char': 'Meldane', 'class': 'ranger', 'lvl': 3}
+          {'_id': 3, 'char': 'Meldane', 'class': 'ranger', 'lvl': 3},
         ]);
 
         var (ret, _) = await collection.bulkWrite([
@@ -1214,9 +1271,9 @@ void main() async {
                 '_id': 4,
                 'char': 'Dithras',
                 'class': 'barbarian',
-                'lvl': 4
-              }
-            }
+                'lvl': 4,
+              },
+            },
           },
           {
             'insertOne': {
@@ -1224,29 +1281,29 @@ void main() async {
                 '_id': 4,
                 'char': 'Taeln',
                 'class': 'fighter',
-                'lvl': 3
-              }
-            }
+                'lvl': 3,
+              },
+            },
           },
           {
             'updateOne': {
               'filter': {'char': 'Eldon'},
               'update': {
-                r'$set': {'status': 'Critical Injury'}
-              }
-            }
+                r'$set': {'status': 'Critical Injury'},
+              },
+            },
           },
           {
             'deleteOne': {
-              'filter': {'char': 'Brisbane'}
-            }
+              'filter': {'char': 'Brisbane'},
+            },
           },
           {
             'replaceOne': {
               'filter': {'char': 'Meldane'},
-              'replacement': {'char': 'Tanys', 'class': 'oracle', 'lvl': 4}
-            }
-          }
+              'replacement': {'char': 'Tanys', 'class': 'oracle', 'lvl': 4},
+            },
+          },
         ], ordered: false);
 
         expect(ret.ok, 1.0);
@@ -1283,53 +1340,57 @@ void main() async {
           {'_id': 1, 'char': 'goblin', 'rating': 1, 'encounter': 0.24},
           {'_id': 2, 'char': 'hobgoblin', 'rating': 1.5, 'encounter': 0.30},
           {'_id': 3, 'char': 'ogre', 'rating': 3, 'encounter': 0.2},
-          {'_id': 4, 'char': 'ogre berserker', 'rating': 3.5, 'encounter': 0.12}
+          {
+            '_id': 4,
+            'char': 'ogre berserker',
+            'rating': 3.5,
+            'encounter': 0.12,
+          },
         ]);
 
-        var (ret, _) = await collection.bulkWrite([
-          {
-            bulkUpdateMany: {
-              bulkFilter: {
-                'rating': {r'$gte': 3}
+        var (ret, _) = await collection.bulkWrite(
+          [
+            {
+              bulkUpdateMany: {
+                bulkFilter: {
+                  'rating': {r'$gte': 3},
+                },
+                bulkUpdate: {
+                  r'$inc': {'encounter': 0.1},
+                },
               },
-              bulkUpdate: {
-                r'$inc': {'encounter': 0.1}
-              }
             },
-          },
-          {
-            bulkUpdateMany: {
-              bulkFilter: {
-                'rating': {r'$lt': 2}
+            {
+              bulkUpdateMany: {
+                bulkFilter: {
+                  'rating': {r'$lt': 2},
+                },
+                bulkUpdate: {
+                  r'$inc': {'encounter': -0.25},
+                },
               },
-              bulkUpdate: {
-                r'$inc': {'encounter': -0.25}
-              }
             },
-          },
-          {
-            bulkDeleteMany: {
-              bulkFilter: {
-                'encounter': {r'$lt': 0}
-              }
-            }
-          },
-          {
-            bulkInsertOne: {
-              bulkDocument: {
-                '_id': 5,
-                'char': 'ogrekin',
-                'rating': 2,
-                'encounter': 0.31
-              }
-            }
-          }
-        ],
-            ordered: true,
-            writeConcern: WriteConcern(
-              w: W(4),
-              wtimeout: 100,
-            ));
+            {
+              bulkDeleteMany: {
+                bulkFilter: {
+                  'encounter': {r'$lt': 0},
+                },
+              },
+            },
+            {
+              bulkInsertOne: {
+                bulkDocument: {
+                  '_id': 5,
+                  'char': 'ogrekin',
+                  'rating': 2,
+                  'encounter': 0.31,
+                },
+              },
+            },
+          ],
+          ordered: true,
+          writeConcern: WriteConcern(w: W(4), wtimeout: 100),
+        );
 
         if (isStandalone) {
           expect(ret.ok, 0.0);
@@ -1370,48 +1431,57 @@ void main() async {
           {'_id': 1, 'char': 'goblin', 'rating': 1, 'encounter': 0.24},
           {'_id': 2, 'char': 'hobgoblin', 'rating': 1.5, 'encounter': 0.30},
           {'_id': 3, 'char': 'ogre', 'rating': 3, 'encounter': 0.2},
-          {'_id': 4, 'char': 'ogre berserker', 'rating': 3.5, 'encounter': 0.12}
+          {
+            '_id': 4,
+            'char': 'ogre berserker',
+            'rating': 3.5,
+            'encounter': 0.12,
+          },
         ]);
 
-        var (ret, _) = await collection.bulkWrite([
-          {
-            bulkUpdateMany: {
-              bulkFilter: {
-                'rating': {r'$gte': 3}
+        var (ret, _) = await collection.bulkWrite(
+          [
+            {
+              bulkUpdateMany: {
+                bulkFilter: {
+                  'rating': {r'$gte': 3},
+                },
+                bulkUpdate: {
+                  r'$inc': {'encounter': 0.1},
+                },
               },
-              bulkUpdate: {
-                r'$inc': {'encounter': 0.1}
-              }
             },
-          },
-          {
-            bulkUpdateMany: {
-              bulkFilter: {
-                'rating': {r'$lt': 2}
+            {
+              bulkUpdateMany: {
+                bulkFilter: {
+                  'rating': {r'$lt': 2},
+                },
+                bulkUpdate: {
+                  r'$inc': {'encounter': -0.25},
+                },
               },
-              bulkUpdate: {
-                r'$inc': {'encounter': -0.25}
-              }
             },
-          },
-          {
-            bulkDeleteMany: {
-              bulkFilter: {
-                'encounter': {r'$lt': 0}
-              }
-            }
-          },
-          {
-            bulkInsertOne: {
-              bulkDocument: {
-                '_id': 5,
-                'char': 'ogrekin',
-                'rating': 2,
-                'encounter': 0.31
-              }
-            }
-          }
-        ], ordered: false, writeConcern: WriteConcern(w: W(4), wtimeout: 100));
+            {
+              bulkDeleteMany: {
+                bulkFilter: {
+                  'encounter': {r'$lt': 0},
+                },
+              },
+            },
+            {
+              bulkInsertOne: {
+                bulkDocument: {
+                  '_id': 5,
+                  'char': 'ogrekin',
+                  'rating': 2,
+                  'encounter': 0.31,
+                },
+              },
+            },
+          ],
+          ordered: false,
+          writeConcern: WriteConcern(w: W(4), wtimeout: 100),
+        );
 
         if (isStandalone) {
           expect(ret.ok, 0.0);
@@ -1448,8 +1518,10 @@ void main() async {
   tearDownAll(() async {
     await client.connect();
     db = client.db();
-    await Future.forEach(usedCollectionNames,
-        (String collectionName) => db.collection(collectionName).drop());
+    await Future.forEach(
+      usedCollectionNames,
+      (String collectionName) => db.collection(collectionName).drop(),
+    );
     await client.close();
   });
 }

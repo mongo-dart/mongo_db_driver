@@ -12,12 +12,14 @@ import 'operation_base.dart';
 ///
 /// Designed for system commands where Db/Collection are not needed
 base class SimpleCommand extends ServerCommand {
-  SimpleCommand(super.mongoClient, super.command,
-      {super.options,
-      super.session,
-      super.aspect,
-      ReadPreference? readPreference})
-      : super();
+  SimpleCommand(
+    super.mongoClient,
+    super.command, {
+    super.options,
+    super.session,
+    super.aspect,
+    ReadPreference? readPreference,
+  }) : super();
 
   /// The ReadPreference Object has prefernce with respect to the options
   /// ReadPrefernce Specs
@@ -34,13 +36,15 @@ base class SimpleCommand extends ServerCommand {
         break;
       case TopologyType.replicaSetWithPrimary:
         server = topology.getServer(
-            readPreferenceMode:
-                readPreference?.mode ?? ReadPreferenceMode.primary);
+          readPreferenceMode:
+              readPreference?.mode ?? ReadPreferenceMode.primary,
+        );
         break;
       case TopologyType.replicaSetNoPrimary:
         server = topology.getServer(
-            readPreferenceMode:
-                readPreference?.mode ?? ReadPreferenceMode.secondary);
+          readPreferenceMode:
+              readPreference?.mode ?? ReadPreferenceMode.secondary,
+        );
         break;
       case TopologyType.sharded:
       case TopologyType.loadBalanced:
@@ -52,7 +56,7 @@ base class SimpleCommand extends ServerCommand {
         if (readPreference != null) {
           options = {
             ...options,
-            ...readPreference!.toMap(topologyType: TopologyType.sharded)
+            ...readPreference!.toMap(topologyType: TopologyType.sharded),
           };
         }
         break;
@@ -61,7 +65,8 @@ base class SimpleCommand extends ServerCommand {
     }
 
     return super.executeOnServer(
-        server ?? (throw MongoDartError('No server detected')));
+      server ?? (throw MongoDartError('No server detected')),
+    );
   }
 
   @override
@@ -80,9 +85,12 @@ base class SimpleCommand extends ServerCommand {
       // if Aspect is noInheritOptions, here a separated method is maintained
       // even if not necessary, waiting for the future check of the session
       // value.
-      readPreference = resolveReadPreference(mongoClient,
-              options: options,
-              inheritReadPreference: !hasAspect(Aspect.noInheritOptions)) ??
+      readPreference =
+          resolveReadPreference(
+            mongoClient,
+            options: options,
+            inheritReadPreference: !hasAspect(Aspect.noInheritOptions),
+          ) ??
           ReadPreference.primary;
     }
     options.remove(keyReadPreference);

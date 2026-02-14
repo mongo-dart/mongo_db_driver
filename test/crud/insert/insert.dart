@@ -30,8 +30,10 @@ Future insertTest() async {
   tearDownAll(() async {
     await client.connect();
     db = client.db();
-    await Future.forEach(usedCollectionNames,
-        (String collectionName) => db.collection(collectionName).drop());
+    await Future.forEach(
+      usedCollectionNames,
+      (String collectionName) => db.collection(collectionName).drop(),
+    );
     await client.close();
   });
 }

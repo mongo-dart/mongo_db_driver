@@ -25,10 +25,9 @@ class ServerStatus {
   bool get isSingleServerReplicaSet => isReplicaSet && replicaSetHostsNum == 1;
 
   void processServerStatus(Map<String, dynamic> serverStatus) {
-    if (/* serverStatus == null || */
-        serverStatus.isEmpty ||
-            !serverStatus.containsKey(keyOk) ||
-            serverStatus[keyOk] != 1.0) {
+    if ( /* serverStatus == null || */ serverStatus.isEmpty ||
+        !serverStatus.containsKey(keyOk) ||
+        serverStatus[keyOk] != 1.0) {
       isInitialized = false;
       return;
     }
@@ -39,7 +38,7 @@ class ServerStatus {
     pid = serverStatus[keyPid];
     if (serverStatus[keyRepl] != null) {
       replicaHosts = <String>[
-        for (var host in (serverStatus[keyRepl] as Map)[keyHosts]) host
+        for (var host in (serverStatus[keyRepl] as Map)[keyHosts]) host,
       ];
     }
     // It seems that this key is missing on mongos

@@ -5,17 +5,21 @@ import '../../../command_exp.dart';
 import 'bulk_options.dart';
 
 base class OrderedBulk extends Bulk {
-  OrderedBulk(super.collection,
-      {WriteConcern? writeConcern,
-      Map<String, Object>? rawOptions,
-      bool? bypassDocumentValidation})
-      : super(
-            bulkOptions: BulkOptions(
-                writeConcern: writeConcern,
-                ordered: true,
-                bypassDocumentValidation: bypassDocumentValidation),
-            rawOptions:
-                (rawOptions == null) ? null : (rawOptions..remove(keyOrdered)));
+  OrderedBulk(
+    super.collection, {
+    WriteConcern? writeConcern,
+    Map<String, Object>? rawOptions,
+    bool? bypassDocumentValidation,
+  }) : super(
+         bulkOptions: BulkOptions(
+           writeConcern: writeConcern,
+           ordered: true,
+           bypassDocumentValidation: bypassDocumentValidation,
+         ),
+         rawOptions: (rawOptions == null)
+             ? null
+             : (rawOptions..remove(keyOrdered)),
+       );
 
   /// This List contains the commands. Ex.
   /// [
@@ -40,15 +44,18 @@ base class OrderedBulk extends Bulk {
   List<Map<int, int>> commandsOrigin = <Map<int, int>>[];
 
   @override
-  List<Command> getBulkCommands() =>
-      <Command>[for (var command in commands) ...splitCommands(command)];
+  List<Command> getBulkCommands() => <Command>[
+    for (var command in commands) ...splitCommands(command),
+  ];
 
   @override
   List<Map<int, int>> getBulkInputOrigins() => <Map<int, int>>[
-        for (var i = 0; i < commandsOrigin.length; i++)
-          ...splitInputOrigins(commandsOrigin[i],
-              (commands[i].values.toList()[1] as List).length)
-      ];
+    for (var i = 0; i < commandsOrigin.length; i++)
+      ...splitInputOrigins(
+        commandsOrigin[i],
+        (commands[i].values.toList()[1] as List).length,
+      ),
+  ];
 
   @override
   void addCommand(Command command) {

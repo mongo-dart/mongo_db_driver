@@ -10,9 +10,10 @@ void main() async {
   await client.connect();
   var db = client.db();
   await db.drop('log');
-  await db.createCollection('log',
-      createCollectionOptions:
-          CreateCollectionOptions(capped: true, size: 1024));
+  await db.createCollection(
+    'log',
+    createCollectionOptions: CreateCollectionOptions(capped: true, size: 1024),
+  );
   var i = 0;
   await db.collection('log').insertOne({'index': i});
   Timer.periodic(Duration(seconds: 1), (Timer t) async {
@@ -27,10 +28,17 @@ void main() async {
 
   var oplog = MongoCollection(db, 'log');
   var cursor = Cursor(
-      FindOperation(oplog, QueryUnion({}),
-          findOptions: FindOptions(
-              tailable: true, noCursorTimeout: true, awaitData: false)),
-      db.server);
+    FindOperation(
+      oplog,
+      QueryUnion({}),
+      findOptions: FindOptions(
+        tailable: true,
+        noCursorTimeout: true,
+        awaitData: false,
+      ),
+    ),
+    db.server,
+  );
   while (true) {
     var doc = await cursor.nextObject();
     if (doc == null) {

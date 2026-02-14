@@ -6,7 +6,7 @@ homepage: https://github.com/mongo-dart/mongo_db_driver
 funding:
   - https://www.paypal.com/donate?hosted_button_id=YRUNF9YWKX2NW
 environment:
-  sdk: ">=3.9.2 <4.0.0"
+  sdk: ">=3.10.0 <4.0.0"
 
 dependencies:
   bson: ^5.0.5

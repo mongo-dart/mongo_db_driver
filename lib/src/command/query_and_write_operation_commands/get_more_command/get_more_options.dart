@@ -38,19 +38,20 @@ class GetMoreOptions {
   final String? comment;
 
   GetMoreOptions({int? batchSize, this.maxTimeMS, this.comment})
-      : batchSize = batchSize ?? 101 {
+    : batchSize = batchSize ?? 101 {
     if (this.batchSize < 1) {
       throw MongoDartError('batchSize parameter must be a positive integer');
     }
     if (maxTimeMS != null && maxTimeMS! < 0) {
       throw MongoDartError(
-          'maxTimeMS parameter must be a non-negative integer');
+        'maxTimeMS parameter must be a non-negative integer',
+      );
     }
   }
 
   Options get options => <String, dynamic>{
-        keyBatchSize: batchSize,
-        if (maxTimeMS != null) keyMaxTimeMS: maxTimeMS!,
-        if (comment != null) keyComment: comment!,
-      };
+    keyBatchSize: batchSize,
+    keyMaxTimeMS: ?maxTimeMS,
+    keyComment: ?comment,
+  };
 }

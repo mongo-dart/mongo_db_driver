@@ -28,8 +28,9 @@ mixin TimingResult {
     //document ??= <String, dynamic>{};
     var opTime = document[keyOperationTime];
     if (opTime is Timestamp) {
-      operationTime =
-          DateTime.fromMillisecondsSinceEpoch(opTime.seconds * 1000);
+      operationTime = DateTime.fromMillisecondsSinceEpoch(
+        opTime.seconds * 1000,
+      );
     } else if (opTime is DateTime) {
       operationTime = opTime;
     }

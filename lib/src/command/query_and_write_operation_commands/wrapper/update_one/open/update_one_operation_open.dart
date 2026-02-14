@@ -3,9 +3,10 @@ import '../../../../command_exp.dart'
 
 base class UpdateOneOperationOpen extends UpdateOneOperation {
   UpdateOneOperationOpen(
-      super.collection, UpdateOneStatementOpen super.updateOneStatement,
-      {super.session,
-      UpdateOneOptionsOpen? super.updateOneOptions,
-      super.rawOptions})
-      : super.protected();
+    super.collection,
+    UpdateOneStatementOpen super.updateOneStatement, {
+    super.session,
+    UpdateOneOptionsOpen? super.updateOneOptions,
+    super.rawOptions,
+  }) : super.protected();
 }

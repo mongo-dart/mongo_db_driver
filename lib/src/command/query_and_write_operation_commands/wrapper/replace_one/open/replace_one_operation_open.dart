@@ -3,9 +3,10 @@ import '../../../../command_exp.dart'
 
 base class ReplaceOneOperationOpen extends ReplaceOneOperation {
   ReplaceOneOperationOpen(
-      super.collection, ReplaceOneStatementOpen super.replaceOneStatement,
-      {super.session,
-      ReplaceOneOptionsOpen? super.replaceOneOptions,
-      super.rawOptions})
-      : super.protected();
+    super.collection,
+    ReplaceOneStatementOpen super.replaceOneStatement, {
+    super.session,
+    ReplaceOneOptionsOpen? super.replaceOneOptions,
+    super.rawOptions,
+  }) : super.protected();
 }

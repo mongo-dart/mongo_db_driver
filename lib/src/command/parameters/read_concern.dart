@@ -116,7 +116,7 @@ enum ReadConcernLevel {
   /// you cannot use read concern "snapshot" for the transaction.
   /// You can only use read concern "local" or "majority" for the transaction.
   /// [See](https://docs.mongodb.com/manual/reference/read-concern-snapshot/)
-  snapshot
+  snapshot,
 }
 
 /// The readConcern option allows you to control the consistency and isolation
@@ -135,7 +135,7 @@ enum ReadConcernLevel {
 class ReadConcern {
   ReadConcern(this.level);
   ReadConcern.fromString(String levelString)
-      : level = ReadConcernLevel.values.byName(levelString);
+    : level = ReadConcernLevel.values.byName(levelString);
 
   ReadConcernLevel level;
 

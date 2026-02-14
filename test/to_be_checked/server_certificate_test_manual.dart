@@ -24,8 +24,9 @@ const defaultUri2 = 'mongodb://$dbServerName2:27018/$dbName';
 
 void main() {
   group('Server certificate', () {
-    var caCertFile =
-        File('test/certificates_for_testing/mongo-test-ca-full-chain.crt');
+    var caCertFile = File(
+      'test/certificates_for_testing/mongo-test-ca-full-chain.crt',
+    );
 
     test('No certificate, no connection', () async {
       var client = MongoClient(defaultUri);

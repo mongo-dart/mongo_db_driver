@@ -37,26 +37,28 @@ import 'kill_cursors_result.dart';
 /// it can't use the same lsid for killCursors as was used for a cursor's
 /// find and getMore, so there's no point in using any lsid at all.
 base class KillCursorsCommand extends CommandOperation {
-  KillCursorsCommand(MongoCollection collection, List<Int64> cursorIds,
-      {MongoDatabase? db,
-      super.session,
-      KillCursorsOptions? killCursorsOptions,
-      Map<String, Object>? rawOptions})
-      : super(
-          db ?? collection.db,
-          <String, dynamic>{
-            keyKillCursors: collection.collectionName,
-            keyCursors: cursorIds,
-          },
-          <String, dynamic>{...?killCursorsOptions?.options, ...?rawOptions},
-          collection: collection,
-        ) {
+  KillCursorsCommand(
+    MongoCollection collection,
+    List<Int64> cursorIds, {
+    MongoDatabase? db,
+    super.session,
+    KillCursorsOptions? killCursorsOptions,
+    Map<String, Object>? rawOptions,
+  }) : super(
+         db ?? collection.db,
+         <String, dynamic>{
+           keyKillCursors: collection.collectionName,
+           keyCursors: cursorIds,
+         },
+         <String, dynamic>{...?killCursorsOptions?.options, ...?rawOptions},
+         collection: collection,
+       ) {
     // In case of aggregate collection agnostic commands, collection is
     // not needed
     /*  if (this.db == null) {
       throw MongoDartError('Database required in call to KillCursorsCommand');
     } */
-    if (/* cursorIds == null || */ cursorIds.isEmpty) {
+    if ( /* cursorIds == null || */ cursorIds.isEmpty) {
       throw MongoDartError('CursorIds required in call to KillCursorsCommand');
     }
   }

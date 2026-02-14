@@ -12,62 +12,72 @@ typedef InsertManyDocumentRec = (
   BulkWriteResult bulkWriteResult,
   MongoDocument serverDocument,
   List<MongoDocument> insertedDocuments,
-  List ids
+  List ids,
 );
 
 abstract base class InsertManyOperation extends InsertOperation {
   @protected
   InsertManyOperation.protected(
-      MongoCollection collection, List<MongoDocument> documents,
-      {super.session,
-      InsertManyOptions? insertManyOptions,
-      Options? rawOptions})
-      : super.protected(
-          collection,
-          documents,
-          insertOptions: insertManyOptions,
-          rawOptions: rawOptions,
-        ) {
+    MongoCollection collection,
+    List<MongoDocument> documents, {
+    super.session,
+    InsertManyOptions? insertManyOptions,
+    Options? rawOptions,
+  }) : super.protected(
+         collection,
+         documents,
+         insertOptions: insertManyOptions,
+         rawOptions: rawOptions,
+       ) {
     if (documents.isEmpty) {
       throw ArgumentError(
-          'At least one document required in InsertManyOperation');
+        'At least one document required in InsertManyOperation',
+      );
     }
   }
 
   factory InsertManyOperation(
-      MongoCollection collection, List<MongoDocument> documents,
-      {ClientSession? session,
-      InsertManyOptions? insertManyOptions,
-      Options? rawOptions}) {
+    MongoCollection collection,
+    List<MongoDocument> documents, {
+    ClientSession? session,
+    InsertManyOptions? insertManyOptions,
+    Options? rawOptions,
+  }) {
     if (collection.serverApi != null) {
       switch (collection.serverApi!.version) {
         case ServerApiVersion.v1:
-          return InsertManyOperationV1(collection, documents,
-              session: session,
-              insertManyOptions: insertManyOptions?.toManyV1,
-              rawOptions: rawOptions);
+          return InsertManyOperationV1(
+            collection,
+            documents,
+            session: session,
+            insertManyOptions: insertManyOptions?.toManyV1,
+            rawOptions: rawOptions,
+          );
         // ignore: unreachable_switch_default
         default:
           throw MongoDartError(
-              'Stable Api ${collection.serverApi!.version} not managed');
+            'Stable Api ${collection.serverApi!.version} not managed',
+          );
       }
     }
-    return InsertManyOperationOpen(collection, documents,
-        session: session,
-        insertManyOptions: insertManyOptions?.toManyOpen,
-        rawOptions: rawOptions);
+    return InsertManyOperationOpen(
+      collection,
+      documents,
+      session: session,
+      insertManyOptions: insertManyOptions?.toManyOpen,
+      rawOptions: rawOptions,
+    );
   }
 
   Future<InsertManyDocumentRec> executeDocument() async {
     var (serverDocument, documents, ids) = await executeInsert();
     return (
-      BulkWriteResult.fromMap(WriteCommandType.insert, serverDocument)
+      BulkWriteResult.fromMap(WriteCommandType.insert, serverDocument),
       /* ..ids = ids
         ..documents = documents */
-      ,
       serverDocument,
       documents,
-      ids
+      ids,
     );
   }
 }

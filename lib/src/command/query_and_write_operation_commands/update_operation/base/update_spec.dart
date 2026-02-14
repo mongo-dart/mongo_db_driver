@@ -19,8 +19,10 @@ class UpdateSpec extends UnionType<MongoDocument, List<Map<String, dynamic>>> {
     if (isNull || valueTwo != null) {
       return false;
     }
-    return valueOne!.keys
-            .firstWhere((element) => element[0] == r'$', orElse: () => '#') ==
+    return valueOne!.keys.firstWhere(
+          (element) => element[0] == r'$',
+          orElse: () => '#',
+        ) ==
         '#';
   }
 
@@ -34,8 +36,10 @@ class UpdateSpec extends UnionType<MongoDocument, List<Map<String, dynamic>>> {
     }
     if (valueOne != null) {
       return valueOne!.isNotEmpty &&
-          valueOne!.keys.firstWhere((element) => element[0] != r'$',
-                  orElse: () => r'$') ==
+          valueOne!.keys.firstWhere(
+                (element) => element[0] != r'$',
+                orElse: () => r'$',
+              ) ==
               r'$';
     }
     // pipeline
@@ -43,8 +47,11 @@ class UpdateSpec extends UnionType<MongoDocument, List<Map<String, dynamic>>> {
       return false;
     }
     for (var element in valueTwo!) {
-      var ret = element.keys.firstWhere((element) => element[0] != r'$',
-              orElse: () => r'$') ==
+      var ret =
+          element.keys.firstWhere(
+            (element) => element[0] != r'$',
+            orElse: () => r'$',
+          ) ==
           r'$';
       if (!ret) {
         return false;

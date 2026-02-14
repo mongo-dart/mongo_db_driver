@@ -37,7 +37,7 @@ void main() async {
     test('Check update document', () {
       var testDocument = <String, dynamic>{
         r'$set': {'violations': 3},
-        r'$unset': {'status': ''}
+        r'$unset': {'status': ''},
       };
 
       expect(UpdateSpec(testDocument).containsOnlyUpdateOperators, isTrue);
@@ -47,7 +47,7 @@ void main() async {
       var testDocument = <String, dynamic>{
         'violations': 3,
         'status': 'A',
-        'name': 'Ethan'
+        'name': 'Ethan',
       };
 
       expect(UpdateSpec(testDocument).containsOnlyUpdateOperators, isFalse);
@@ -109,7 +109,7 @@ void main() async {
             'status': 'Pending',
             'points': 0,
             'misc1': 'note to self: confirm status',
-            'misc2': 'Need to activate'
+            'misc2': 'Need to activate',
           },
           {
             '_id': 2,
@@ -117,25 +117,28 @@ void main() async {
             'status': 'D',
             'points': 59,
             'misc1': 'reminder: ping me at 100pts',
-            'misc2': 'Some random comment'
+            'misc2': 'Some random comment',
           },
         ]);
         expect(ret.ok, 1.0);
         expect(ret.isSuccess, isTrue);
 
         var updateOperation = UpdateOperation(
-            collection,
-            [
-              UpdateStatement(
-                  QueryUnion(<String, Object>{'member': 'abc123'}),
-                  UpdateUnion(<String, Object>{
-                    r'$set': {'status': 'A'},
-                    r'$inc': {'points': 1}
-                  }))
-            ],
-            ordered: false,
-            updateOptions: UpdateOptions(
-                writeConcern: WriteConcern(w: wMajority, wtimeout: 5000)));
+          collection,
+          [
+            UpdateStatement(
+              QueryUnion(<String, Object>{'member': 'abc123'}),
+              UpdateUnion(<String, Object>{
+                r'$set': {'status': 'A'},
+                r'$inc': {'points': 1},
+              }),
+            ),
+          ],
+          ordered: false,
+          updateOptions: UpdateOptions(
+            writeConcern: WriteConcern(w: wMajority, wtimeout: 5000),
+          ),
+        );
         var res = await updateOperation.process();
 
         expect(res, isNotNull);
@@ -154,7 +157,7 @@ void main() async {
             'status': 'A',
             'points': 1,
             'misc1': 'note to self: confirm status',
-            'misc2': 'Need to activate'
+            'misc2': 'Need to activate',
           },
           {
             '_id': 2,
@@ -162,26 +165,29 @@ void main() async {
             'status': 'D',
             'points': 59,
             'misc1': 'reminder: ping me at 100pts',
-            'misc2': 'Some random comment'
+            'misc2': 'Some random comment',
           },
         ]);
         expect(ret.ok, 1.0);
         expect(ret.isSuccess, isTrue);
 
         var updateOperation = UpdateOperation(
-            collection,
-            [
-              UpdateStatement(
-                  QueryUnion(<String, Object>{}),
-                  UpdateUnion(<String, Object>{
-                    r'$set': {'status': 'A'},
-                    r'$inc': {'points': 1}
-                  }),
-                  multi: true)
-            ],
-            ordered: false,
-            updateOptions: UpdateOptions(
-                writeConcern: WriteConcern(w: wMajority, wtimeout: 5000)));
+          collection,
+          [
+            UpdateStatement(
+              QueryUnion(<String, Object>{}),
+              UpdateUnion(<String, Object>{
+                r'$set': {'status': 'A'},
+                r'$inc': {'points': 1},
+              }),
+              multi: true,
+            ),
+          ],
+          ordered: false,
+          updateOptions: UpdateOptions(
+            writeConcern: WriteConcern(w: wMajority, wtimeout: 5000),
+          ),
+        );
         var res = await updateOperation.process();
 
         expect(res, isNotNull);
@@ -201,7 +207,7 @@ void main() async {
             'status': 'A',
             'points': 1,
             'misc1': 'note to self: confirm status',
-            'misc2': 'Need to activate'
+            'misc2': 'Need to activate',
           },
           {
             '_id': 2,
@@ -209,22 +215,26 @@ void main() async {
             'status': 'D',
             'points': 59,
             'misc1': 'reminder: ping me at 100pts',
-            'misc2': 'Some random comment'
+            'misc2': 'Some random comment',
           },
         ]);
         expect(ret.ok, 1.0);
         expect(ret.isSuccess, isTrue);
 
         var updateOperation = UpdateOperation(
-            collection,
-            [
-              UpdateStatement(QueryUnion(<String, Object>{}),
-                  UpdateUnion(<String, Object>{'status': 'A', 'points': 1}),
-                  multi: true)
-            ],
-            ordered: false,
-            updateOptions: UpdateOptions(
-                writeConcern: WriteConcern(w: wMajority, wtimeout: 5000)));
+          collection,
+          [
+            UpdateStatement(
+              QueryUnion(<String, Object>{}),
+              UpdateUnion(<String, Object>{'status': 'A', 'points': 1}),
+              multi: true,
+            ),
+          ],
+          ordered: false,
+          updateOptions: UpdateOptions(
+            writeConcern: WriteConcern(w: wMajority, wtimeout: 5000),
+          ),
+        );
         var res = await updateOperation.process();
 
         expect(res, isNotNull);
@@ -248,31 +258,34 @@ void main() async {
             '_id': 2,
             'name': 'Rock A Feller Bar and Grill',
             'Borough': 'Queens',
-            'violations': 2
+            'violations': 2,
           },
           {
             '_id': 3,
             'name': 'Empire State Pub',
             'Borough': 'Brooklyn',
-            'violations': 0
-          }
+            'violations': 0,
+          },
         ]);
         expect(ret.ok, 1.0);
         expect(ret.isSuccess, isTrue);
 
         var updateOperation = UpdateOperation(
-            collection,
-            [
-              UpdateStatement(
-                  QueryUnion(<String, Object>{'name': 'Central Perk Cafe'}),
-                  UpdateUnion(<String, Object>{
-                    'name': 'Central Park Cafe',
-                    'Borough': 'Manhattan'
-                  }))
-            ],
-            ordered: false,
-            updateOptions: UpdateOptions(
-                writeConcern: WriteConcern(w: wMajority, wtimeout: 5000)));
+          collection,
+          [
+            UpdateStatement(
+              QueryUnion(<String, Object>{'name': 'Central Perk Cafe'}),
+              UpdateUnion(<String, Object>{
+                'name': 'Central Park Cafe',
+                'Borough': 'Manhattan',
+              }),
+            ),
+          ],
+          ordered: false,
+          updateOptions: UpdateOptions(
+            writeConcern: WriteConcern(w: wMajority, wtimeout: 5000),
+          ),
+        );
         var res = await updateOperation.process();
 
         expect(res, isNotNull);
@@ -295,7 +308,7 @@ void main() async {
             'status': 'A',
             'points': 2,
             'misc1': 'note to self: confirm status',
-            'misc2': 'Need to activate'
+            'misc2': 'Need to activate',
           },
           {
             '_id': 2,
@@ -303,33 +316,36 @@ void main() async {
             'status': 'A',
             'points': 60,
             'misc1': 'reminder: ping me at 100pts',
-            'misc2': 'Some random comment'
+            'misc2': 'Some random comment',
           },
         ]);
         expect(ret.ok, 1.0);
         expect(ret.isSuccess, isTrue);
 
         var updateOperation = UpdateOperation(
-            collection,
-            [
-              UpdateStatement(
-                  QueryUnion(<String, Object>{}),
-                  UpdateUnion([
-                    {
-                      r'$set': {
-                        'status': 'Modified',
-                        'comments': [r'$misc1', r'$misc2']
-                      }
-                    },
-                    {
-                      r'$unset': ['misc1', 'misc2']
-                    }
-                  ]),
-                  multi: true)
-            ],
-            ordered: false,
-            updateOptions: UpdateOptions(
-                writeConcern: WriteConcern(w: wMajority, wtimeout: 5000)));
+          collection,
+          [
+            UpdateStatement(
+              QueryUnion(<String, Object>{}),
+              UpdateUnion([
+                {
+                  r'$set': {
+                    'status': 'Modified',
+                    'comments': [r'$misc1', r'$misc2'],
+                  },
+                },
+                {
+                  r'$unset': ['misc1', 'misc2'],
+                },
+              ]),
+              multi: true,
+            ),
+          ],
+          ordered: false,
+          updateOptions: UpdateOptions(
+            writeConcern: WriteConcern(w: wMajority, wtimeout: 5000),
+          ),
+        );
         var res = await updateOperation.process();
 
         expect(res, isNotNull);
@@ -348,72 +364,75 @@ void main() async {
         var (ret, _, _, _) = await collection.insertMany([
           {
             '_id': 1,
-            'tests': [95, 92, 90]
+            'tests': [95, 92, 90],
           },
           {
             '_id': 2,
-            'tests': [94, 88, 90]
+            'tests': [94, 88, 90],
           },
           {
             '_id': 3,
-            'tests': [70, 75, 82]
-          }
+            'tests': [70, 75, 82],
+          },
         ]);
         expect(ret.ok, 1.0);
         expect(ret.isSuccess, isTrue);
 
         var updateOperation = UpdateOperation(
-            collection,
-            [
-              UpdateStatement(
-                  QueryUnion(<String, Object>{}),
-                  UpdateUnion([
-                    {
-                      r'$set': {
-                        'average': {r'$avg': r'$tests'}
-                      }
+          collection,
+          [
+            UpdateStatement(
+              QueryUnion(<String, Object>{}),
+              UpdateUnion([
+                {
+                  r'$set': {
+                    'average': {r'$avg': r'$tests'},
+                  },
+                },
+                {
+                  r'$set': {
+                    'grade': {
+                      r'$switch': {
+                        'branches': [
+                          {
+                            'case': {
+                              r'$gte': [r'$average', 90],
+                            },
+                            'then': 'A',
+                          },
+                          {
+                            'case': {
+                              r'$gte': [r'$average', 80],
+                            },
+                            'then': 'B',
+                          },
+                          {
+                            'case': {
+                              r'$gte': [r'$average', 70],
+                            },
+                            'then': 'C',
+                          },
+                          {
+                            'case': {
+                              r'$gte': [r'$average', 60],
+                            },
+                            'then': 'D',
+                          },
+                        ],
+                        'default': 'F',
+                      },
                     },
-                    {
-                      r'$set': {
-                        'grade': {
-                          r'$switch': {
-                            'branches': [
-                              {
-                                'case': {
-                                  r'$gte': [r'$average', 90]
-                                },
-                                'then': 'A'
-                              },
-                              {
-                                'case': {
-                                  r'$gte': [r'$average', 80]
-                                },
-                                'then': 'B'
-                              },
-                              {
-                                'case': {
-                                  r'$gte': [r'$average', 70]
-                                },
-                                'then': 'C'
-                              },
-                              {
-                                'case': {
-                                  r'$gte': [r'$average', 60]
-                                },
-                                'then': 'D'
-                              }
-                            ],
-                            'default': 'F'
-                          }
-                        }
-                      }
-                    }
-                  ]),
-                  multi: true)
-            ],
-            ordered: false,
-            updateOptions: UpdateOptions(
-                writeConcern: WriteConcern(w: wMajority, wtimeout: 5000)));
+                  },
+                },
+              ]),
+              multi: true,
+            ),
+          ],
+          ordered: false,
+          updateOptions: UpdateOptions(
+            writeConcern: WriteConcern(w: wMajority, wtimeout: 5000),
+          ),
+        );
         var res = await updateOperation.process();
 
         expect(res, isNotNull);
@@ -431,23 +450,26 @@ void main() async {
         expect(ret.isSuccess, isTrue);
 
         var updateOperation = UpdateOperation(
-            collection,
-            [
-              UpdateStatement(
-                  QueryUnion(<String, Object>{'status': 'P'}),
-                  UpdateUnion({
-                    r'$set': {
-                      'status': 'D',
-                    }
-                  }),
-                  multi: true),
-              UpdateStatement(QueryUnion(<String, Object>{'_id': 7}),
-                  UpdateUnion({'_id': 7, 'name': 'abc123', 'status': 'A'}),
-                  upsert: true)
-            ],
-            ordered: false,
-            updateOptions: UpdateOptions(
-                writeConcern: WriteConcern(w: wMajority, wtimeout: 5000)));
+          collection,
+          [
+            UpdateStatement(
+              QueryUnion(<String, Object>{'status': 'P'}),
+              UpdateUnion({
+                r'$set': {'status': 'D'},
+              }),
+              multi: true,
+            ),
+            UpdateStatement(
+              QueryUnion(<String, Object>{'_id': 7}),
+              UpdateUnion({'_id': 7, 'name': 'abc123', 'status': 'A'}),
+              upsert: true,
+            ),
+          ],
+          ordered: false,
+          updateOptions: UpdateOptions(
+            writeConcern: WriteConcern(w: wMajority, wtimeout: 5000),
+          ),
+        );
         var res = await updateOperation.process();
 
         expect(res, isNotNull);
@@ -468,17 +490,15 @@ void main() async {
         expect(ret.ok, 1.0);
         expect(ret.isSuccess, isTrue);
 
-        var updateOperation = UpdateOperation(
-          collection,
-          [
-            UpdateStatement(
-                QueryUnion(<String, Object>{'category': 'cafe', 'status': 'a'}),
-                UpdateUnion(<String, Object>{
-                  r'$set': {'status': 'Updated'},
-                }),
-                collation: CollationOptions('fr', strength: 1))
-          ],
-        );
+        var updateOperation = UpdateOperation(collection, [
+          UpdateStatement(
+            QueryUnion(<String, Object>{'category': 'cafe', 'status': 'a'}),
+            UpdateUnion(<String, Object>{
+              r'$set': {'status': 'Updated'},
+            }),
+            collation: CollationOptions('fr', strength: 1),
+          ),
+        ]);
         var res = await updateOperation.process();
 
         expect(res, isNotNull);
@@ -486,102 +506,102 @@ void main() async {
         expect(res[keyN], 1);
         expect(res[keyNModified], 1);
       });
-      test('Array filters - Update elements Match arrayFilters Criteria',
-          () async {
-        var collectionName = getRandomCollectionName();
-        var collection = db.collection(collectionName);
+      test(
+        'Array filters - Update elements Match arrayFilters Criteria',
+        () async {
+          var collectionName = getRandomCollectionName();
+          var collection = db.collection(collectionName);
 
-        var (ret, _, _, _) = await collection.insertMany([
-          {
-            '_id': 1,
-            'grades': [95, 92, 90]
-          },
-          {
-            '_id': 2,
-            'grades': [98, 100, 102]
-          },
-          {
-            '_id': 3,
-            'grades': [95, 110, 100]
-          }
-        ]);
-        expect(ret.ok, 1.0);
-        expect(ret.isSuccess, isTrue);
+          var (ret, _, _, _) = await collection.insertMany([
+            {
+              '_id': 1,
+              'grades': [95, 92, 90],
+            },
+            {
+              '_id': 2,
+              'grades': [98, 100, 102],
+            },
+            {
+              '_id': 3,
+              'grades': [95, 110, 100],
+            },
+          ]);
+          expect(ret.ok, 1.0);
+          expect(ret.isSuccess, isTrue);
 
-        var updateOperation = UpdateOperation(
-          collection,
-          [
+          var updateOperation = UpdateOperation(collection, [
             UpdateStatement(
-                QueryUnion(<String, Object>{
-                  'grades': {r'$gte': 100}
-                }),
-                UpdateUnion(<String, Object>{
-                  r'$set': {r'grades.$[element]': 100},
-                }),
-                arrayFilters: [
-                  {
-                    'element': {r'$gte': 100}
-                  }
-                ],
-                multi: true)
-          ],
-        );
-        var res = await updateOperation.process();
+              QueryUnion(<String, Object>{
+                'grades': {r'$gte': 100},
+              }),
+              UpdateUnion(<String, Object>{
+                r'$set': {r'grades.$[element]': 100},
+              }),
+              arrayFilters: [
+                {
+                  'element': {r'$gte': 100},
+                },
+              ],
+              multi: true,
+            ),
+          ]);
+          var res = await updateOperation.process();
 
-        expect(res, isNotNull);
-        expect(res[keyOk], 1.0);
-        expect(res[keyN], 2);
-        expect(res[keyNModified], 2);
-      });
-      test('Array filters - Update Specific Elements of an Array of Documents',
-          () async {
-        var collectionName = getRandomCollectionName();
-        var collection = db.collection(collectionName);
+          expect(res, isNotNull);
+          expect(res[keyOk], 1.0);
+          expect(res[keyN], 2);
+          expect(res[keyNModified], 2);
+        },
+      );
+      test(
+        'Array filters - Update Specific Elements of an Array of Documents',
+        () async {
+          var collectionName = getRandomCollectionName();
+          var collection = db.collection(collectionName);
 
-        var (ret, _, _, _) = await collection.insertMany([
-          {
-            '_id': 1,
-            'grades': [
-              {'grade': 80, 'mean': 75, 'std': 6},
-              {'grade': 85, 'mean': 90, 'std': 4},
-              {'grade': 85, 'mean': 85, 'std': 6}
-            ]
-          },
-          {
-            '_id': 2,
-            'grades': [
-              {'grade': 90, 'mean': 75, 'std': 6},
-              {'grade': 87, 'mean': 90, 'std': 3},
-              {'grade': 85, 'mean': 85, 'std': 4}
-            ]
-          }
-        ]);
-        expect(ret.ok, 1.0);
-        expect(ret.isSuccess, isTrue);
+          var (ret, _, _, _) = await collection.insertMany([
+            {
+              '_id': 1,
+              'grades': [
+                {'grade': 80, 'mean': 75, 'std': 6},
+                {'grade': 85, 'mean': 90, 'std': 4},
+                {'grade': 85, 'mean': 85, 'std': 6},
+              ],
+            },
+            {
+              '_id': 2,
+              'grades': [
+                {'grade': 90, 'mean': 75, 'std': 6},
+                {'grade': 87, 'mean': 90, 'std': 3},
+                {'grade': 85, 'mean': 85, 'std': 4},
+              ],
+            },
+          ]);
+          expect(ret.ok, 1.0);
+          expect(ret.isSuccess, isTrue);
 
-        var updateOperation = UpdateOperation(
-          collection,
-          [
+          var updateOperation = UpdateOperation(collection, [
             UpdateStatement(
-                QueryUnion(<String, Object>{}),
-                UpdateUnion(<String, Object>{
-                  r'$set': {r'grades.$[element].mean': 100},
-                }),
-                arrayFilters: [
-                  {
-                    'element.grade': {r'$gte': 85}
-                  }
-                ],
-                multi: true)
-          ],
-        );
-        var res = await updateOperation.process();
+              QueryUnion(<String, Object>{}),
+              UpdateUnion(<String, Object>{
+                r'$set': {r'grades.$[element].mean': 100},
+              }),
+              arrayFilters: [
+                {
+                  'element.grade': {r'$gte': 85},
+                },
+              ],
+              multi: true,
+            ),
+          ]);
+          var res = await updateOperation.process();
 
-        expect(res, isNotNull);
-        expect(res[keyOk], 1.0);
-        expect(res[keyN], 2);
-        expect(res[keyNModified], 2);
-      });
+          expect(res, isNotNull);
+          expect(res[keyOk], 1.0);
+          expect(res[keyN], 2);
+          expect(res[keyNModified], 2);
+        },
+      );
       test('Specify hint', () async {
         if (!running4_2orGreater) {
           return;
@@ -596,21 +616,19 @@ void main() async {
         await collection.createIndex(keys: {'status': 1});
         await collection.createIndex(key: 'points');
 
-        var updateOperation = UpdateOperation(
-          collection,
-          [
-            UpdateStatement(
-                QueryUnion(<String, Object>{
-                  'points': {r'$lte': 20},
-                  'status': 'P'
-                }),
-                UpdateUnion(<String, Object>{
-                  r'$set': {'misc1': 'Need to activate'},
-                }),
-                hint: HintUnion(<String, Object>{'status': 1}),
-                multi: true)
-          ],
-        );
+        var updateOperation = UpdateOperation(collection, [
+          UpdateStatement(
+            QueryUnion(<String, Object>{
+              'points': {r'$lte': 20},
+              'status': 'P',
+            }),
+            UpdateUnion(<String, Object>{
+              r'$set': {'misc1': 'Need to activate'},
+            }),
+            hint: HintUnion(<String, Object>{'status': 1}),
+            multi: true,
+          ),
+        ]);
         var res = await updateOperation.process();
 
         expect(res, isNotNull);
@@ -631,7 +649,7 @@ void main() async {
             'status': 'Pending',
             'points': 0,
             'misc1': 'note to self: confirm status',
-            'misc2': 'Need to activate'
+            'misc2': 'Need to activate',
           },
           {
             '_id': 2,
@@ -639,22 +657,25 @@ void main() async {
             'status': 'D',
             'points': 59,
             'misc1': 'reminder: ping me at 100pts',
-            'misc2': 'Some random comment'
+            'misc2': 'Some random comment',
           },
         ]);
         expect(ret.ok, 1.0);
         expect(ret.isSuccess, isTrue);
 
         var updateOneOperation = UpdateOneOperation(
-            collection,
-            UpdateOneStatement(
-                QueryUnion(<String, Object>{'member': 'abc123'}),
-                UpdateUnion(<String, Map<String, dynamic>>{
-                  r'$set': {'status': 'A'},
-                  r'$inc': {'points': 1}
-                })),
-            updateOneOptions: UpdateOneOptions(
-                writeConcern: WriteConcern(w: wMajority, wtimeout: 5000)));
+          collection,
+          UpdateOneStatement(
+            QueryUnion(<String, Object>{'member': 'abc123'}),
+            UpdateUnion(<String, Map<String, dynamic>>{
+              r'$set': {'status': 'A'},
+              r'$inc': {'points': 1},
+            }),
+          ),
+          updateOneOptions: UpdateOneOptions(
+            writeConcern: WriteConcern(w: wMajority, wtimeout: 5000),
+          ),
+        );
         var (res, _) = await updateOneOperation.executeDocument();
 
         expect(res, isNotNull);
@@ -674,7 +695,7 @@ void main() async {
             'status': 'A',
             'points': 1,
             'misc1': 'note to self: confirm status',
-            'misc2': 'Need to activate'
+            'misc2': 'Need to activate',
           },
           {
             '_id': 2,
@@ -682,22 +703,25 @@ void main() async {
             'status': 'D',
             'points': 59,
             'misc1': 'reminder: ping me at 100pts',
-            'misc2': 'Some random comment'
+            'misc2': 'Some random comment',
           },
         ]);
         expect(ret.ok, 1.0);
         expect(ret.isSuccess, isTrue);
 
         var updateManyOperation = UpdateManyOperation(
-            collection,
-            UpdateManyStatement(
-                QueryUnion(<String, Object>{}),
-                UpdateUnion(<String, Map<String, dynamic>>{
-                  r'$set': {'status': 'A'},
-                  r'$inc': {'points': 1}
-                })),
-            updateManyOptions: UpdateManyOptions(
-                writeConcern: WriteConcern(w: wMajority, wtimeout: 5000)));
+          collection,
+          UpdateManyStatement(
+            QueryUnion(<String, Object>{}),
+            UpdateUnion(<String, Map<String, dynamic>>{
+              r'$set': {'status': 'A'},
+              r'$inc': {'points': 1},
+            }),
+          ),
+          updateManyOptions: UpdateManyOptions(
+            writeConcern: WriteConcern(w: wMajority, wtimeout: 5000),
+          ),
+        );
         var (res, _) = await updateManyOperation.executeDocument();
 
         expect(res, isNotNull);
@@ -715,26 +739,28 @@ void main() async {
             '_id': 2,
             'name': 'Rock A Feller Bar and Grill',
             'Borough': 'Queens',
-            'violations': 2
+            'violations': 2,
           },
           {
             '_id': 3,
             'name': 'Empire State Pub',
             'Borough': 'Brooklyn',
-            'violations': 0
-          }
+            'violations': 0,
+          },
         ]);
         expect(ret.ok, 1.0);
         expect(ret.isSuccess, isTrue);
 
         var replaceOneOperation = ReplaceOneOperation(
-            collection,
-            ReplaceOneStatement(
-                QueryUnion(<String, Object>{'name': 'Central Perk Cafe'}),
-                <String, Object>{
-                  'name': 'Central Park Cafe',
-                  'Borough': 'Manhattan'
-                }));
+          collection,
+          ReplaceOneStatement(
+            QueryUnion(<String, Object>{'name': 'Central Perk Cafe'}),
+            <String, Object>{
+              'name': 'Central Park Cafe',
+              'Borough': 'Manhattan',
+            },
+          ),
+        );
         var res = await replaceOneOperation.process();
 
         expect(res, isNotNull);
@@ -756,7 +782,7 @@ void main() async {
             'status': 'A',
             'points': 2,
             'misc1': 'note to self: confirm status',
-            'misc2': 'Need to activate'
+            'misc2': 'Need to activate',
           },
           {
             '_id': 2,
@@ -764,30 +790,33 @@ void main() async {
             'status': 'A',
             'points': 60,
             'misc1': 'reminder: ping me at 100pts',
-            'misc2': 'Some random comment'
+            'misc2': 'Some random comment',
           },
         ]);
         expect(ret.ok, 1.0);
         expect(ret.isSuccess, isTrue);
 
         var updateManyOperation = UpdateManyOperation(
-            collection,
-            UpdateManyStatement(
-                QueryUnion(<String, Object>{}),
-                UpdateUnion([
-                  {
-                    r'$set': {
-                      'status': 'Modified',
-                      'comments': [r'$misc1', r'$misc2']
-                    }
-                  },
-                  {
-                    r'$unset': ['misc1', 'misc2']
-                  }
-                ])),
-            ordered: false,
-            updateManyOptions: UpdateManyOptions(
-                writeConcern: WriteConcern(w: wMajority, wtimeout: 5000)));
+          collection,
+          UpdateManyStatement(
+            QueryUnion(<String, Object>{}),
+            UpdateUnion([
+              {
+                r'$set': {
+                  'status': 'Modified',
+                  'comments': [r'$misc1', r'$misc2'],
+                },
+              },
+              {
+                r'$unset': ['misc1', 'misc2'],
+              },
+            ]),
+          ),
+          ordered: false,
+          updateManyOptions: UpdateManyOptions(
+            writeConcern: WriteConcern(w: wMajority, wtimeout: 5000),
+          ),
+        );
         var (res, _) = await updateManyOperation.executeDocument();
 
         expect(res, isNotNull);
@@ -806,69 +835,72 @@ void main() async {
         var (ret, _, _, _) = await collection.insertMany([
           {
             '_id': 1,
-            'tests': [95, 92, 90]
+            'tests': [95, 92, 90],
           },
           {
             '_id': 2,
-            'tests': [94, 88, 90]
+            'tests': [94, 88, 90],
           },
           {
             '_id': 3,
-            'tests': [70, 75, 82]
-          }
+            'tests': [70, 75, 82],
+          },
         ]);
         expect(ret.ok, 1.0);
         expect(ret.isSuccess, isTrue);
 
         var updateManyOperation = UpdateManyOperation(
-            collection,
-            UpdateManyStatement(
-                QueryUnion(<String, Object>{}),
-                UpdateUnion([
-                  {
-                    r'$set': {
-                      'average': {r'$avg': r'$tests'}
-                    }
+          collection,
+          UpdateManyStatement(
+            QueryUnion(<String, Object>{}),
+            UpdateUnion([
+              {
+                r'$set': {
+                  'average': {r'$avg': r'$tests'},
+                },
+              },
+              {
+                r'$set': {
+                  'grade': {
+                    r'$switch': {
+                      'branches': [
+                        {
+                          'case': {
+                            r'$gte': [r'$average', 90],
+                          },
+                          'then': 'A',
+                        },
+                        {
+                          'case': {
+                            r'$gte': [r'$average', 80],
+                          },
+                          'then': 'B',
+                        },
+                        {
+                          'case': {
+                            r'$gte': [r'$average', 70],
+                          },
+                          'then': 'C',
+                        },
+                        {
+                          'case': {
+                            r'$gte': [r'$average', 60],
+                          },
+                          'then': 'D',
+                        },
+                      ],
+                      'default': 'F',
+                    },
                   },
-                  {
-                    r'$set': {
-                      'grade': {
-                        r'$switch': {
-                          'branches': [
-                            {
-                              'case': {
-                                r'$gte': [r'$average', 90]
-                              },
-                              'then': 'A'
-                            },
-                            {
-                              'case': {
-                                r'$gte': [r'$average', 80]
-                              },
-                              'then': 'B'
-                            },
-                            {
-                              'case': {
-                                r'$gte': [r'$average', 70]
-                              },
-                              'then': 'C'
-                            },
-                            {
-                              'case': {
-                                r'$gte': [r'$average', 60]
-                              },
-                              'then': 'D'
-                            }
-                          ],
-                          'default': 'F'
-                        }
-                      }
-                    }
-                  }
-                ])),
-            ordered: false,
-            updateManyOptions: UpdateManyOptions(
-                writeConcern: WriteConcern(w: wMajority, wtimeout: 5000)));
+                },
+              },
+            ]),
+          ),
+          ordered: false,
+          updateManyOptions: UpdateManyOptions(
+            writeConcern: WriteConcern(w: wMajority, wtimeout: 5000),
+          ),
+        );
         var (res, _) = await updateManyOperation.executeDocument();
 
         expect(res, isNotNull);
@@ -888,11 +920,12 @@ void main() async {
         var updateOneOperation = UpdateOneOperation(
           collection,
           UpdateOneStatement(
-              QueryUnion(<String, Object>{'category': 'cafe', 'status': 'a'}),
-              UpdateUnion(<String, Map<String, dynamic>>{
-                r'$set': {'status': 'Updated'},
-              }),
-              collation: CollationOptions('fr', strength: 1)),
+            QueryUnion(<String, Object>{'category': 'cafe', 'status': 'a'}),
+            UpdateUnion(<String, Map<String, dynamic>>{
+              r'$set': {'status': 'Updated'},
+            }),
+            collation: CollationOptions('fr', strength: 1),
+          ),
         );
         var (res, _) = await updateOneOperation.executeDocument();
 
@@ -901,96 +934,102 @@ void main() async {
         expect(res.nMatched, 1);
         expect(res.nModified, 1);
       });
-      test('Array filters - Update elements Match arrayFilters Criteria',
-          () async {
-        var collectionName = getRandomCollectionName();
-        var collection = db.collection(collectionName);
+      test(
+        'Array filters - Update elements Match arrayFilters Criteria',
+        () async {
+          var collectionName = getRandomCollectionName();
+          var collection = db.collection(collectionName);
 
-        var (ret, _, _, _) = await collection.insertMany([
-          {
-            '_id': 1,
-            'grades': [95, 92, 90]
-          },
-          {
-            '_id': 2,
-            'grades': [98, 100, 102]
-          },
-          {
-            '_id': 3,
-            'grades': [95, 110, 100]
-          }
-        ]);
-        expect(ret.ok, 1.0);
-        expect(ret.isSuccess, isTrue);
+          var (ret, _, _, _) = await collection.insertMany([
+            {
+              '_id': 1,
+              'grades': [95, 92, 90],
+            },
+            {
+              '_id': 2,
+              'grades': [98, 100, 102],
+            },
+            {
+              '_id': 3,
+              'grades': [95, 110, 100],
+            },
+          ]);
+          expect(ret.ok, 1.0);
+          expect(ret.isSuccess, isTrue);
 
-        var updateManyOperation = UpdateManyOperation(
-          collection,
-          UpdateManyStatement(
+          var updateManyOperation = UpdateManyOperation(
+            collection,
+            UpdateManyStatement(
               QueryUnion(<String, Object>{
-                'grades': {r'$gte': 100}
+                'grades': {r'$gte': 100},
               }),
               UpdateUnion(<String, Map<String, dynamic>>{
                 r'$set': {r'grades.$[element]': 100},
               }),
               arrayFilters: [
                 {
-                  'element': {r'$gte': 100}
-                }
-              ]),
-        );
-        var (res, _) = await updateManyOperation.executeDocument();
+                  'element': {r'$gte': 100},
+                },
+              ],
+            ),
+          );
+          var (res, _) = await updateManyOperation.executeDocument();
 
-        expect(res, isNotNull);
-        expect(res.ok, 1.0);
-        expect(res.nMatched, 2);
-        expect(res.nModified, 2);
-      });
-      test('Array filters - Update Specific Elements of an Array of Documents',
-          () async {
-        var collectionName = getRandomCollectionName();
-        var collection = db.collection(collectionName);
+          expect(res, isNotNull);
+          expect(res.ok, 1.0);
+          expect(res.nMatched, 2);
+          expect(res.nModified, 2);
+        },
+      );
+      test(
+        'Array filters - Update Specific Elements of an Array of Documents',
+        () async {
+          var collectionName = getRandomCollectionName();
+          var collection = db.collection(collectionName);
 
-        var (ret, _, _, _) = await collection.insertMany([
-          {
-            '_id': 1,
-            'grades': [
-              {'grade': 80, 'mean': 75, 'std': 6},
-              {'grade': 85, 'mean': 90, 'std': 4},
-              {'grade': 85, 'mean': 85, 'std': 6}
-            ]
-          },
-          {
-            '_id': 2,
-            'grades': [
-              {'grade': 90, 'mean': 75, 'std': 6},
-              {'grade': 87, 'mean': 90, 'std': 3},
-              {'grade': 85, 'mean': 85, 'std': 4}
-            ]
-          }
-        ]);
-        expect(ret.ok, 1.0);
-        expect(ret.isSuccess, isTrue);
+          var (ret, _, _, _) = await collection.insertMany([
+            {
+              '_id': 1,
+              'grades': [
+                {'grade': 80, 'mean': 75, 'std': 6},
+                {'grade': 85, 'mean': 90, 'std': 4},
+                {'grade': 85, 'mean': 85, 'std': 6},
+              ],
+            },
+            {
+              '_id': 2,
+              'grades': [
+                {'grade': 90, 'mean': 75, 'std': 6},
+                {'grade': 87, 'mean': 90, 'std': 3},
+                {'grade': 85, 'mean': 85, 'std': 4},
+              ],
+            },
+          ]);
+          expect(ret.ok, 1.0);
+          expect(ret.isSuccess, isTrue);
 
-        var updateManyOperation = UpdateManyOperation(
-          collection,
-          UpdateManyStatement(
+          var updateManyOperation = UpdateManyOperation(
+            collection,
+            UpdateManyStatement(
               QueryUnion(<String, Object>{}),
               UpdateUnion(<String, Map<String, dynamic>>{
                 r'$set': {r'grades.$[element].mean': 100},
               }),
               arrayFilters: [
                 {
-                  'element.grade': {r'$gte': 85}
-                }
-              ]),
-        );
-        var (res, _) = await updateManyOperation.executeDocument();
+                  'element.grade': {r'$gte': 85},
+                },
+              ],
+            ),
+          );
+          var (res, _) = await updateManyOperation.executeDocument();
 
-        expect(res, isNotNull);
-        expect(res.ok, 1.0);
-        expect(res.nMatched, 2);
-        expect(res.nModified, 2);
-      });
+          expect(res, isNotNull);
+          expect(res.ok, 1.0);
+          expect(res.nMatched, 2);
+          expect(res.nModified, 2);
+        },
+      );
       test('Specify hint', () async {
         if (!running4_2orGreater) {
           return;
@@ -1008,14 +1047,15 @@ void main() async {
         var updateManyOperation = UpdateManyOperation(
           collection,
           UpdateManyStatement(
-              QueryUnion(<String, Object>{
-                'points': {r'$lte': 20},
-                'status': 'P'
-              }),
-              UpdateUnion(<String, Map<String, dynamic>>{
-                r'$set': {'misc1': 'Need to activate'},
-              }),
-              hint: HintUnion(<String, Object>{'status': 1})),
+            QueryUnion(<String, Object>{
+              'points': {r'$lte': 20},
+              'status': 'P',
+            }),
+            UpdateUnion(<String, Map<String, dynamic>>{
+              r'$set': {'misc1': 'Need to activate'},
+            }),
+            hint: HintUnion(<String, Object>{'status': 1}),
+          ),
         );
         var (res, _) = await updateManyOperation.executeDocument();
 
@@ -1038,7 +1078,7 @@ void main() async {
             'status': 'Pending',
             'points': 0,
             'misc1': 'note to self: confirm status',
-            'misc2': 'Need to activate'
+            'misc2': 'Need to activate',
           },
           {
             '_id': 2,
@@ -1046,18 +1086,19 @@ void main() async {
             'status': 'D',
             'points': 59,
             'misc1': 'reminder: ping me at 100pts',
-            'misc2': 'Some random comment'
+            'misc2': 'Some random comment',
           },
         ]);
         expect(ret.ok, 1.0);
         expect(ret.isSuccess, isTrue);
 
         var (res, _) = await collection.updateOne(
-            where..$eq('member', 'abc123'),
-            UpdateExpression()
-              ..$set('status', 'A')
-              ..$inc('points', 1),
-            writeConcern: WriteConcern(w: wMajority, wtimeout: 5000));
+          where..$eq('member', 'abc123'),
+          UpdateExpression()
+            ..$set('status', 'A')
+            ..$inc('points', 1),
+          writeConcern: WriteConcern(w: wMajority, wtimeout: 5000),
+        );
 
         expect(res, isNotNull);
         expect(res.isSuccess, isTrue);
@@ -1083,7 +1124,7 @@ void main() async {
             'status': 'Pending',
             'points': 0,
             'misc1': 'note to self: confirm status',
-            'misc2': 'Need to activate'
+            'misc2': 'Need to activate',
           },
           {
             '_id': 2,
@@ -1091,18 +1132,19 @@ void main() async {
             'status': 'D',
             'points': 59,
             'misc1': 'reminder: ping me at 100pts',
-            'misc2': 'Some random comment'
+            'misc2': 'Some random comment',
           },
         ]);
         expect(ret.ok, 1.0);
         expect(ret.isSuccess, isTrue);
 
         var (res, _) = await collection.updateOne(
-            where..$eq('member', 'abc123'),
-            UpdateExpression()
-              ..$set('status', 'A')
-              ..$inc('points', 1),
-            writeConcern: WriteConcern(w: wMajority, wtimeout: 5000));
+          where..$eq('member', 'abc123'),
+          UpdateExpression()
+            ..$set('status', 'A')
+            ..$inc('points', 1),
+          writeConcern: WriteConcern(w: wMajority, wtimeout: 5000),
+        );
 
         expect(res, isNotNull);
         expect(res.isSuccess, isTrue);
@@ -1128,7 +1170,7 @@ void main() async {
             'status': 'A',
             'points': 1,
             'misc1': 'note to self: confirm status',
-            'misc2': 'Need to activate'
+            'misc2': 'Need to activate',
           },
           {
             '_id': 2,
@@ -1136,18 +1178,19 @@ void main() async {
             'status': 'D',
             'points': 59,
             'misc1': 'reminder: ping me at 100pts',
-            'misc2': 'Some random comment'
+            'misc2': 'Some random comment',
           },
         ]);
         expect(ret.ok, 1.0);
         expect(ret.isSuccess, isTrue);
 
         var (res, _) = await collection.updateMany(
-            where,
-            UpdateExpression()
-              ..$set('status', 'A')
-              ..$inc('points', 1),
-            writeConcern: WriteConcern(w: wMajority, wtimeout: 5000));
+          where,
+          UpdateExpression()
+            ..$set('status', 'A')
+            ..$inc('points', 1),
+          writeConcern: WriteConcern(w: wMajority, wtimeout: 5000),
+        );
 
         expect(res, isNotNull);
         expect(res.isSuccess, isTrue);
@@ -1176,7 +1219,7 @@ void main() async {
             'status': 'A',
             'points': 2,
             'misc1': 'note to self: confirm status',
-            'misc2': 'Need to activate'
+            'misc2': 'Need to activate',
           },
           {
             '_id': 2,
@@ -1184,22 +1227,25 @@ void main() async {
             'status': 'A',
             'points': 60,
             'misc1': 'reminder: ping me at 100pts',
-            'misc2': 'Some random comment'
+            'misc2': 'Some random comment',
           },
         ]);
         expect(ret.ok, 1.0);
         expect(ret.isSuccess, isTrue);
 
         var (res, _) = await collection.updateMany(
-            null,
-            (AggregationPipelineBuilder()
-                  ..addStage($set.raw({
+          null,
+          (AggregationPipelineBuilder()
+                ..addStage(
+                  $set.raw({
                     'status': 'Modified',
-                    'comments': [r'$misc1', r'$misc2']
-                  }))
-                  ..addStage($unset(['misc1', 'misc2'])))
-                .build(),
-            writeConcern: WriteConcern(w: wMajority, wtimeout: 5000));
+                    'comments': [r'$misc1', r'$misc2'],
+                  }),
+                )
+                ..addStage($unset(['misc1', 'misc2'])))
+              .build(),
+          writeConcern: WriteConcern(w: wMajority, wtimeout: 5000),
+        );
 
         expect(res, isNotNull);
         expect(res.isSuccess, isTrue);
@@ -1225,61 +1271,66 @@ void main() async {
         var (ret, _, _, _) = await collection.insertMany([
           {
             '_id': 1,
-            'tests': [95, 92, 90]
+            'tests': [95, 92, 90],
           },
           {
             '_id': 2,
-            'tests': [94, 88, 90]
+            'tests': [94, 88, 90],
           },
           {
             '_id': 3,
-            'tests': [70, 75, 82]
-          }
+            'tests': [70, 75, 82],
+          },
         ]);
         expect(ret.ok, 1.0);
         expect(ret.isSuccess, isTrue);
 
         var (res, _) = await collection.updateMany(
-            null,
-            (AggregationPipelineBuilder()
-                  ..addStage($set.raw({
-                    'average': {r'$avg': r'$tests'}
-                  }))
-                  ..addStage($set.raw({
+          null,
+          (AggregationPipelineBuilder()
+                ..addStage(
+                  $set.raw({
+                    'average': {r'$avg': r'$tests'},
+                  }),
+                )
+                ..addStage(
+                  $set.raw({
                     'grade': {
                       r'$switch': {
                         'branches': [
                           {
                             'case': {
-                              r'$gte': [r'$average', 90]
+                              r'$gte': [r'$average', 90],
                             },
-                            'then': 'A'
+                            'then': 'A',
                           },
                           {
                             'case': {
-                              r'$gte': [r'$average', 80]
+                              r'$gte': [r'$average', 80],
                             },
-                            'then': 'B'
+                            'then': 'B',
                           },
                           {
                             'case': {
-                              r'$gte': [r'$average', 70]
+                              r'$gte': [r'$average', 70],
                             },
-                            'then': 'C'
+                            'then': 'C',
                           },
                           {
                             'case': {
-                              r'$gte': [r'$average', 60]
+                              r'$gte': [r'$average', 60],
                             },
-                            'then': 'D'
-                          }
+                            'then': 'D',
+                          },
                         ],
-                        'default': 'F'
-                      }
-                    }
-                  })))
-                .build(),
-            writeConcern: WriteConcern(w: wMajority, wtimeout: 5000));
+                        'default': 'F',
+                      },
+                    },
+                  }),
+                ))
+              .build(),
+          writeConcern: WriteConcern(w: wMajority, wtimeout: 5000),
+        );
 
         expect(res, isNotNull);
         expect(res.isSuccess, isTrue);
@@ -1305,11 +1356,12 @@ void main() async {
         expect(ret.isSuccess, isTrue);
 
         var (res, _) = await collection.updateOne(
-            where
-              ..$eq('category', 'cafe')
-              ..$eq('status', 'a'),
-            UpdateExpression()..$set('status', 'Updated'),
-            collation: CollationOptions('fr', strength: 1));
+          where
+            ..$eq('category', 'cafe')
+            ..$eq('status', 'a'),
+          UpdateExpression()..$set('status', 'Updated'),
+          collation: CollationOptions('fr', strength: 1),
+        );
 
         expect(res, isNotNull);
         expect(res.isSuccess, true);
@@ -1325,94 +1377,102 @@ void main() async {
         expect(elements.first['status'], 'Updated');
         expect(elements.first['category'], 'café');
       });
-      test('Array filters - Update elements Match arrayFilters Criteria',
-          () async {
-        var collectionName = getRandomCollectionName();
-        var collection = db.collection(collectionName);
+      test(
+        'Array filters - Update elements Match arrayFilters Criteria',
+        () async {
+          var collectionName = getRandomCollectionName();
+          var collection = db.collection(collectionName);
 
-        var (ret, _, _, _) = await collection.insertMany([
-          {
-            '_id': 1,
-            'grades': [95, 92, 90]
-          },
-          {
-            '_id': 2,
-            'grades': [98, 100, 102]
-          },
-          {
-            '_id': 3,
-            'grades': [95, 110, 100]
-          }
-        ]);
-        expect(ret.ok, 1.0);
-        expect(ret.isSuccess, isTrue);
+          var (ret, _, _, _) = await collection.insertMany([
+            {
+              '_id': 1,
+              'grades': [95, 92, 90],
+            },
+            {
+              '_id': 2,
+              'grades': [98, 100, 102],
+            },
+            {
+              '_id': 3,
+              'grades': [95, 110, 100],
+            },
+          ]);
+          expect(ret.ok, 1.0);
+          expect(ret.isSuccess, isTrue);
 
-        var (res, _) = await collection.updateMany(where..$gte('grades', 100),
+          var (res, _) = await collection.updateMany(
+            where..$gte('grades', 100),
             UpdateExpression()..$set(r'grades.$[element]', 100),
             arrayFilters: [
               {
-                'element': {r'$gte': 100}
-              }
-            ]);
+                'element': {r'$gte': 100},
+              },
+            ],
+          );
 
-        expect(res, isNotNull);
-        expect(res.isSuccess, isTrue);
-        expect(res.nMatched, 2);
-        expect(res.nModified, 2);
+          expect(res, isNotNull);
+          expect(res.isSuccess, isTrue);
+          expect(res.nMatched, 2);
+          expect(res.nModified, 2);
 
-        var elements = await collection.find().toList();
+          var elements = await collection.find().toList();
 
-        expect(elements, isNotEmpty);
-        expect(elements.length, 3);
-        expect(elements.first['grades'].first, 95);
-        expect(elements.last['grades'].last, 100);
-      });
-      test('Array filters - Update Specific Elements of an Array of Documents',
-          () async {
-        var collectionName = getRandomCollectionName();
-        var collection = db.collection(collectionName);
+          expect(elements, isNotEmpty);
+          expect(elements.length, 3);
+          expect(elements.first['grades'].first, 95);
+          expect(elements.last['grades'].last, 100);
+        },
+      );
+      test(
+        'Array filters - Update Specific Elements of an Array of Documents',
+        () async {
+          var collectionName = getRandomCollectionName();
+          var collection = db.collection(collectionName);
 
-        var (ret, _, _, _) = await collection.insertMany([
-          {
-            '_id': 1,
-            'grades': [
-              {'grade': 80, 'mean': 75, 'std': 6},
-              {'grade': 85, 'mean': 90, 'std': 4},
-              {'grade': 85, 'mean': 85, 'std': 6}
-            ]
-          },
-          {
-            '_id': 2,
-            'grades': [
-              {'grade': 90, 'mean': 75, 'std': 6},
-              {'grade': 87, 'mean': 90, 'std': 3},
-              {'grade': 85, 'mean': 85, 'std': 4}
-            ]
-          }
-        ]);
-        expect(ret.ok, 1.0);
-        expect(ret.isSuccess, isTrue);
+          var (ret, _, _, _) = await collection.insertMany([
+            {
+              '_id': 1,
+              'grades': [
+                {'grade': 80, 'mean': 75, 'std': 6},
+                {'grade': 85, 'mean': 90, 'std': 4},
+                {'grade': 85, 'mean': 85, 'std': 6},
+              ],
+            },
+            {
+              '_id': 2,
+              'grades': [
+                {'grade': 90, 'mean': 75, 'std': 6},
+                {'grade': 87, 'mean': 90, 'std': 3},
+                {'grade': 85, 'mean': 85, 'std': 4},
+              ],
+            },
+          ]);
+          expect(ret.ok, 1.0);
+          expect(ret.isSuccess, isTrue);
 
-        var (res, _) = await collection.updateMany(
-            where, UpdateExpression()..$set(r'grades.$[element].mean', 100),
+          var (res, _) = await collection.updateMany(
+            where,
+            UpdateExpression()..$set(r'grades.$[element].mean', 100),
             arrayFilters: [
               {
-                'element.grade': {r'$gte': 85}
-              }
-            ]);
+                'element.grade': {r'$gte': 85},
+              },
+            ],
+          );
 
-        expect(res, isNotNull);
-        expect(res.isSuccess, isTrue);
-        expect(res.nMatched, 2);
-        expect(res.nModified, 2);
+          expect(res, isNotNull);
+          expect(res.isSuccess, isTrue);
+          expect(res.nMatched, 2);
+          expect(res.nModified, 2);
 
-        var elements = await collection.find().toList();
+          var elements = await collection.find().toList();
 
-        expect(elements, isNotEmpty);
-        expect(elements.length, 2);
-        expect(elements.first['grades'].last['mean'], 100);
-        expect(elements.last['grades'].first['mean'], 100);
-      });
+          expect(elements, isNotEmpty);
+          expect(elements.length, 2);
+          expect(elements.first['grades'].last['mean'], 100);
+          expect(elements.last['grades'].first['mean'], 100);
+        },
+      );
       test('Specify hint', () async {
         if (!running4_2orGreater) {
           return;
@@ -1428,19 +1488,21 @@ void main() async {
         await collection.createIndex(key: 'points');
 
         var (res, _) = await collection.updateMany(
-            where
-              ..$lte('points', 20)
-              ..$eq('status', 'P'),
-            UpdateExpression()..$set('misc1', 'Need to activate'),
-            hint: HintUnion(<String, Object>{'status': 1}));
+          where
+            ..$lte('points', 20)
+            ..$eq('status', 'P'),
+          UpdateExpression()..$set('misc1', 'Need to activate'),
+          hint: HintUnion(<String, Object>{'status': 1}),
+        );
 
         expect(res, isNotNull);
         expect(res.isSuccess, isTrue);
         expect(res.nMatched, 3);
         expect(res.nModified, 3);
 
-        var elements =
-            await collection.find(filter: where..$eq('status', 'P')).toList();
+        var elements = await collection
+            .find(filter: where..$eq('status', 'P'))
+            .toList();
 
         expect(elements, isNotEmpty);
         expect(elements.length, 3);
@@ -1448,550 +1510,578 @@ void main() async {
         expect(elements.last['misc1'], 'Need to activate');
       });
     });
-    group('Update - Collection helpers updateOne, updateMany and replaceOne',
-        () {
-      test(' Update specific fields on one document', () async {
-        var collectionName = getRandomCollectionName();
-        var collection = db.collection(collectionName);
+    group(
+      'Update - Collection helpers updateOne, updateMany and replaceOne',
+      () {
+        test(' Update specific fields on one document', () async {
+          var collectionName = getRandomCollectionName();
+          var collection = db.collection(collectionName);
 
-        var (ret, _, _, _) = await collection.insertMany([
-          {
-            '_id': 1,
-            'member': 'abc123',
-            'status': 'Pending',
-            'points': 0,
-            'misc1': 'note to self: confirm status',
-            'misc2': 'Need to activate'
-          },
-          {
-            '_id': 2,
-            'member': 'xyz123',
-            'status': 'D',
-            'points': 59,
-            'misc1': 'reminder: ping me at 100pts',
-            'misc2': 'Some random comment'
-          },
-        ]);
-        expect(ret.ok, 1.0);
-        expect(ret.isSuccess, isTrue);
+          var (ret, _, _, _) = await collection.insertMany([
+            {
+              '_id': 1,
+              'member': 'abc123',
+              'status': 'Pending',
+              'points': 0,
+              'misc1': 'note to self: confirm status',
+              'misc2': 'Need to activate',
+            },
+            {
+              '_id': 2,
+              'member': 'xyz123',
+              'status': 'D',
+              'points': 59,
+              'misc1': 'reminder: ping me at 100pts',
+              'misc2': 'Some random comment',
+            },
+          ]);
+          expect(ret.ok, 1.0);
+          expect(ret.isSuccess, isTrue);
 
-        var (res, _) = await collection.updateOne(
+          var (res, _) = await collection.updateOne(
             where..$eq('member', 'abc123'),
             UpdateExpression()
               ..$set('status', 'A')
               ..$inc('points', 1),
-            writeConcern: WriteConcern(w: wMajority, wtimeout: 5000));
+            writeConcern: WriteConcern(w: wMajority, wtimeout: 5000),
+          );
 
-        expect(res, isNotNull);
-        expect(res.ok, 1.0);
-        expect(res.nMatched, 1);
-        expect(res.nMatched, 1);
+          expect(res, isNotNull);
+          expect(res.ok, 1.0);
+          expect(res.nMatched, 1);
+          expect(res.nMatched, 1);
 
-        var elements = await collection
-            .find(filter: where..$eq('member', 'abc123'))
-            .toList();
+          var elements = await collection
+              .find(filter: where..$eq('member', 'abc123'))
+              .toList();
 
-        expect(elements, isNotEmpty);
-        expect(elements.first['status'], 'A');
-        expect(elements.first['points'], 1);
-      });
-      test('Update one document - error', () async {
-        var collectionName = getRandomCollectionName();
-        var collection = db.collection(collectionName);
+          expect(elements, isNotEmpty);
+          expect(elements.first['status'], 'A');
+          expect(elements.first['points'], 1);
+        });
+        test('Update one document - error', () async {
+          var collectionName = getRandomCollectionName();
+          var collection = db.collection(collectionName);
 
-        var (ret, _, _, _) = await collection.insertMany([
-          {'_id': 1, 'name': 'Central Perk Cafe', 'Borough': 'Manhattan'},
-          {
-            '_id': 2,
-            'name': 'Rock A Feller Bar and Grill',
-            'Borough': 'Queens',
-            'violations': 2
-          },
-          {
-            '_id': 3,
-            'name': 'Empire State Pub',
-            'Borough': 'Brooklyn',
-            'violations': 0
-          }
-        ]);
-        expect(ret.ok, 1.0);
-        expect(ret.isSuccess, isTrue);
+          var (ret, _, _, _) = await collection.insertMany([
+            {'_id': 1, 'name': 'Central Perk Cafe', 'Borough': 'Manhattan'},
+            {
+              '_id': 2,
+              'name': 'Rock A Feller Bar and Grill',
+              'Borough': 'Queens',
+              'violations': 2,
+            },
+            {
+              '_id': 3,
+              'name': 'Empire State Pub',
+              'Borough': 'Brooklyn',
+              'violations': 0,
+            },
+          ]);
+          expect(ret.ok, 1.0);
+          expect(ret.isSuccess, isTrue);
 
-        expect(
+          expect(
             () => collection.updateOne(
-                    where..$eq('name', 'Central Perk Cafe'), <String, Object>{
-                  'name': 'Central Park Cafe',
-                  'Borough': 'Manhattan'
-                }),
-            throwsMongoDartError);
-      });
+              where..$eq('name', 'Central Perk Cafe'),
+              <String, Object>{
+                'name': 'Central Park Cafe',
+                'Borough': 'Manhattan',
+              },
+            ),
+            throwsMongoDartError,
+          );
+        });
 
-      test('Update specific fields on multiple documents', () async {
-        var collectionName = getRandomCollectionName();
-        var collection = db.collection(collectionName);
+        test('Update specific fields on multiple documents', () async {
+          var collectionName = getRandomCollectionName();
+          var collection = db.collection(collectionName);
 
-        var (ret, _, _, _) = await collection.insertMany([
-          {
-            '_id': 1,
-            'member': 'abc123',
-            'status': 'A',
-            'points': 1,
-            'misc1': 'note to self: confirm status',
-            'misc2': 'Need to activate'
-          },
-          {
-            '_id': 2,
-            'member': 'xyz123',
-            'status': 'D',
-            'points': 59,
-            'misc1': 'reminder: ping me at 100pts',
-            'misc2': 'Some random comment'
-          },
-        ]);
-        expect(ret.ok, 1.0);
-        expect(ret.isSuccess, isTrue);
+          var (ret, _, _, _) = await collection.insertMany([
+            {
+              '_id': 1,
+              'member': 'abc123',
+              'status': 'A',
+              'points': 1,
+              'misc1': 'note to self: confirm status',
+              'misc2': 'Need to activate',
+            },
+            {
+              '_id': 2,
+              'member': 'xyz123',
+              'status': 'D',
+              'points': 59,
+              'misc1': 'reminder: ping me at 100pts',
+              'misc2': 'Some random comment',
+            },
+          ]);
+          expect(ret.ok, 1.0);
+          expect(ret.isSuccess, isTrue);
 
-        var (res, _) = await collection.updateMany(
+          var (res, _) = await collection.updateMany(
             where,
             UpdateExpression()
               ..$set('status', 'A')
               ..$inc('points', 1),
-            writeConcern: WriteConcern(w: wMajority, wtimeout: 5000));
+            writeConcern: WriteConcern(w: wMajority, wtimeout: 5000),
+          );
 
-        expect(res, isNotNull);
-        expect(res.ok, 1.0);
-        expect(res.nMatched, 2);
-        expect(res.nModified, 2);
+          expect(res, isNotNull);
+          expect(res.ok, 1.0);
+          expect(res.nMatched, 2);
+          expect(res.nModified, 2);
 
-        var elements = await collection.find().toList();
+          var elements = await collection.find().toList();
 
-        expect(elements, isNotEmpty);
-        expect(elements.first['status'], 'A');
-        expect(elements.first['points'], 2);
-        expect(elements.last['status'], 'A');
-        expect(elements.last['points'], 60);
-      });
-      test('Set new document on multiple documents - error', () async {
-        var collectionName = getRandomCollectionName();
-        var collection = db.collection(collectionName);
+          expect(elements, isNotEmpty);
+          expect(elements.first['status'], 'A');
+          expect(elements.first['points'], 2);
+          expect(elements.last['status'], 'A');
+          expect(elements.last['points'], 60);
+        });
+        test('Set new document on multiple documents - error', () async {
+          var collectionName = getRandomCollectionName();
+          var collection = db.collection(collectionName);
 
-        var (ret, _, _, _) = await collection.insertMany([
-          {
-            '_id': 1,
-            'member': 'abc123',
-            'status': 'A',
-            'points': 1,
-            'misc1': 'note to self: confirm status',
-            'misc2': 'Need to activate'
-          },
-          {
-            '_id': 2,
-            'member': 'xyz123',
-            'status': 'D',
-            'points': 59,
-            'misc1': 'reminder: ping me at 100pts',
-            'misc2': 'Some random comment'
-          },
-        ]);
-        expect(ret.ok, 1.0);
-        expect(ret.isSuccess, isTrue);
-
-        var (res, _) = await collection.updateMany(
-            where,
+          var (ret, _, _, _) = await collection.insertMany([
             {
-              'member': 'delete_this',
-              'status': '1',
-              'points': 0,
+              '_id': 1,
+              'member': 'abc123',
+              'status': 'A',
+              'points': 1,
+              'misc1': 'note to self: confirm status',
+              'misc2': 'Need to activate',
             },
-            writeConcern: WriteConcern(w: wMajority, wtimeout: 5000));
+            {
+              '_id': 2,
+              'member': 'xyz123',
+              'status': 'D',
+              'points': 59,
+              'misc1': 'reminder: ping me at 100pts',
+              'misc2': 'Some random comment',
+            },
+          ]);
+          expect(ret.ok, 1.0);
+          expect(ret.isSuccess, isTrue);
 
-        expect(res, isNotNull);
-        expect(res.ok, 1.0);
-        expect(res.nMatched, 0);
-        expect(res.nModified, 0);
-        expect(res.isFailure, isTrue);
-        expect(res.hasWriteErrors, isTrue);
-        if (isSharded && running4_2) {
-          expect(res.writeError?.code, 72);
-        } else {
-          expect(res.writeError?.code, 9);
-        }
+          var (res, _) = await collection.updateMany(where, {
+            'member': 'delete_this',
+            'status': '1',
+            'points': 0,
+          }, writeConcern: WriteConcern(w: wMajority, wtimeout: 5000));
 
-        var elements = await collection.find().toList();
-
-        expect(elements, isNotEmpty);
-        expect(elements.first['status'], 'A');
-        expect(elements.first['points'], 1);
-        expect(elements.last['status'], 'D');
-        expect(elements.last['points'], 59);
-      });
-
-      test('Replace one document', () async {
-        var collectionName = getRandomCollectionName();
-        var collection = db.collection(collectionName);
-
-        var (ret, _, _, _) = await collection.insertMany([
-          {'_id': 1, 'name': 'Central Perk Cafe', 'Borough': 'Manhattan'},
-          {
-            '_id': 2,
-            'name': 'Rock A Feller Bar and Grill',
-            'Borough': 'Queens',
-            'violations': 2
-          },
-          {
-            '_id': 3,
-            'name': 'Empire State Pub',
-            'Borough': 'Brooklyn',
-            'violations': 0
+          expect(res, isNotNull);
+          expect(res.ok, 1.0);
+          expect(res.nMatched, 0);
+          expect(res.nModified, 0);
+          expect(res.isFailure, isTrue);
+          expect(res.hasWriteErrors, isTrue);
+          if (isSharded && running4_2) {
+            expect(res.writeError?.code, 72);
+          } else {
+            expect(res.writeError?.code, 9);
           }
-        ]);
-        expect(ret.ok, 1.0);
-        expect(ret.isSuccess, isTrue);
 
-        var (res, _) = await collection.replaceOne(
-            where..$eq('name', 'Central Perk Cafe'), <String, Object>{
-          'name': 'Central Park Cafe',
-          'Borough': 'Manhattan'
+          var elements = await collection.find().toList();
+
+          expect(elements, isNotEmpty);
+          expect(elements.first['status'], 'A');
+          expect(elements.first['points'], 1);
+          expect(elements.last['status'], 'D');
+          expect(elements.last['points'], 59);
         });
 
-        expect(res, isNotNull);
-        expect(res.ok, 1.0);
-        expect(res.nMatched, 1);
-        expect(res.nModified, 1);
+        test('Replace one document', () async {
+          var collectionName = getRandomCollectionName();
+          var collection = db.collection(collectionName);
 
-        var elements = await collection
-            .find(filter: where..$eq('name', 'Central Park Cafe'))
-            .toList();
+          var (ret, _, _, _) = await collection.insertMany([
+            {'_id': 1, 'name': 'Central Perk Cafe', 'Borough': 'Manhattan'},
+            {
+              '_id': 2,
+              'name': 'Rock A Feller Bar and Grill',
+              'Borough': 'Queens',
+              'violations': 2,
+            },
+            {
+              '_id': 3,
+              'name': 'Empire State Pub',
+              'Borough': 'Brooklyn',
+              'violations': 0,
+            },
+          ]);
+          expect(ret.ok, 1.0);
+          expect(ret.isSuccess, isTrue);
 
-        expect(elements, isNotEmpty);
-        expect(elements.length, 1);
-        expect(elements.first['_id'], 1);
-        expect(elements.first['Borough'], 'Manhattan');
-        expect(elements.first['violations'], null);
-      });
+          var (res, _) = await collection.replaceOne(
+            where..$eq('name', 'Central Perk Cafe'),
+            <String, Object>{
+              'name': 'Central Park Cafe',
+              'Borough': 'Manhattan',
+            },
+          );
 
-      test('Replace one - document with update operators - error', () async {
-        var collectionName = getRandomCollectionName();
-        var collection = db.collection(collectionName);
+          expect(res, isNotNull);
+          expect(res.ok, 1.0);
+          expect(res.nMatched, 1);
+          expect(res.nModified, 1);
 
-        var (ret, _, _, _) = await collection.insertMany([
-          {'_id': 1, 'name': 'Central Perk Cafe', 'Borough': 'Manhattan'},
-          {
-            '_id': 2,
-            'name': 'Rock A Feller Bar and Grill',
-            'Borough': 'Queens',
-            'violations': 2
-          },
-          {
-            '_id': 3,
-            'name': 'Empire State Pub',
-            'Borough': 'Brooklyn',
-            'violations': 0
-          }
-        ]);
-        expect(ret.ok, 1.0);
-        expect(ret.isSuccess, isTrue);
+          var elements = await collection
+              .find(filter: where..$eq('name', 'Central Park Cafe'))
+              .toList();
 
-        expect(
+          expect(elements, isNotEmpty);
+          expect(elements.length, 1);
+          expect(elements.first['_id'], 1);
+          expect(elements.first['Borough'], 'Manhattan');
+          expect(elements.first['violations'], null);
+        });
+
+        test('Replace one - document with update operators - error', () async {
+          var collectionName = getRandomCollectionName();
+          var collection = db.collection(collectionName);
+
+          var (ret, _, _, _) = await collection.insertMany([
+            {'_id': 1, 'name': 'Central Perk Cafe', 'Borough': 'Manhattan'},
+            {
+              '_id': 2,
+              'name': 'Rock A Feller Bar and Grill',
+              'Borough': 'Queens',
+              'violations': 2,
+            },
+            {
+              '_id': 3,
+              'name': 'Empire State Pub',
+              'Borough': 'Brooklyn',
+              'violations': 0,
+            },
+          ]);
+          expect(ret.ok, 1.0);
+          expect(ret.isSuccess, isTrue);
+
+          expect(
             () =>
                 collection.replaceOne(where..$eq('name', 'Central Perk Cafe'), {
-                  r'$set': {'name', 'Central Park Cafe'}
+                  r'$set': {'name', 'Central Park Cafe'},
                 }),
-            throwsMongoDartError);
-      });
+            throwsMongoDartError,
+          );
+        });
 
-      test('Update with Aggregation Pipeline', () async {
-        if (!running4_2orGreater) {
-          return;
-        }
-        var collectionName = getRandomCollectionName();
-        var collection = db.collection(collectionName);
+        test('Update with Aggregation Pipeline', () async {
+          if (!running4_2orGreater) {
+            return;
+          }
+          var collectionName = getRandomCollectionName();
+          var collection = db.collection(collectionName);
 
-        var (ret, _, _, _) = await collection.insertMany([
-          {
-            '_id': 1,
-            'member': 'abc123',
-            'status': 'A',
-            'points': 2,
-            'misc1': 'note to self: confirm status',
-            'misc2': 'Need to activate'
-          },
-          {
-            '_id': 2,
-            'member': 'xyz123',
-            'status': 'A',
-            'points': 60,
-            'misc1': 'reminder: ping me at 100pts',
-            'misc2': 'Some random comment'
-          },
-        ]);
-        expect(ret.ok, 1.0);
-        expect(ret.isSuccess, isTrue);
+          var (ret, _, _, _) = await collection.insertMany([
+            {
+              '_id': 1,
+              'member': 'abc123',
+              'status': 'A',
+              'points': 2,
+              'misc1': 'note to self: confirm status',
+              'misc2': 'Need to activate',
+            },
+            {
+              '_id': 2,
+              'member': 'xyz123',
+              'status': 'A',
+              'points': 60,
+              'misc1': 'reminder: ping me at 100pts',
+              'misc2': 'Some random comment',
+            },
+          ]);
+          expect(ret.ok, 1.0);
+          expect(ret.isSuccess, isTrue);
 
-        var (res, _) = await collection.updateMany(
+          var (res, _) = await collection.updateMany(
             null,
             (AggregationPipelineBuilder()
-                  ..addStage($set.raw({
-                    'status': 'Modified',
-                    'comments': [r'$misc1', r'$misc2']
-                  }))
+                  ..addStage(
+                    $set.raw({
+                      'status': 'Modified',
+                      'comments': [r'$misc1', r'$misc2'],
+                    }),
+                  )
                   ..addStage($unset(['misc1', 'misc2'])))
                 .build(),
-            writeConcern: WriteConcern(w: wMajority, wtimeout: 5000));
+            writeConcern: WriteConcern(w: wMajority, wtimeout: 5000),
+          );
 
-        expect(res, isNotNull);
-        expect(res.ok, 1.0);
-        expect(res.nMatched, 2);
-        expect(res.nModified, 2);
+          expect(res, isNotNull);
+          expect(res.ok, 1.0);
+          expect(res.nMatched, 2);
+          expect(res.nModified, 2);
 
-        var elements = await collection.find().toList();
+          var elements = await collection.find().toList();
 
-        expect(elements, isNotEmpty);
-        expect(elements.first['status'], 'Modified');
-        expect(elements.first['points'], 2);
-        expect(elements.last['status'], 'Modified');
-        expect(elements.last['points'], 60);
-      });
+          expect(elements, isNotEmpty);
+          expect(elements.first['status'], 'Modified');
+          expect(elements.first['points'], 2);
+          expect(elements.last['status'], 'Modified');
+          expect(elements.last['points'], 60);
+        });
 
-      test('Update with Aggregation Pipeline - 2', () async {
-        if (!running4_2orGreater) {
-          return;
-        }
-        var collectionName = getRandomCollectionName();
-        var collection = db.collection(collectionName);
-
-        var (ret, _, _, _) = await collection.insertMany([
-          {
-            '_id': 1,
-            'tests': [95, 92, 90]
-          },
-          {
-            '_id': 2,
-            'tests': [94, 88, 90]
-          },
-          {
-            '_id': 3,
-            'tests': [70, 75, 82]
+        test('Update with Aggregation Pipeline - 2', () async {
+          if (!running4_2orGreater) {
+            return;
           }
-        ]);
-        expect(ret.ok, 1.0);
-        expect(ret.isSuccess, isTrue);
+          var collectionName = getRandomCollectionName();
+          var collection = db.collection(collectionName);
 
-        var (res, _) = await collection.updateMany(
+          var (ret, _, _, _) = await collection.insertMany([
+            {
+              '_id': 1,
+              'tests': [95, 92, 90],
+            },
+            {
+              '_id': 2,
+              'tests': [94, 88, 90],
+            },
+            {
+              '_id': 3,
+              'tests': [70, 75, 82],
+            },
+          ]);
+          expect(ret.ok, 1.0);
+          expect(ret.isSuccess, isTrue);
+
+          var (res, _) = await collection.updateMany(
             null,
             (AggregationPipelineBuilder()
-                  ..addStage($set.raw({
-                    'average': {r'$avg': r'$tests'}
-                  }))
-                  ..addStage($set.raw({
-                    'grade': {
-                      r'$switch': {
-                        'branches': [
-                          {
-                            'case': {
-                              r'$gte': [r'$average', 90]
+                  ..addStage(
+                    $set.raw({
+                      'average': {r'$avg': r'$tests'},
+                    }),
+                  )
+                  ..addStage(
+                    $set.raw({
+                      'grade': {
+                        r'$switch': {
+                          'branches': [
+                            {
+                              'case': {
+                                r'$gte': [r'$average', 90],
+                              },
+                              'then': 'A',
                             },
-                            'then': 'A'
-                          },
-                          {
-                            'case': {
-                              r'$gte': [r'$average', 80]
+                            {
+                              'case': {
+                                r'$gte': [r'$average', 80],
+                              },
+                              'then': 'B',
                             },
-                            'then': 'B'
-                          },
-                          {
-                            'case': {
-                              r'$gte': [r'$average', 70]
+                            {
+                              'case': {
+                                r'$gte': [r'$average', 70],
+                              },
+                              'then': 'C',
                             },
-                            'then': 'C'
-                          },
-                          {
-                            'case': {
-                              r'$gte': [r'$average', 60]
+                            {
+                              'case': {
+                                r'$gte': [r'$average', 60],
+                              },
+                              'then': 'D',
                             },
-                            'then': 'D'
-                          }
-                        ],
-                        'default': 'F'
-                      }
-                    }
-                  })))
+                          ],
+                          'default': 'F',
+                        },
+                      },
+                    }),
+                  ))
                 .build(),
-            writeConcern: WriteConcern(w: wMajority, wtimeout: 5000));
+            writeConcern: WriteConcern(w: wMajority, wtimeout: 5000),
+          );
 
-        expect(res, isNotNull);
-        expect(res.ok, 1.0);
-        expect(res.nMatched, 3);
-        expect(res.nModified, 3);
+          expect(res, isNotNull);
+          expect(res.ok, 1.0);
+          expect(res.nMatched, 3);
+          expect(res.nModified, 3);
 
-        var elements = await collection.find().toList();
+          var elements = await collection.find().toList();
 
-        expect(elements, isNotEmpty);
-        expect(elements.length, 3);
-        expect(elements.first['average'], 92.33333333333333);
-        expect(elements.first['grade'], 'A');
-        expect(elements.last['average'], 75.66666666666667);
-        expect(elements.last['grade'], 'C');
-      });
+          expect(elements, isNotEmpty);
+          expect(elements.length, 3);
+          expect(elements.first['average'], 92.33333333333333);
+          expect(elements.first['grade'], 'A');
+          expect(elements.last['average'], 75.66666666666667);
+          expect(elements.last['grade'], 'C');
+        });
 
-      test('Specify collation', () async {
-        var collectionName = getRandomCollectionName();
-        var collection = db.collection(collectionName);
+        test('Specify collation', () async {
+          var collectionName = getRandomCollectionName();
+          var collection = db.collection(collectionName);
 
-        var ret = await insertFrenchCafe(collection);
-        expect(ret.ok, 1.0);
-        expect(ret.isSuccess, isTrue);
+          var ret = await insertFrenchCafe(collection);
+          expect(ret.ok, 1.0);
+          expect(ret.isSuccess, isTrue);
 
-        var (res, _) = await collection.updateOne(
+          var (res, _) = await collection.updateOne(
             where
               ..$eq('category', 'cafe')
               ..$eq('status', 'a'),
             UpdateExpression()..$set('status', 'Updated'),
-            collation: CollationOptions('fr', strength: 1));
+            collation: CollationOptions('fr', strength: 1),
+          );
 
-        expect(res, isNotNull);
-        expect(res.ok, 1.0);
-        expect(res.nMatched, 1);
-        expect(res.nModified, 1);
+          expect(res, isNotNull);
+          expect(res.ok, 1.0);
+          expect(res.nMatched, 1);
+          expect(res.nModified, 1);
 
-        var elements = await collection
-            .find(filter: where..$eq('status', 'Updated'))
-            .toList();
+          var elements = await collection
+              .find(filter: where..$eq('status', 'Updated'))
+              .toList();
 
-        expect(elements, isNotEmpty);
-        expect(elements.length, 1);
-        expect(elements.first['status'], 'Updated');
-        expect(elements.first['category'], 'café');
-      });
-      test('Array filters - Update elements Match arrayFilters Criteria',
+          expect(elements, isNotEmpty);
+          expect(elements.length, 1);
+          expect(elements.first['status'], 'Updated');
+          expect(elements.first['category'], 'café');
+        });
+        test(
+          'Array filters - Update elements Match arrayFilters Criteria',
           () async {
-        var collectionName = getRandomCollectionName();
-        var collection = db.collection(collectionName);
+            var collectionName = getRandomCollectionName();
+            var collection = db.collection(collectionName);
 
-        var (ret, _, _, _) = await collection.insertMany([
-          {
-            '_id': 1,
-            'grades': [95, 92, 90]
-          },
-          {
-            '_id': 2,
-            'grades': [98, 100, 102]
-          },
-          {
-            '_id': 3,
-            'grades': [95, 110, 100]
-          }
-        ]);
-        expect(ret.ok, 1.0);
-        expect(ret.isSuccess, isTrue);
-
-        var (res, _) = await collection.updateMany(where..$gte('grades', 100),
-            UpdateExpression()..$set(r'grades.$[element]', 100),
-            arrayFilters: [
+            var (ret, _, _, _) = await collection.insertMany([
               {
-                'element': {r'$gte': 100}
-              }
+                '_id': 1,
+                'grades': [95, 92, 90],
+              },
+              {
+                '_id': 2,
+                'grades': [98, 100, 102],
+              },
+              {
+                '_id': 3,
+                'grades': [95, 110, 100],
+              },
             ]);
+            expect(ret.ok, 1.0);
+            expect(ret.isSuccess, isTrue);
 
-        expect(res, isNotNull);
-        expect(res.ok, 1.0);
-        expect(res.nMatched, 2);
-        expect(res.nModified, 2);
+            var (res, _) = await collection.updateMany(
+              where..$gte('grades', 100),
+              UpdateExpression()..$set(r'grades.$[element]', 100),
+              arrayFilters: [
+                {
+                  'element': {r'$gte': 100},
+                },
+              ],
+            );
 
-        var elements = await collection.find().toList();
+            expect(res, isNotNull);
+            expect(res.ok, 1.0);
+            expect(res.nMatched, 2);
+            expect(res.nModified, 2);
 
-        expect(elements, isNotEmpty);
-        expect(elements.length, 3);
-        expect(elements.first['grades'].first, 95);
-        expect(elements.last['grades'].last, 100);
-      });
-      test('Array filters - Update Specific Elements of an Array of Documents',
+            var elements = await collection.find().toList();
+
+            expect(elements, isNotEmpty);
+            expect(elements.length, 3);
+            expect(elements.first['grades'].first, 95);
+            expect(elements.last['grades'].last, 100);
+          },
+        );
+        test(
+          'Array filters - Update Specific Elements of an Array of Documents',
           () async {
-        var collectionName = getRandomCollectionName();
-        var collection = db.collection(collectionName);
+            var collectionName = getRandomCollectionName();
+            var collection = db.collection(collectionName);
 
-        var (ret, _, _, _) = await collection.insertMany([
-          {
-            '_id': 1,
-            'grades': [
-              {'grade': 80, 'mean': 75, 'std': 6},
-              {'grade': 85, 'mean': 90, 'std': 4},
-              {'grade': 85, 'mean': 85, 'std': 6}
-            ]
-          },
-          {
-            '_id': 2,
-            'grades': [
-              {'grade': 90, 'mean': 75, 'std': 6},
-              {'grade': 87, 'mean': 90, 'std': 3},
-              {'grade': 85, 'mean': 85, 'std': 4}
-            ]
-          }
-        ]);
-        expect(ret.ok, 1.0);
-        expect(ret.isSuccess, isTrue);
-
-        var (res, _) = await collection.updateMany(
-            where, UpdateExpression()..$set(r'grades.$[element].mean', 100),
-            arrayFilters: [
+            var (ret, _, _, _) = await collection.insertMany([
               {
-                'element.grade': {r'$gte': 85}
-              }
+                '_id': 1,
+                'grades': [
+                  {'grade': 80, 'mean': 75, 'std': 6},
+                  {'grade': 85, 'mean': 90, 'std': 4},
+                  {'grade': 85, 'mean': 85, 'std': 6},
+                ],
+              },
+              {
+                '_id': 2,
+                'grades': [
+                  {'grade': 90, 'mean': 75, 'std': 6},
+                  {'grade': 87, 'mean': 90, 'std': 3},
+                  {'grade': 85, 'mean': 85, 'std': 4},
+                ],
+              },
             ]);
+            expect(ret.ok, 1.0);
+            expect(ret.isSuccess, isTrue);
 
-        expect(res, isNotNull);
-        expect(res.ok, 1.0);
-        expect(res.nMatched, 2);
-        expect(res.nModified, 2);
+            var (res, _) = await collection.updateMany(
+              where,
+              UpdateExpression()..$set(r'grades.$[element].mean', 100),
+              arrayFilters: [
+                {
+                  'element.grade': {r'$gte': 85},
+                },
+              ],
+            );
 
-        var elements = await collection.find().toList();
+            expect(res, isNotNull);
+            expect(res.ok, 1.0);
+            expect(res.nMatched, 2);
+            expect(res.nModified, 2);
 
-        expect(elements, isNotEmpty);
-        expect(elements.length, 2);
-        expect(elements.first['grades'].last['mean'], 100);
-        expect(elements.last['grades'].first['mean'], 100);
-      });
-      test('Specify hint', () async {
-        if (!running4_2orGreater) {
-          return;
-        }
-        var collectionName = getRandomCollectionName();
-        var collection = db.collection(collectionName);
+            var elements = await collection.find().toList();
 
-        var ret = await insertMembers(collection);
-        expect(ret.ok, 1.0);
-        expect(ret.isSuccess, isTrue);
+            expect(elements, isNotEmpty);
+            expect(elements.length, 2);
+            expect(elements.first['grades'].last['mean'], 100);
+            expect(elements.last['grades'].first['mean'], 100);
+          },
+        );
+        test('Specify hint', () async {
+          if (!running4_2orGreater) {
+            return;
+          }
+          var collectionName = getRandomCollectionName();
+          var collection = db.collection(collectionName);
 
-        await collection.createIndex(keys: {'status': 1});
-        await collection.createIndex(key: 'points');
+          var ret = await insertMembers(collection);
+          expect(ret.ok, 1.0);
+          expect(ret.isSuccess, isTrue);
 
-        var (res, _) = await collection.updateMany(
+          await collection.createIndex(keys: {'status': 1});
+          await collection.createIndex(key: 'points');
+
+          var (res, _) = await collection.updateMany(
             where
               ..$lte('points', 20)
               ..$eq('status', 'P'),
             UpdateExpression()..$set('misc1', 'Need to activate'),
-            hint: HintUnion(<String, Object>{'status': 1}));
+            hint: HintUnion(<String, Object>{'status': 1}),
+          );
 
-        expect(res, isNotNull);
-        expect(res.ok, 1.0);
-        expect(res.nMatched, 3);
-        expect(res.nModified, 3);
+          expect(res, isNotNull);
+          expect(res.ok, 1.0);
+          expect(res.nMatched, 3);
+          expect(res.nModified, 3);
 
-        var elements =
-            await collection.find(filter: where..$eq('status', 'P')).toList();
+          var elements = await collection
+              .find(filter: where..$eq('status', 'P'))
+              .toList();
 
-        expect(elements, isNotEmpty);
-        expect(elements.length, 3);
-        expect(elements.first['misc1'], 'Need to activate');
-        expect(elements.last['misc1'], 'Need to activate');
-      });
-    });
+          expect(elements, isNotEmpty);
+          expect(elements.length, 3);
+          expect(elements.first['misc1'], 'Need to activate');
+          expect(elements.last['misc1'], 'Need to activate');
+        });
+      },
+    );
   });
   tearDownAll(() async {
     await client.connect();
     db = client.db();
-    await Future.forEach(usedCollectionNames,
-        (String collectionName) => db.collection(collectionName).drop());
+    await Future.forEach(
+      usedCollectionNames,
+      (String collectionName) => db.collection(collectionName).drop(),
+    );
     await client.close();
   });
 }

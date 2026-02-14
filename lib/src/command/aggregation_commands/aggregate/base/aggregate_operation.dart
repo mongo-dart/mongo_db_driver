@@ -19,79 +19,90 @@ import '../aggregate_result.dart';
 /// collection, the db parameter must be passed instead.
 base class AggregateOperation extends CommandOperation {
   @protected
-  AggregateOperation.protected(Object pipeline,
-      {MongoCollection? collection,
-      MongoDatabase? db,
-      bool? explain,
-      MongoDocument? cursor,
-      super.session,
-      this.hint,
-      AggregateOptions? aggregateOptions,
-      Options? rawOptions,
-      this.let})
-      : cursor = cursor ?? <String, Object>{},
-        explain = explain ?? false,
-        super(
-            collection?.db ??
-                db ??
-                (throw MongoDartError('At least a Db must be specified')),
-            {},
-            <String, dynamic>{
-              ...?aggregateOptions?.getOptions(collection?.db ?? db),
-              ...?rawOptions
-            },
-            collection: collection,
-            aspect: Aspect.readOperation) {
+  AggregateOperation.protected(
+    Object pipeline, {
+    MongoCollection? collection,
+    MongoDatabase? db,
+    bool? explain,
+    MongoDocument? cursor,
+    super.session,
+    this.hint,
+    AggregateOptions? aggregateOptions,
+    Options? rawOptions,
+    this.let,
+  }) : cursor = cursor ?? <String, Object>{},
+       explain = explain ?? false,
+       super(
+         collection?.db ??
+             db ??
+             (throw MongoDartError('At least a Db must be specified')),
+         {},
+         <String, dynamic>{
+           ...?aggregateOptions?.getOptions(collection?.db ?? db),
+           ...?rawOptions,
+         },
+         collection: collection,
+         aspect: Aspect.readOperation,
+       ) {
     if (pipeline is List<Map<String, dynamic>>) {
       this.pipeline = <Map<String, dynamic>>[...pipeline];
     } else if (pipeline is AggregationPipelineBuilder) {
       this.pipeline = pipeline.build();
     } else {
-      throw MongoDartError('Received pipeline is "${pipeline.runtimeType}", '
-          'while the method only accept "AggregationPipelineBuilder" or '
-          '"List<Map<String, Object>>" objects');
+      throw MongoDartError(
+        'Received pipeline is "${pipeline.runtimeType}", '
+        'while the method only accept "AggregationPipelineBuilder" or '
+        '"List<Map<String, Object>>" objects',
+      );
     }
   }
 
-  factory AggregateOperation(Object pipeline,
-      {MongoCollection? collection,
-      MongoDatabase? db,
-      bool? explain,
-      MongoDocument? cursor,
-      ClientSession? session,
-      HintUnion? hint,
-      AggregateOptions? aggregateOptions,
-      Options? rawOptions,
-      MongoDocument? let}) {
+  factory AggregateOperation(
+    Object pipeline, {
+    MongoCollection? collection,
+    MongoDatabase? db,
+    bool? explain,
+    MongoDocument? cursor,
+    ClientSession? session,
+    HintUnion? hint,
+    AggregateOptions? aggregateOptions,
+    Options? rawOptions,
+    MongoDocument? let,
+  }) {
     if (collection?.serverApi != null) {
       switch (collection!.serverApi!.version) {
         case ServerApiVersion.v1:
-          return AggregateOperationV1(pipeline,
-              collection: collection,
-              db: db,
-              explain: explain,
-              cursor: cursor,
-              session: session,
-              hint: hint,
-              aggregateOptionsV1: aggregateOptions?.toV1,
-              rawOptions: rawOptions,
-              let: let);
+          return AggregateOperationV1(
+            pipeline,
+            collection: collection,
+            db: db,
+            explain: explain,
+            cursor: cursor,
+            session: session,
+            hint: hint,
+            aggregateOptionsV1: aggregateOptions?.toV1,
+            rawOptions: rawOptions,
+            let: let,
+          );
         // ignore: unreachable_switch_default
         default:
           throw MongoDartError(
-              'Stable Api ${collection.serverApi!.version} not managed');
+            'Stable Api ${collection.serverApi!.version} not managed',
+          );
       }
     }
-    return AggregateOperationOpen(pipeline,
-        collection: collection,
-        db: db,
-        explain: explain,
-        cursor: cursor,
-        session: session,
-        hint: hint,
-        aggregateOptionsOpen: aggregateOptions?.toOpen,
-        rawOptions: rawOptions,
-        let: let);
+    return AggregateOperationOpen(
+      pipeline,
+      collection: collection,
+      db: db,
+      explain: explain,
+      cursor: cursor,
+      session: session,
+      hint: hint,
+      aggregateOptionsOpen: aggregateOptions?.toOpen,
+      rawOptions: rawOptions,
+      let: let,
+    );
   }
 
   /// An array of aggregation pipeline stages that process and transform
@@ -163,12 +174,14 @@ base class AggregateOperation extends CommandOperation {
       keyPipeline: pipeline,
       if (explain) keyExplain: explain else keyCursor: cursor,
       if (hint != null && !hint!.isNull) keyHint: hint!.value,
-      if (let != null) keyLet: let
+      if (let != null) keyLet: let,
     };
   }
 
-  Future<AggregateResult> executeDocument(Server server,
-      {ClientSession? session}) async {
+  Future<AggregateResult> executeDocument(
+    Server server, {
+    ClientSession? session,
+  }) async {
     var result = await super.process();
     return AggregateResult(result, session ?? super.session);
   }

@@ -7,9 +7,10 @@ import '../../../session/client_session.dart';
 
 class AggregateResult with BasicResult, TimingResult {
   AggregateResult(Map<String, dynamic> document, ClientSession session)
-      : cursorResult = CursorResult(
-            document[keyCursor] as Map<String, Object>? ?? <String, Object>{},
-            session) {
+    : cursorResult = CursorResult(
+        document[keyCursor] as Map<String, Object>? ?? <String, Object>{},
+        session,
+      ) {
     extractBasic(document);
     extractTiming(document);
   }

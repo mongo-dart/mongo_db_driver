@@ -18,15 +18,16 @@ import 'aggregate_options_v1.dart';
 /// - When using the $collStats stage, you can only use the count field.
 /// No other $collStats fields are available.
 base class AggregateOperationV1 extends AggregateOperation {
-  AggregateOperationV1(super.pipeline,
-      {super.collection,
-      super.db,
-      super.explain,
-      super.cursor,
-      super.session,
-      super.hint,
-      AggregateOptionsV1? aggregateOptionsV1,
-      super.rawOptions,
-      super.let})
-      : super.protected(aggregateOptions: aggregateOptionsV1);
+  AggregateOperationV1(
+    super.pipeline, {
+    super.collection,
+    super.db,
+    super.explain,
+    super.cursor,
+    super.session,
+    super.hint,
+    AggregateOptionsV1? aggregateOptionsV1,
+    super.rawOptions,
+    super.let,
+  }) : super.protected(aggregateOptions: aggregateOptionsV1);
 }

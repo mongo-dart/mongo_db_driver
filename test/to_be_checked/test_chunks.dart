@@ -30,7 +30,10 @@ class ChunkHandler {
       _handle(data, sink, false);
 
   void handleError(
-      Object error, StackTrace stackTrace, EventSink<List<int>> sink) {
+    Object error,
+    StackTrace stackTrace,
+    EventSink<List<int>> sink,
+  ) {
     print(error);
     print(stackTrace);
   }
@@ -42,19 +45,23 @@ class ChunkHandler {
 
   StreamTransformer<List<int>, List<int>> get transformer =>
       StreamTransformer<List<int>, List<int>>.fromHandlers(
-          handleData: handleData, handleDone: handleDone);
+        handleData: handleData,
+        handleDone: handleDone,
+      );
 }
 
 StreamTransformer<List<int>, List<int>> chunkTransformer(int chunkSize) {
   var chunkHandler = ChunkHandler(chunkSize);
   return StreamTransformer<List<int>, List<int>>.fromHandlers(
-      handleData: chunkHandler.handleData, handleDone: chunkHandler.handleDone);
+    handleData: chunkHandler.handleData,
+    handleDone: chunkHandler.handleDone,
+  );
 }
 
 void main() {
   var data = [
     [1, 3, 5, 6, 7, 8, 9, 3, 4, 5, 6, 1, 7],
-    [2, 3, 6, 1]
+    [2, 3, 6, 1],
   ];
   var stream = Stream.fromIterable(data);
   stream.transform(ChunkHandler(4).transformer).listen(print);

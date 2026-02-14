@@ -25,7 +25,7 @@ void main() async {
     {'_id': 4, 'name': 'George', 'state': 'active', 'rating': 95, 'score': 8},
     {'_id': 5, 'name': 'Jim', 'state': 'idle', 'rating': 40, 'score': 3},
     {'_id': 6, 'name': 'Laureen', 'state': 'busy', 'rating': 87, 'score': 8},
-    {'_id': 7, 'name': 'John', 'state': 'idle', 'rating': 72, 'score': 7}
+    {'_id': 7, 'name': 'John', 'state': 'idle', 'rating': 72, 'score': 7},
   ]);
 
   if (!ret.isSuccess) {
@@ -33,8 +33,9 @@ void main() async {
   }
 
   var (res, _) = await collection.findOneAndDelete(
-      where..$eq('state', 'active'),
-      sort: <String, dynamic>{'rating': 1});
+    where..$eq('state', 'active'),
+    sort: <String, dynamic>{'rating': 1},
+  );
 
   print('Updated document: ${res.lastErrorObject?.updatedExisting}'); // false
 

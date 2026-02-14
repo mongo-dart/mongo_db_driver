@@ -13,17 +13,22 @@ import 'count_result.dart';
 /// In case of admin/diagnostic pipeline which does not require an underlying
 /// collection, the db parameter must be passed instead.
 base class CountOperation extends CommandOperation {
-  CountOperation(MongoCollection collection,
-      {this.query,
-      this.limit,
-      this.skip,
-      super.session,
-      this.hint,
-      CountOptions? countOptions,
-      Map<String, Object>? rawOptions})
-      : super(collection.db, {},
-            <String, dynamic>{...?countOptions?.options, ...?rawOptions},
-            collection: collection, aspect: Aspect.readOperation);
+  CountOperation(
+    MongoCollection collection, {
+    this.query,
+    this.limit,
+    this.skip,
+    super.session,
+    this.hint,
+    CountOptions? countOptions,
+    Map<String, Object>? rawOptions,
+  }) : super(
+         collection.db,
+         {},
+         <String, dynamic>{...?countOptions?.options, ...?rawOptions},
+         collection: collection,
+         aspect: Aspect.readOperation,
+       );
 
   /// A query that selects which documents to count in the collection or view.
   Map<String, dynamic>? query;
@@ -46,15 +51,17 @@ base class CountOperation extends CommandOperation {
 
   @override
   Command $buildCommand() => <String, dynamic>{
-        keyCount: collection!.collectionName,
-        if (query != null) keyQuery: query!,
-        if (limit != null && limit! > 0) keyLimit: limit!,
-        if (skip != null && skip! > 0) keySkip: skip!,
-        if (hint != null && !hint!.isNull) keyHint: hint!.value,
-      };
+    keyCount: collection!.collectionName,
+    keyQuery: ?query,
+    if (limit != null && limit! > 0) keyLimit: limit!,
+    if (skip != null && skip! > 0) keySkip: skip!,
+    if (hint != null && !hint!.isNull) keyHint: hint!.value,
+  };
 
-  Future<CountResult> executeDocument(Server server,
-      {ClientSession? session}) async {
+  Future<CountResult> executeDocument(
+    Server server, {
+    ClientSession? session,
+  }) async {
     var result = await super.process();
     return CountResult(result);
   }

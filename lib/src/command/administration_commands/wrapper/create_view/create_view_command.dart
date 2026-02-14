@@ -51,18 +51,33 @@ import 'create_view_options.dart';
 ///   An alternative way to creteViewOptions to specify command options
 ///   (must be manually set)
 base class CreateViewCommand extends CreateCommand {
-  CreateViewCommand(super.db, super.view, String source, List pipeline,
-      {CreateViewOptions? createViewOptions, super.rawOptions})
-      : super(
-            createOptions: _generateCreateOptions(
-                db, source, pipeline, createViewOptions));
+  CreateViewCommand(
+    super.db,
+    super.view,
+    String source,
+    List pipeline, {
+    CreateViewOptions? createViewOptions,
+    super.rawOptions,
+  }) : super(
+         createOptions: _generateCreateOptions(
+           db,
+           source,
+           pipeline,
+           createViewOptions,
+         ),
+       );
 }
 
-CreateOptions _generateCreateOptions(MongoDatabase db, String source,
-    List pipeline, CreateViewOptions? createViewOptions) {
+CreateOptions _generateCreateOptions(
+  MongoDatabase db,
+  String source,
+  List pipeline,
+  CreateViewOptions? createViewOptions,
+) {
   return CreateOptions(
-      viewOn: source,
-      pipeline: pipeline,
-      collation: createViewOptions?.collation,
-      comment: createViewOptions?.comment);
+    viewOn: source,
+    pipeline: pipeline,
+    collation: createViewOptions?.collation,
+    comment: createViewOptions?.comment,
+  );
 }

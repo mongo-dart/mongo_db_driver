@@ -10,12 +10,18 @@ import 'operation_base.dart';
 ///
 /// Designed for system commands where Db/Collection are not needed
 base class AuthCommand extends ServerCommand {
-  AuthCommand(super.mongoClient, super.command,
-      {super.options, super.session, super.aspect})
-      : super();
+  AuthCommand(
+    super.mongoClient,
+    super.command, {
+    super.options,
+    super.session,
+    super.aspect,
+  }) : super();
 
-  Future<MongoDocument> execute(
-      {required Server server, ConnectionBase? connection}) {
+  Future<MongoDocument> execute({
+    required Server server,
+    ConnectionBase? connection,
+  }) {
     return executeOnServer(server, connection: connection);
   }
 

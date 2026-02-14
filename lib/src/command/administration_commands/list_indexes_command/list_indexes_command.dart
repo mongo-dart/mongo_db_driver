@@ -23,16 +23,19 @@ import '../../command_exp.dart';
 ///   (must be manually set)
 
 base class ListIndexesCommand extends CommandOperation {
-  ListIndexesCommand(MongoDatabase db, MongoCollection collection,
-      {super.session,
-      ListIndexesOptions? listIndexesOptions,
-      Map<String, Object>? rawOptions})
-      : super(db, {},
-            <String, dynamic>{...?listIndexesOptions?.options, ...?rawOptions},
-            collection: collection);
+  ListIndexesCommand(
+    MongoDatabase db,
+    MongoCollection collection, {
+    super.session,
+    ListIndexesOptions? listIndexesOptions,
+    Map<String, Object>? rawOptions,
+  }) : super(db, {}, <String, dynamic>{
+         ...?listIndexesOptions?.options,
+         ...?rawOptions,
+       }, collection: collection);
 
   @override
   Command $buildCommand() => <String, dynamic>{
-        keyListIndexes: collection?.collectionName ?? '',
-      };
+    keyListIndexes: collection?.collectionName ?? '',
+  };
 }

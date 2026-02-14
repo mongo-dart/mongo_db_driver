@@ -18,14 +18,17 @@ import 'drop_database_options.dart';
 ///   An alternative way to dropDatabaseOptions to specify command options
 ///   (must be manually set)
 base class DropDatabaseCommand extends CommandOperation {
-  DropDatabaseCommand(MongoDatabase db,
-      {super.session,
-      DropDatabaseOptions? dropDatabaseOptions,
-      Map<String, Object>? rawOptions})
-      : super(db, <String, dynamic>{
-          keyDropDatabase: 1,
-        }, <String, dynamic>{
-          ...?dropDatabaseOptions?.getOptions(db),
-          ...?rawOptions
-        });
+  DropDatabaseCommand(
+    MongoDatabase db, {
+    super.session,
+    DropDatabaseOptions? dropDatabaseOptions,
+    Map<String, Object>? rawOptions,
+  }) : super(
+         db,
+         <String, dynamic>{keyDropDatabase: 1},
+         <String, dynamic>{
+           ...?dropDatabaseOptions?.getOptions(db),
+           ...?rawOptions,
+         },
+       );
 }

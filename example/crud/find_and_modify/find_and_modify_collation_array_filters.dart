@@ -22,33 +22,37 @@ void main() async {
   var (ret, _, _, _) = await collection.insertMany([
     {
       '_id': 1,
-      'grades': [95, 92, 90]
+      'grades': [95, 92, 90],
     },
     {
       '_id': 2,
-      'grades': [98, 100, 102]
+      'grades': [98, 100, 102],
     },
     {
       '_id': 3,
-      'grades': [95, 110, 100]
-    }
+      'grades': [95, 110, 100],
+    },
   ]);
   if (!ret.isSuccess) {
     print('Error detected in record insertion');
   }
 
-  var (res, _) = await collection.findOneAndUpdate(where..$gte('grades', 100),
-      UpdateExpression()..$set(r'grades.$[element]', 100),
-      returnNew: true,
-      arrayFilters: [
-        {
-          'element': {r'$gte': 100}
-        }
-      ]);
+  var (res, _) = await collection.findOneAndUpdate(
+    where..$gte('grades', 100),
+    UpdateExpression()..$set(r'grades.$[element]', 100),
+    returnNew: true,
+    arrayFilters: [
+      {
+        'element': {r'$gte': 100},
+      },
+    ],
+  );
   print('Updated document: ${res.lastErrorObject?.updatedExisting}'); // true
 
-  print('Modified element new grades: '
-      '${res.value?['grades']}'); // [98, 100, 100];
+  print(
+    'Modified element new grades: '
+    '${res.value?['grades']}',
+  ); // [98, 100, 100];
 
   await cleanupDatabase();
 }

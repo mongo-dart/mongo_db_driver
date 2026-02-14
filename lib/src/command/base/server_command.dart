@@ -16,9 +16,13 @@ Logger _log = Logger('Server Command');
 base class ServerCommand extends OperationBase {
   Command command;
 
-  ServerCommand(super.mongoClient, this.command,
-      {super.options, super.session, Aspect? aspect})
-      : super(aspects: aspect) {
+  ServerCommand(
+    super.mongoClient,
+    this.command, {
+    super.options,
+    super.session,
+    Aspect? aspect,
+  }) : super(aspects: aspect) {
     _debugInfo = mongoClient.debugOptions.commandExecutionLogLevel != Level.OFF;
     if (_debugInfo) {
       _log.level = mongoClient.debugOptions.commandExecutionLogLevel;
@@ -67,8 +71,10 @@ base class ServerCommand extends OperationBase {
   @override
   @nonVirtual
   @protected
-  Future<MongoDocument> executeOnServer(Server server,
-      {ConnectionBase? connection}) async {
+  Future<MongoDocument> executeOnServer(
+    Server server, {
+    ConnectionBase? connection,
+  }) async {
     var command = $buildCommand();
 
     processOptions(command);

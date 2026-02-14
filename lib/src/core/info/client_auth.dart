@@ -14,12 +14,12 @@ class ClientAuth {
 
   bool isAuthenticated = false;
 
-  ClientAuth(
-      {bool? isSecure,
-      bool? tlsAllowInvalidCertificates,
-      this.tlsCAFileContent,
-      this.tlsCertificateKeyFileContent,
-      this.tlsCertificateKeyFilePassword})
-      : isSecure = isSecure ?? false,
-        tlsAllowInvalidCertificates = tlsAllowInvalidCertificates ?? false;
+  ClientAuth({
+    bool? isSecure,
+    bool? tlsAllowInvalidCertificates,
+    this.tlsCAFileContent,
+    this.tlsCertificateKeyFileContent,
+    this.tlsCertificateKeyFilePassword,
+  }) : isSecure = isSecure ?? false,
+       tlsAllowInvalidCertificates = tlsAllowInvalidCertificates ?? false;
 }

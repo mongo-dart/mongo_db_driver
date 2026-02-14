@@ -12,7 +12,7 @@ class LastErrorObject {
   int? n;
 
   LastErrorObject.fromMap(Map document)
-      : updatedExisting = document[keyUpdatedExisting] as bool? ?? false {
+    : updatedExisting = document[keyUpdatedExisting] as bool? ?? false {
     upserted = document[keyUpserted] as ObjectId?;
     n = document[keyN] as int?;
   }

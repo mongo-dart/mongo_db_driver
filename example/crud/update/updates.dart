@@ -12,7 +12,7 @@ void main() async {
     {'name': 'a', 'value': 10},
     {'name': 'b', 'value': 20},
     {'name': 'c', 'value': 30},
-    {'name': 'd', 'value': 40}
+    {'name': 'd', 'value': 40},
   ];
   await coll.insertMany(toInsert);
   var v1 = await coll.findOne(filter: {'name': 'c'});
@@ -34,7 +34,7 @@ void main() async {
     {'name': 'a', 'value': 10},
     {'name': 'b', 'value': 20},
     {'name': 'c', 'value': 30},
-    {'name': 'd', 'value': 40}
+    {'name': 'd', 'value': 40},
   ];
   await coll.insertMany(toInsert);
   v1 = await coll.findOne(filter: {'name': 'c'});
@@ -50,7 +50,7 @@ void main() async {
     {'name': 'a', 'value': 10},
     {'name': 'b', 'value': 20},
     {'name': 'c', 'value': 30},
-    {'name': 'd', 'value': 40}
+    {'name': 'd', 'value': 40},
   ];
   await coll.insertMany(toInsert);
   v1 = await coll.findOne(filter: {'name': 'c'});

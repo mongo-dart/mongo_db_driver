@@ -9,23 +9,24 @@ import '../v1/find_options_v1.dart';
 
 abstract class FindOptions {
   @protected
-  FindOptions.protected(
-      {this.batchSize,
-      this.singleBatch = false,
-      this.comment,
-      this.maxTimeMS,
-      this.readConcern,
-      this.max,
-      this.min,
-      this.returnKey = false,
-      this.showRecordId = false,
-      this.tailable = false,
-      this.oplogReplay = false,
-      this.noCursorTimeout = false,
-      this.awaitData = false,
-      this.allowPartialResult = false,
-      this.collation,
-      this.allowDiskUse = false}) {
+  FindOptions.protected({
+    this.batchSize,
+    this.singleBatch = false,
+    this.comment,
+    this.maxTimeMS,
+    this.readConcern,
+    this.max,
+    this.min,
+    this.returnKey = false,
+    this.showRecordId = false,
+    this.tailable = false,
+    this.oplogReplay = false,
+    this.noCursorTimeout = false,
+    this.awaitData = false,
+    this.allowPartialResult = false,
+    this.collation,
+    this.allowDiskUse = false,
+  }) {
     if (batchSize != null && batchSize! < 0) {
       throw MongoDartError('Batch size parameter must be a non negative value');
     }
@@ -34,44 +35,27 @@ abstract class FindOptions {
     }
   }
 
-  factory FindOptions(
-      {ServerApi? serverApi,
-      int? batchSize,
-      bool singleBatch = false,
-      String? comment,
-      int? maxTimeMS,
-      ReadConcern? readConcern,
-      Map<String, Object>? max,
-      Map<String, Object>? min,
-      bool returnKey = false,
-      bool showRecordId = false,
-      bool tailable = false,
-      bool oplogReplay = false,
-      bool noCursorTimeout = false,
-      bool awaitData = false,
-      bool allowPartialResult = false,
-      CollationOptions? collation,
-      bool allowDiskUse = false}) {
+  factory FindOptions({
+    ServerApi? serverApi,
+    int? batchSize,
+    bool singleBatch = false,
+    String? comment,
+    int? maxTimeMS,
+    ReadConcern? readConcern,
+    Map<String, Object>? max,
+    Map<String, Object>? min,
+    bool returnKey = false,
+    bool showRecordId = false,
+    bool tailable = false,
+    bool oplogReplay = false,
+    bool noCursorTimeout = false,
+    bool awaitData = false,
+    bool allowPartialResult = false,
+    CollationOptions? collation,
+    bool allowDiskUse = false,
+  }) {
     if (serverApi != null && serverApi.version == ServerApiVersion.v1) {
       return FindOptionsV1(
-          batchSize: batchSize,
-          singleBatch: singleBatch,
-          comment: comment,
-          maxTimeMS: maxTimeMS,
-          readConcern: readConcern,
-          max: max,
-          min: min,
-          returnKey: returnKey,
-          showRecordId: showRecordId,
-          tailable: tailable,
-          oplogReplay: oplogReplay,
-          noCursorTimeout: noCursorTimeout,
-          awaitData: awaitData,
-          allowPartialResult: allowPartialResult,
-          collation: collation,
-          allowDiskUse: allowDiskUse);
-    }
-    return FindOptionsOpen(
         batchSize: batchSize,
         singleBatch: singleBatch,
         comment: comment,
@@ -87,7 +71,27 @@ abstract class FindOptions {
         awaitData: awaitData,
         allowPartialResult: allowPartialResult,
         collation: collation,
-        allowDiskUse: allowDiskUse);
+        allowDiskUse: allowDiskUse,
+      );
+    }
+    return FindOptionsOpen(
+      batchSize: batchSize,
+      singleBatch: singleBatch,
+      comment: comment,
+      maxTimeMS: maxTimeMS,
+      readConcern: readConcern,
+      max: max,
+      min: min,
+      returnKey: returnKey,
+      showRecordId: showRecordId,
+      tailable: tailable,
+      oplogReplay: oplogReplay,
+      noCursorTimeout: noCursorTimeout,
+      awaitData: awaitData,
+      allowPartialResult: allowPartialResult,
+      collation: collation,
+      allowDiskUse: allowDiskUse,
+    );
   }
 
   /// The number of documents to return in the first batch. Defaults to **101**.
@@ -170,7 +174,6 @@ abstract class FindOptions {
   /// no data. After a timeout period, find returns as normal.
   final bool awaitData;
   @Deprecated('Deprecated since version 4.4')
-
   /// An internal command for replaying a replica set’s oplog.
   final bool oplogReplay;
 
@@ -232,7 +235,8 @@ abstract class FindOptions {
           awaitData: awaitData,
           allowPartialResult: allowPartialResult,
           collation: collation,
-          allowDiskUse: allowDiskUse);
+          allowDiskUse: allowDiskUse,
+        );
 
   FindOptionsV1 get toV1 => this is FindOptionsV1
       ? this as FindOptionsV1
@@ -253,25 +257,26 @@ abstract class FindOptions {
           awaitData: awaitData,
           allowPartialResult: allowPartialResult,
           collation: collation,
-          allowDiskUse: allowDiskUse);
+          allowDiskUse: allowDiskUse,
+        );
 
   Options get options => <String, dynamic>{
-        if (batchSize != null) keyBatchSize: batchSize!,
-        if (singleBatch) keySingleBatch: singleBatch,
-        if (comment != null) keyComment: comment!,
-        if (maxTimeMS != null) keyMaxTimeMS: maxTimeMS!,
-        if (readConcern != null) keyReadConcern: readConcern!.toMap(),
-        if (max != null) keyMax: max!,
-        if (min != null) keyMin: min!,
-        if (returnKey) keyReturnKey: returnKey,
-        if (showRecordId) keyShowRecordId: showRecordId,
-        if (tailable) keyTailable: tailable,
-        // ignore: deprecated_member_use_from_same_package
-        if (oplogReplay) keyOplogReplay: oplogReplay,
-        if (noCursorTimeout) keyNoCursorTimeout: noCursorTimeout,
-        if (awaitData) keyAwaitData: awaitData,
-        if (allowPartialResult) keyAllowPartialResult: allowPartialResult,
-        if (collation != null) keyCollation: collation!.options,
-        if (allowDiskUse) keyAllowDiskUse: allowDiskUse,
-      };
+    keyBatchSize: ?batchSize,
+    if (singleBatch) keySingleBatch: singleBatch,
+    keyComment: ?comment,
+    keyMaxTimeMS: ?maxTimeMS,
+    if (readConcern != null) keyReadConcern: readConcern!.toMap(),
+    keyMax: ?max,
+    keyMin: ?min,
+    if (returnKey) keyReturnKey: returnKey,
+    if (showRecordId) keyShowRecordId: showRecordId,
+    if (tailable) keyTailable: tailable,
+    // ignore: deprecated_member_use_from_same_package
+    if (oplogReplay) keyOplogReplay: oplogReplay,
+    if (noCursorTimeout) keyNoCursorTimeout: noCursorTimeout,
+    if (awaitData) keyAwaitData: awaitData,
+    if (allowPartialResult) keyAllowPartialResult: allowPartialResult,
+    if (collation != null) keyCollation: collation!.options,
+    if (allowDiskUse) keyAllowDiskUse: allowDiskUse,
+  };
 }

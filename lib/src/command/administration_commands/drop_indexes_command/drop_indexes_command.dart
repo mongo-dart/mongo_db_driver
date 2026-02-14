@@ -12,29 +12,34 @@ base class DropIndexesCommand extends CommandOperation {
   Object index;
   late Map<String, Object> indexes;
 
-  DropIndexesCommand(MongoDatabase db, MongoCollection collection, this.index,
-      {super.session,
-      DropIndexesOptions? dropIndexesOptions,
-      ConnectionBase? connection,
-      Map<String, Object>? rawOptions})
-      : super(
-            db,
-            {},
-            <String, dynamic>{
-              ...?dropIndexesOptions?.getOptions(collection),
-              ...?rawOptions
-            },
-            collection: collection,
-            aspect: Aspect.writeOperation) {
+  DropIndexesCommand(
+    MongoDatabase db,
+    MongoCollection collection,
+    this.index, {
+    super.session,
+    DropIndexesOptions? dropIndexesOptions,
+    ConnectionBase? connection,
+    Map<String, Object>? rawOptions,
+  }) : super(
+         db,
+         {},
+         <String, dynamic>{
+           ...?dropIndexesOptions?.getOptions(collection),
+           ...?rawOptions,
+         },
+         collection: collection,
+         aspect: Aspect.writeOperation,
+       ) {
     if (index is! String && index is! List<String> && index is! Map) {
       throw MongoDartError(
-          'The index parameter is not String or List of string or an array');
+        'The index parameter is not String or List of string or an array',
+      );
     }
   }
 
   @override
   Command $buildCommand() => <String, dynamic>{
-        keyDropIndexes: collection!.collectionName,
-        keyIndex: index
-      };
+    keyDropIndexes: collection!.collectionName,
+    keyIndex: index,
+  };
 }

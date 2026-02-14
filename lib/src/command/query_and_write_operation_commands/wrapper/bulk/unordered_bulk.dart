@@ -5,17 +5,21 @@ import '../../../command_exp.dart';
 import 'bulk_options.dart';
 
 base class UnorderedBulk extends Bulk {
-  UnorderedBulk(super.collection,
-      {WriteConcern? writeConcern,
-      Map<String, Object>? rawOptions,
-      bool? bypassDocumentValidation})
-      : super(
-            bulkOptions: BulkOptions(
-                writeConcern: writeConcern,
-                ordered: false,
-                bypassDocumentValidation: bypassDocumentValidation),
-            rawOptions:
-                (rawOptions == null) ? null : (rawOptions..remove(keyOrdered)));
+  UnorderedBulk(
+    super.collection, {
+    WriteConcern? writeConcern,
+    Map<String, Object>? rawOptions,
+    bool? bypassDocumentValidation,
+  }) : super(
+         bulkOptions: BulkOptions(
+           writeConcern: writeConcern,
+           ordered: false,
+           bypassDocumentValidation: bypassDocumentValidation,
+         ),
+         rawOptions: (rawOptions == null)
+             ? null
+             : (rawOptions..remove(keyOrdered)),
+       );
 
   /// This Map contains the insert commands. Ex.
   /// {'insert': 'abc', 'documents': [{'a', 1}, {'a', 2}, {'a', 3}, {'a', 4}]}
@@ -73,10 +77,10 @@ base class UnorderedBulk extends Bulk {
 
   @override
   List<Command> getBulkCommands() => [
-        if (insertCommand.isNotEmpty) ...splitCommands(insertCommand),
-        if (updateCommand.isNotEmpty) ...splitCommands(updateCommand),
-        if (deleteCommand.isNotEmpty) ...splitCommands(deleteCommand)
-      ];
+    if (insertCommand.isNotEmpty) ...splitCommands(insertCommand),
+    if (updateCommand.isNotEmpty) ...splitCommands(updateCommand),
+    if (deleteCommand.isNotEmpty) ...splitCommands(deleteCommand),
+  ];
 
   @override
   void addCommand(Command command) {
@@ -117,17 +121,23 @@ base class UnorderedBulk extends Bulk {
 
   @override
   List<Map<int, int>> getBulkInputOrigins() => <Map<int, int>>[
-        if (insertCommand[keyInsertArgument] != null &&
-            (insertCommand[keyInsertArgument]! as List).isNotEmpty)
-          ...splitInputOrigins(insertCommandsOrigin,
-              (insertCommand[keyInsertArgument]! as List).length),
-        if (updateCommand[keyUpdateArgument] != null &&
-            (updateCommand[keyUpdateArgument]! as List).isNotEmpty)
-          ...splitInputOrigins(updateCommandsOrigin,
-              (updateCommand[keyUpdateArgument]! as List).length),
-        if (deleteCommand[keyDeleteArgument] != null &&
-            (deleteCommand[keyDeleteArgument]! as List).isNotEmpty)
-          ...splitInputOrigins(deleteCommandsOrigin,
-              (deleteCommand[keyDeleteArgument]! as List).length),
-      ];
+    if (insertCommand[keyInsertArgument] != null &&
+        (insertCommand[keyInsertArgument]! as List).isNotEmpty)
+      ...splitInputOrigins(
+        insertCommandsOrigin,
+        (insertCommand[keyInsertArgument]! as List).length,
+      ),
+    if (updateCommand[keyUpdateArgument] != null &&
+        (updateCommand[keyUpdateArgument]! as List).isNotEmpty)
+      ...splitInputOrigins(
+        updateCommandsOrigin,
+        (updateCommand[keyUpdateArgument]! as List).length,
+      ),
+    if (deleteCommand[keyDeleteArgument] != null &&
+        (deleteCommand[keyDeleteArgument]! as List).isNotEmpty)
+      ...splitInputOrigins(
+        deleteCommandsOrigin,
+        (deleteCommand[keyDeleteArgument]! as List).length,
+      ),
+  ];
 }

@@ -14,7 +14,8 @@ import '../connection.dart';
 import '../secure_connection.dart';
 import 'connection_events.dart';
 
-const noSecureRequestError = 'The socket connection has been reset by peer.'
+const noSecureRequestError =
+    'The socket connection has been reset by peer.'
     '\nPossible causes:'
     '\n- Trying to connect to an ssl/tls encrypted database without specifiyng'
     '\n  either the query parm tls=true '
@@ -33,7 +34,7 @@ Set<String> _legalEvents = <String>{
   extractType(ConnectionActive),
   extractType(ConnectionClosed),
   extractType(ConnectionAvailable),
-  extractType(ConnectionMessageReceived)
+  extractType(ConnectionMessageReceived),
 };
 
 abstract class ConnectionBase with EventEmitter {
@@ -72,8 +73,9 @@ abstract class ConnectionBase with EventEmitter {
 
   Future<void> connect() async {
     if (!isClosed) {
-      await _closeOnError(MongoDartError(
-          'Call to connect(), but the connection is alreay open'));
+      await _closeOnError(
+        MongoDartError('Call to connect(), but the connection is alreay open'),
+      );
     }
 
     return internalConnect();
@@ -107,20 +109,24 @@ abstract class ConnectionBase with EventEmitter {
 
     socket!
         .transform<MongoMessage>(MessageHandler().transformer)
-        .listen(receiveReply, onError: (error, st) async {
-      await _closeOnError(
-          MongoDartError('Socket error $error', stackTrace: st));
-    },
-            //cancelOnError: true,
-            // onDone is not called in any case after onData or OnError,
-            // it is called when the socket closes, i.e. it is an error.
-            // Possible causes:
-            // * Trying to connect to a tls encrypted Database
-            //   without specifing tls=true in the query parms or setting
-            //   the secure parameter to true in db.open()
-            onDone: () async {
-      await _closeOnError(MongoDartError(noSecureRequestError));
-    });
+        .listen(
+          receiveReply,
+          onError: (error, st) async {
+            await _closeOnError(
+              MongoDartError('Socket error $error', stackTrace: st),
+            );
+          },
+          //cancelOnError: true,
+          // onDone is not called in any case after onData or OnError,
+          // it is called when the socket closes, i.e. it is an error.
+          // Possible causes:
+          // * Trying to connect to a tls encrypted Database
+          //   without specifing tls=true in the query parms or setting
+          //   the secure parameter to true in db.open()
+          onDone: () async {
+            await _closeOnError(MongoDartError(noSecureRequestError));
+          },
+        );
     // ignore: unawaited_futures
     socket!.done.catchError((error) async {
       await _closeOnError(MongoDartError('Socket error $error'));
@@ -133,10 +139,12 @@ abstract class ConnectionBase with EventEmitter {
   Future<MongoMessage> execute(MongoMessage message) async {
     if (_state == ConnectionState.closed) {
       await _closeOnError(
-          MongoDartError('Invalid state: Connection already closed.'));
+        MongoDartError('Invalid state: Connection already closed.'),
+      );
     } else if (_state == ConnectionState.active) {
       await _closeOnError(
-          MongoDartError('Invalid state: Connection already processing.'));
+        MongoDartError('Invalid state: Connection already processing.'),
+      );
     }
     await emit(ConnectionActive(id));
 
@@ -161,7 +169,8 @@ abstract class ConnectionBase with EventEmitter {
       _completer!.complete(reply);
     } else {
       await _closeOnError(
-          MongoDartError('Unexpected respondTo: ${reply.responseTo} $reply'));
+        MongoDartError('Unexpected respondTo: ${reply.responseTo} $reply'),
+      );
     }
   }
 

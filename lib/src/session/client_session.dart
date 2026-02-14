@@ -21,8 +21,8 @@ import 'transaction_options.dart';
 ///  threads or processes
 class ClientSession {
   ClientSession(this.client, {SessionOptions? sessionOptions})
-      : sessionId = Uuid().v4obj(),
-        sessionOptions = sessionOptions ?? SessionOptions() {
+    : sessionId = Uuid().v4obj(),
+      sessionOptions = sessionOptions ?? SessionOptions() {
     client.activeSessions.add(this);
   }
 
@@ -136,9 +136,10 @@ class ClientSession {
       ..state = TransactionState.starting;
   }
 
-  Future<MongoDocument?> abortTransaction(
-      {AbortTransactionOptions? abortTransactionOptions,
-      Options? options}) async {
+  Future<MongoDocument?> abortTransaction({
+    AbortTransactionOptions? abortTransactionOptions,
+    Options? options,
+  }) async {
     // handle any initial problematic cases
     TransactionState txnState = transaction.state;
 
@@ -160,22 +161,27 @@ class ClientSession {
     if (txnState == TransactionState.committed ||
         txnState == TransactionState.committedEmpty) {
       throw MongoDartError(
-          'Cannot call abortTransaction after calling commitTransaction');
+        'Cannot call abortTransaction after calling commitTransaction',
+      );
     }
 
-    var command = AbortTransactionCommand(client, transaction,
-        session: this,
-        abortTransactionOptions: abortTransactionOptions,
-        rawOptions: options);
+    var command = AbortTransactionCommand(
+      client,
+      transaction,
+      session: this,
+      abortTransactionOptions: abortTransactionOptions,
+      rawOptions: options,
+    );
 
     MongoDocument ret = await command.process();
     transaction.state = TransactionState.aborted;
     return ret;
   }
 
-  Future<MongoDocument?> commitTransaction(
-      {CommitTransactionOptions? commitTransactionOptions,
-      Options? options}) async {
+  Future<MongoDocument?> commitTransaction({
+    CommitTransactionOptions? commitTransactionOptions,
+    Options? options,
+  }) async {
     // handle any initial problematic cases
     TransactionState txnState = transaction.state;
 
@@ -192,13 +198,17 @@ class ClientSession {
 
     if (txnState == TransactionState.aborted) {
       throw MongoDartError(
-          'Cannot call commitTransaction after calling abortTransaction');
+        'Cannot call commitTransaction after calling abortTransaction',
+      );
     }
 
-    var command = CommitTransactionCommand(client, transaction,
-        commitTransactionOptions: commitTransactionOptions,
-        session: this,
-        rawOptions: options);
+    var command = CommitTransactionCommand(
+      client,
+      transaction,
+      commitTransactionOptions: commitTransactionOptions,
+      session: this,
+      rawOptions: options,
+    );
 
     MongoDocument ret = await command.process();
     transaction.state = TransactionState.committed;
@@ -226,8 +236,8 @@ class ClientSession {
     //print('Tnx num: ${transaction.transactionNumber}');
   }
 
-// TODO Execute the commands
-/* Keep as reference
+  // TODO Execute the commands
+  /* Keep as reference
   Future<MongoDocument?> endTransaction(ClientSession session,
       {bool isAbort = false}) async {
     if (session.transaction == null) {

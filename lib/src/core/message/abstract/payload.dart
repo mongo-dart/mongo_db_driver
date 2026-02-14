@@ -19,7 +19,7 @@ class Payload0 extends Payload {
   Payload0(MongoDocument document) : document = BsonMap(document);
 
   Payload0.fromBuffer(BsonBinary buffer)
-      : document = BsonMap.fromBuffer(buffer);
+    : document = BsonMap.fromBuffer(buffer);
 
   @override
   void packValue(BsonBinary buffer) => document.packValue(buffer);
@@ -37,18 +37,21 @@ class Payload1 extends Payload {
   late List<BsonMap> _documents;
 
   Payload1(String identifier, List<Map<String, dynamic>> documents)
-      : identifier = BsonCString(identifier),
-        _documents = _createBsonMapList(documents);
+    : identifier = BsonCString(identifier),
+      _documents = _createBsonMapList(documents);
 
   Payload1.fromBuffer(BsonBinary buffer)
-      : _length = (buffer /* ..makeByteList() */).readInt32(),
-        identifier = BsonCString(buffer.readCString()) {
-    _documents =
-        _decodeBsonMapList(buffer, _length! - 4 - identifier.totalByteLength);
+    : _length = (buffer /* ..makeByteList() */ ).readInt32(),
+      identifier = BsonCString(buffer.readCString()) {
+    _documents = _decodeBsonMapList(
+      buffer,
+      _length! - 4 - identifier.totalByteLength,
+    );
   }
 
   @override
-  int get byteLength => _length ??= 4 /* sequence length */ +
+  int get byteLength => _length ??=
+      4 /* sequence length */ +
       identifier.totalByteLength +
       documentsByteLength;
 
@@ -70,8 +73,9 @@ class Payload1 extends Payload {
   }
 
   @override
-  Map<String, Object> get content =>
-      {identifier.data: _extractBsonMapList(_documents)};
+  Map<String, Object> get content => {
+    identifier.data: _extractBsonMapList(_documents),
+  };
 }
 
 List<BsonMap> _createBsonMapList(List<Map<String, dynamic>> documents) {

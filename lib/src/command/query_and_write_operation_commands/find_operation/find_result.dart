@@ -7,9 +7,10 @@ import '../../../session/client_session.dart';
 
 class FindResult with BasicResult, TimingResult {
   FindResult(Map<String, dynamic> document, ClientSession session)
-      : cursorResult = CursorResult(
-            document[keyCursor] as Map<String, dynamic>? ?? <String, dynamic>{},
-            session) {
+    : cursorResult = CursorResult(
+        document[keyCursor] as Map<String, dynamic>? ?? <String, dynamic>{},
+        session,
+      ) {
     extractBasic(document);
     extractTiming(document);
   }

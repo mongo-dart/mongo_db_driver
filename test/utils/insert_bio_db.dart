@@ -1,7 +1,7 @@
 import 'package:mongo_db_driver/mongo_db_driver.dart';
 
 Future<(BulkWriteResult, MongoDocument, List<MongoDocument>, List<dynamic>)>
-    insertBio(MongoCollection collection) async {
+insertBio(MongoCollection collection) async {
   return collection.insertMany([
     {
       '_id': 1,
@@ -13,20 +13,20 @@ Future<(BulkWriteResult, MongoDocument, List<MongoDocument>, List<dynamic>)>
         {
           "award": "W.W. McDowell Award",
           "year": 1967,
-          "by": "IEEE Computer Society"
+          "by": "IEEE Computer Society",
         },
         {
           "award": "National Medal of Science",
           "year": 1975,
-          "by": "National Science Foundation"
+          "by": "National Science Foundation",
         },
         {"award": "Turing Award", "year": 1977, "by": "ACM"},
         {
           "award": "Draper Prize",
           "year": 1993,
-          "by": "National Academy of Engineering"
-        }
-      ]
+          "by": "National Academy of Engineering",
+        },
+      ],
     },
     {
       "_id": ObjectId.parse("51df07b094c6acd67e492f41"),
@@ -40,9 +40,9 @@ Future<(BulkWriteResult, MongoDocument, List<MongoDocument>, List<dynamic>)>
         {
           "award": "National Medal of Science",
           "year": 1990,
-          "by": "National Science Foundation"
-        }
-      ]
+          "by": "National Science Foundation",
+        },
+      ],
     },
     {
       "_id": 3,
@@ -55,24 +55,24 @@ Future<(BulkWriteResult, MongoDocument, List<MongoDocument>, List<dynamic>)>
         {
           "award": "Computer Sciences Man of the Year",
           "year": 1969,
-          "by": "Data Processing Management Association"
+          "by": "Data Processing Management Association",
         },
         {
           "award": "Distinguished Fellow",
           "year": 1973,
-          "by": " British Computer Society"
+          "by": " British Computer Society",
         },
         {
           "award": "W. W. McDowell Award",
           "year": 1976,
-          "by": "IEEE Computer Society"
+          "by": "IEEE Computer Society",
         },
         {
           "award": "National Medal of Technology",
           "year": 1991,
-          "by": "United States"
-        }
-      ]
+          "by": "United States",
+        },
+      ],
     },
     {
       "_id": 4,
@@ -84,11 +84,11 @@ Future<(BulkWriteResult, MongoDocument, List<MongoDocument>, List<dynamic>)>
         {
           "award": "Rosing Prize",
           "year": 1999,
-          "by": "Norwegian Data Association"
+          "by": "Norwegian Data Association",
         },
         {"award": "Turing Award", "year": 2001, "by": "ACM"},
-        {"award": "IEEE John von Neumann Medal", "year": 2001, "by": "IEEE"}
-      ]
+        {"award": "IEEE John von Neumann Medal", "year": 2001, "by": "IEEE"},
+      ],
     },
     {
       "_id": 5,
@@ -100,11 +100,11 @@ Future<(BulkWriteResult, MongoDocument, List<MongoDocument>, List<dynamic>)>
         {
           "award": "Rosing Prize",
           "year": 1999,
-          "by": "Norwegian Data Association"
+          "by": "Norwegian Data Association",
         },
         {"award": "Turing Award", "year": 2001, "by": "ACM"},
-        {"award": "IEEE John von Neumann Medal", "year": 2001, "by": "IEEE"}
-      ]
+        {"award": "IEEE John von Neumann Medal", "year": 2001, "by": "IEEE"},
+      ],
     },
     {
       "_id": 6,
@@ -115,10 +115,10 @@ Future<(BulkWriteResult, MongoDocument, List<MongoDocument>, List<dynamic>)>
         {
           "award": "Award for the Advancement of Free Software",
           "year": 2001,
-          "by": "Free Software Foundation"
+          "by": "Free Software Foundation",
         },
-        {"award": "NLUUG Award", "year": 2003, "by": "NLUUG"}
-      ]
+        {"award": "NLUUG Award", "year": 2003, "by": "NLUUG"},
+      ],
     },
     {
       "_id": ObjectId.parse("51e062189c6ae665454e301d"),
@@ -131,14 +131,14 @@ Future<(BulkWriteResult, MongoDocument, List<MongoDocument>, List<dynamic>)>
         {
           "award": "National Medal of Technology",
           "year": 1998,
-          "by": "United States"
+          "by": "United States",
         },
         {
           "award": "Japan Prize",
           "year": 2011,
-          "by": "The Japan Prize Foundation"
-        }
-      ]
+          "by": "The Japan Prize Foundation",
+        },
+      ],
     },
     {
       "_id": 8,
@@ -149,9 +149,9 @@ Future<(BulkWriteResult, MongoDocument, List<MongoDocument>, List<dynamic>)>
         {
           "award": "Award for the Advancement of Free Software",
           "year": "2011",
-          "by": "Free Software Foundation"
-        }
-      ]
+          "by": "Free Software Foundation",
+        },
+      ],
     },
     {
       "_id": 9,
@@ -162,19 +162,19 @@ Future<(BulkWriteResult, MongoDocument, List<MongoDocument>, List<dynamic>)>
         {
           "award": "The Economist Innovation Award",
           "year": 2002,
-          "by": "The Economist"
+          "by": "The Economist",
         },
         {
           "award": "Officer of the Order of Canada",
           "year": 2007,
-          "by": "Canada"
-        }
-      ]
+          "by": "Canada",
+        },
+      ],
     },
     {
       "_id": 10,
       "name": {"first": "Martin", "last": "Odersky"},
-      "contribs": ["Scala"]
-    }
+      "contribs": ["Scala"],
+    },
   ]);
 }

@@ -9,39 +9,55 @@ import '../open/update_statement_open.dart';
 import '../v1/update_statement_v1.dart';
 
 class UpdateStatement {
-  UpdateStatement.protected(QueryUnion q, UpdateUnion u,
-      {bool? upsert, bool? multi, this.collation, this.arrayFilters, this.hint})
-      : q = q.query,
-        u = u.specs,
-        upsert = upsert ?? false,
-        multi = multi ?? false {
+  UpdateStatement.protected(
+    QueryUnion q,
+    UpdateUnion u, {
+    bool? upsert,
+    bool? multi,
+    this.collation,
+    this.arrayFilters,
+    this.hint,
+  }) : q = q.query,
+       u = u.specs,
+       upsert = upsert ?? false,
+       multi = multi ?? false {
     if (arrayFilters != null && arrayFilters is! List && arrayFilters is! Map) {
       throw MongoDartError(
-          'The arrayFilters parameter must be either a List or a Map');
+        'The arrayFilters parameter must be either a List or a Map',
+      );
     }
   }
 
-  factory UpdateStatement(QueryUnion q, UpdateUnion u,
-      {ServerApi? serverApi,
-      bool? upsert,
-      bool? multi,
-      CollationOptions? collation,
-      List? arrayFilters,
-      HintUnion? hint}) {
+  factory UpdateStatement(
+    QueryUnion q,
+    UpdateUnion u, {
+    ServerApi? serverApi,
+    bool? upsert,
+    bool? multi,
+    CollationOptions? collation,
+    List? arrayFilters,
+    HintUnion? hint,
+  }) {
     if (serverApi != null && serverApi.version == ServerApiVersion.v1) {
-      return UpdateStatementV1(q, u,
-          upsert: upsert,
-          multi: multi,
-          collation: collation,
-          arrayFilters: arrayFilters,
-          hint: hint);
-    }
-    return UpdateStatementOpen(q, u,
+      return UpdateStatementV1(
+        q,
+        u,
         upsert: upsert,
         multi: multi,
         collation: collation,
         arrayFilters: arrayFilters,
-        hint: hint);
+        hint: hint,
+      );
+    }
+    return UpdateStatementOpen(
+      q,
+      u,
+      upsert: upsert,
+      multi: multi,
+      collation: collation,
+      arrayFilters: arrayFilters,
+      hint: hint,
+    );
   }
 
   /// The query that matches documents to update.
@@ -158,29 +174,35 @@ class UpdateStatement {
 
   UpdateStatementOpen get toOpen => this is UpdateStatementOpen
       ? this as UpdateStatementOpen
-      : UpdateStatementOpen(QueryUnion(q), UpdateUnion(u),
+      : UpdateStatementOpen(
+          QueryUnion(q),
+          UpdateUnion(u),
           upsert: upsert,
           multi: multi,
           collation: collation,
           arrayFilters: arrayFilters,
-          hint: hint);
+          hint: hint,
+        );
 
   UpdateStatementV1 get toV1 => this is UpdateStatementV1
       ? this as UpdateStatementV1
-      : UpdateStatementV1(QueryUnion(q), UpdateUnion(u),
+      : UpdateStatementV1(
+          QueryUnion(q),
+          UpdateUnion(u),
           upsert: upsert,
           multi: multi,
           collation: collation,
           arrayFilters: arrayFilters,
-          hint: hint);
+          hint: hint,
+        );
 
   Options toMap() => <String, dynamic>{
-        keyQ: q,
-        keyU: u.value,
-        if (upsert) keyUpsert: upsert,
-        if (multi) keyMulti: multi,
-        if (collation != null) keyCollation: collation!.options,
-        if (arrayFilters != null) keyArrayFilters: arrayFilters!,
-        if (hint != null && !hint!.isNull) keyHint: hint!.value
-      };
+    keyQ: q,
+    keyU: u.value,
+    if (upsert) keyUpsert: upsert,
+    if (multi) keyMulti: multi,
+    if (collation != null) keyCollation: collation!.options,
+    keyArrayFilters: ?arrayFilters,
+    if (hint != null && !hint!.isNull) keyHint: hint!.value,
+  };
 }

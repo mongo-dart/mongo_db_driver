@@ -9,8 +9,10 @@ const dbAddress = '127.0.0.1';
 const defaultUri = 'mongodb://$dbAddress:27017/$dbName';
 
 void displayZip(Map zip) {
-  print('state: ${zip['state']}, city: ${zip['city']}, '
-      'zip: ${zip['_id']}, population: ${zip['pop']}');
+  print(
+    'state: ${zip['state']}, city: ${zip['city']}, '
+    'zip: ${zip['_id']}, population: ${zip['pop']}',
+  );
 }
 
 void main() async {
@@ -38,10 +40,11 @@ void main() async {
 ******************** reverse ordered by population''');
   await collection
       .find(
-          filter: where
-            ..$eq('state', 'NY')
-            ..inRange('pop', 14000, 16000)
-            ..sortBy({'pop': -1}))
+        filter: where
+          ..$eq('state', 'NY')
+          ..inRange('pop', 14000, 16000)
+          ..sortBy({'pop': -1}),
+      )
       .forEach(displayZip);
   print('\n******************** Find ZIP for code 78829 (BATESVILLE)');
   var batesville = await collection.findOne(filter: where..$eq('_id', '78829'));
@@ -50,9 +53,10 @@ void main() async {
     print('******************** Find 10 ZIP closest to BATESVILLE');
     await collection
         .find(
-            filter: where
-              ..$near('loc', batesville['loc'])
-              ..limit(10))
+          filter: where
+            ..$near('loc', batesville['loc'])
+            ..limit(10),
+        )
         .forEach(displayZip);
   }
 

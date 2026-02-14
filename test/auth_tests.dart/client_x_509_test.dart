@@ -27,10 +27,14 @@ void main() async {
   bool isVer3_2 = false;
   bool isVer3_6 = false;
   bool isNoMoreMongodbCR = false;
-  var caCertFile = File('${Directory.current.path}'
-      '/test/certificates_for_testing/mongo-test-ca-full-chain.crt');
-  var pemFile = File('${Directory.current.path}'
-      '/test/certificates_for_testing/client.mongo.pem');
+  var caCertFile = File(
+    '${Directory.current.path}'
+    '/test/certificates_for_testing/mongo-test-ca-full-chain.crt',
+  );
+  var pemFile = File(
+    '${Directory.current.path}'
+    '/test/certificates_for_testing/client.mongo.pem',
+  );
   var wrongPemFile = File('test/certificates_for_testing/client.mongo.crt');
 
   Future<MongoClient?> findServer(String uriString) async {
@@ -110,22 +114,24 @@ void main() async {
       return;
     }
 
-    test('Should not be able to connect missing key file and CA file',
-        () async {
-      var clientOptions = MongoClientOptions()..tls = true;
-      var client = MongoClient(defaultUri, mongoClientOptions: clientOptions);
-      try {
-        await client.connect();
-        // after the first run certificates are in the hash table.
-        expect(true, isTrue);
-      } on ConnectionException {
-        expect(true, isTrue);
-      } catch (e) {
-        expect(true, isFalse);
-      } finally {
-        await client.close();
-      }
-    });
+    test(
+      'Should not be able to connect missing key file and CA file',
+      () async {
+        var clientOptions = MongoClientOptions()..tls = true;
+        var client = MongoClient(defaultUri, mongoClientOptions: clientOptions);
+        try {
+          await client.connect();
+          // after the first run certificates are in the hash table.
+          expect(true, isTrue);
+        } on ConnectionException {
+          expect(true, isTrue);
+        } catch (e) {
+          expect(true, isFalse);
+        } finally {
+          await client.close();
+        }
+      },
+    );
 
     test('Should not be able to connect missing key file', () async {
       var clientOptions = MongoClientOptions()
@@ -149,25 +155,26 @@ void main() async {
     // Check to avoid problems with the
     // "certificate already in hash table error"
     test(
-        'Should not be able to connect missing key file, CA File given 2 times',
-        () async {
-      var clientOptions = MongoClientOptions()
-        ..tls = true
-        ..tlsCAFile = caCertFile.path;
-      var client = MongoClient(defaultUri, mongoClientOptions: clientOptions);
-      try {
-        await client.connect();
+      'Should not be able to connect missing key file, CA File given 2 times',
+      () async {
+        var clientOptions = MongoClientOptions()
+          ..tls = true
+          ..tlsCAFile = caCertFile.path;
+        var client = MongoClient(defaultUri, mongoClientOptions: clientOptions);
+        try {
+          await client.connect();
 
-        // after the first run certificates are in the hash table.
-        expect(true, isTrue);
-      } on ConnectionException {
-        expect(true, isTrue);
-      } catch (e) {
-        expect(true, isFalse);
-      } finally {
-        await client.close();
-      }
-    });
+          // after the first run certificates are in the hash table.
+          expect(true, isTrue);
+        } on ConnectionException {
+          expect(true, isTrue);
+        } catch (e) {
+          expect(true, isFalse);
+        } finally {
+          await client.close();
+        }
+      },
+    );
 
     test('Wrong pem file', () async {
       var clientOptions = MongoClientOptions()

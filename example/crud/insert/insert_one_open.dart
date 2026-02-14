@@ -35,7 +35,7 @@ void main() async {
     'name': 'Tom',
     'state': 'active',
     'rating': 100,
-    'score': 5
+    'score': 5,
   });
 
   if (!ret.isSuccess) {

@@ -21,9 +21,8 @@ class ServerApi {
   /// A previous version of this specification excluded those commands,
   /// but that has since changed in the server.
   Options get options => <String, dynamic>{
-        keyApiVersion: version.version,
-        if (strict != null) keyApiStrict: strict,
-        if (deprecationErrors != null)
-          keyApiDeprecationErrors: deprecationErrors
-      };
+    keyApiVersion: version.version,
+    if (strict != null) keyApiStrict: strict,
+    if (deprecationErrors != null) keyApiDeprecationErrors: deprecationErrors,
+  };
 }

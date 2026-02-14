@@ -47,18 +47,21 @@ enum CursorState { init, open, closed }
 /// - For cursors created in a transaction, you cannot call getMore outside the
 /// transaction.
 class Cursor {
-  Cursor(CommandOperation operation, this.server,
-      {bool? checksumPresent,
-      bool? moreToCome,
-      bool? exhaustAllowed,
-      int? batchSize})
-      // ignore: prefer_initializing_formals
-      : operation = operation,
-        collection = operation.collection,
-        db = operation.collection?.db ?? operation.db,
-        checksumPresent = checksumPresent ?? false,
-        moreToCome = moreToCome ?? false,
-        exhaustAllowed = exhaustAllowed ?? false {
+  Cursor(
+    CommandOperation operation,
+    this.server, {
+    bool? checksumPresent,
+    bool? moreToCome,
+    bool? exhaustAllowed,
+    int? batchSize,
+  })
+    // ignore: prefer_initializing_formals
+    : operation = operation,
+       collection = operation.collection,
+       db = operation.collection?.db ?? operation.db,
+       checksumPresent = checksumPresent ?? false,
+       moreToCome = moreToCome ?? false,
+       exhaustAllowed = exhaustAllowed ?? false {
     if (operation is FindOperation && collection == null) {
       throw MongoDartError('Collection required in cursor initialization');
     }
@@ -79,18 +82,21 @@ class Cursor {
     cursorSession = operation.session;
     _batchSize = internalBatchSize ?? defaultBatchSize;
   }
-  Cursor.fromDbAdmincommand(DbAdminCommandOperation command, this.server,
-      {bool? checksumPresent,
-      bool? moreToCome,
-      bool? exhaustAllowed,
-      int? batchSize})
-      // ignore: prefer_initializing_formals
-      : operation = command,
-        //collection = command.collection,
-        db = command.client.db(dbName: 'admin'),
-        checksumPresent = checksumPresent ?? false,
-        moreToCome = moreToCome ?? false,
-        exhaustAllowed = exhaustAllowed ?? false {
+  Cursor.fromDbAdmincommand(
+    DbAdminCommandOperation command,
+    this.server, {
+    bool? checksumPresent,
+    bool? moreToCome,
+    bool? exhaustAllowed,
+    int? batchSize,
+  })
+    // ignore: prefer_initializing_formals
+    : operation = command,
+       //collection = command.collection,
+       db = command.client.db(dbName: 'admin'),
+       checksumPresent = checksumPresent ?? false,
+       moreToCome = moreToCome ?? false,
+       exhaustAllowed = exhaustAllowed ?? false {
     if (command is FindOperation && collection == null) {
       throw MongoDartError('Collection required in cursor initialization');
     }
@@ -120,23 +126,27 @@ class Cursor {
   /// or other read operation has been executed, without generating
   /// an explicit cursor. This way, for getting the extra documents,
   /// we may need a cursor.
-  Cursor.fromOpenId(MongoCollection collection, this.cursorId, this.server,
-      this.cursorSession,
-      {bool? tailable,
-      bool? awaitData,
-      bool? isChangeStream,
-      bool? checksumPresent,
-      bool? moreToCome,
-      bool? exhaustAllowed})
-      // ignore: prefer_initializing_formals
-      : collection = collection,
-        collectionName = collection.collectionName,
-        tailable = tailable ?? false,
-        awaitData = awaitData ?? false,
-        isChangeStream = isChangeStream ?? false,
-        checksumPresent = checksumPresent ?? false,
-        moreToCome = moreToCome ?? false,
-        exhaustAllowed = exhaustAllowed ?? false {
+  Cursor.fromOpenId(
+    MongoCollection collection,
+    this.cursorId,
+    this.server,
+    this.cursorSession, {
+    bool? tailable,
+    bool? awaitData,
+    bool? isChangeStream,
+    bool? checksumPresent,
+    bool? moreToCome,
+    bool? exhaustAllowed,
+  })
+    // ignore: prefer_initializing_formals
+    : collection = collection,
+       collectionName = collection.collectionName,
+       tailable = tailable ?? false,
+       awaitData = awaitData ?? false,
+       isChangeStream = isChangeStream ?? false,
+       checksumPresent = checksumPresent ?? false,
+       moreToCome = moreToCome ?? false,
+       exhaustAllowed = exhaustAllowed ?? false {
     state = CursorState.open;
     db = collection.db;
     if (this.isChangeStream) {
@@ -204,8 +214,10 @@ class Cursor {
       if (operationReturnMap.containsKey('explainVersion')) {
         return;
       }
-      throw MongoDartError('The operation type ${operation.runtimeType} '
-          'does not return a cursor');
+      throw MongoDartError(
+        'The operation type ${operation.runtimeType} '
+        'does not return a cursor',
+      );
     }
     var cursorMap = operationReturnMap[keyCursor] as Map<String, dynamic>?;
     if (cursorMap == null) {
@@ -281,11 +293,14 @@ class Cursor {
         await _serverSideCursorClose();
         return null;
       }
-      var command = GetMoreCommand(collection, cursorId,
-          db: db,
-          session: cursorSession,
-          collectionName: collectionName,
-          getMoreOptions: GetMoreOptions(batchSize: _batchSize));
+      var command = GetMoreCommand(
+        collection,
+        cursorId,
+        db: db,
+        session: cursorSession,
+        collectionName: collectionName,
+        getMoreOptions: GetMoreOptions(batchSize: _batchSize),
+      );
       result = await command.process();
     }
     lastServerDocument = result;
@@ -295,10 +310,10 @@ class Cursor {
     if (result[keyOk] == 0.0) {
       await close();
       throw MongoDartError(
-          result[keyErrmsg] as String? ??
-              'Generic error in nextObject() method',
-          mongoCode: result[keyCode] as int?,
-          errorCodeName: result[keyCodeName] as String?);
+        result[keyErrmsg] as String? ?? 'Generic error in nextObject() method',
+        mongoCode: result[keyCode] as int?,
+        errorCodeName: result[keyCodeName] as String?,
+      );
     }
     var cursorMap = result[keyCursor] as Map<String, dynamic>?;
     cursorId = cursorMap?[keyId] ?? Int64.ZERO;
@@ -322,7 +337,9 @@ class Cursor {
         return null;
       }
       return Future.delayed(
-          Duration(milliseconds: tailableRetryInterval), () => null);
+        Duration(milliseconds: tailableRetryInterval),
+        () => null,
+      );
     }
     // residual check, it should never pass here.
     await close();

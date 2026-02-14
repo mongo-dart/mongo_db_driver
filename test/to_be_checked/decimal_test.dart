@@ -30,7 +30,9 @@ void main() async {
   }
 
   Future insertManyDocuments(
-      MongoCollection collection, int numberOfRecords) async {
+    MongoCollection collection,
+    int numberOfRecords,
+  ) async {
     await collection.deleteMany();
     var toInsert = <Map<String, dynamic>>[];
     for (var n = 0; n < numberOfRecords; n++) {
@@ -72,22 +74,25 @@ void main() async {
           var value = values[idx];
           var update = (value['a'] as Decimal) + ra;
           //print(update);
-          await collection.updateOne(<String, dynamic>{
-            '_id': value['_id']
-          }, <String, dynamic>{
-            r'$set': {'r': update}
-          });
+          await collection.updateOne(
+            <String, dynamic>{'_id': value['_id']},
+            <String, dynamic>{
+              r'$set': {'r': update},
+            },
+          );
         }
       });
       test('update Decimal', () async {
         var collectionName = getRandomCollectionName();
         var collection = db.collection(collectionName);
 
-        await collection.insertOne(
-            <String, dynamic>{'value': Decimal.fromInt(3), 'qty': 4});
+        await collection.insertOne(<String, dynamic>{
+          'value': Decimal.fromInt(3),
+          'qty': 4,
+        });
 
         await collection.updateOne(<String, dynamic>{}, <String, dynamic>{
-          r'$mul': {'value': Decimal.fromInt(5), 'qty': 5}
+          r'$mul': {'value': Decimal.fromInt(5), 'qty': 5},
         });
 
         var values = await collection.find().toList();
@@ -97,10 +102,11 @@ void main() async {
         expect(values.first['qty'], 20);
 
         await collection.updateOne(
-            where,
-            UpdateExpression()
-              ..$mul('value', Decimal.fromInt(5))
-              ..$mul('qty', 2));
+          where,
+          UpdateExpression()
+            ..$mul('value', Decimal.fromInt(5))
+            ..$mul('qty', 2),
+        );
         values = await collection.find().toList();
 
         expect(values.length, 1);
@@ -112,8 +118,10 @@ void main() async {
 
         var collection = db.collection(collectionName);
 
-        await collection.insertOne(
-            <String, dynamic>{'value': Decimal.fromInt(3), 'qty': 4});
+        await collection.insertOne(<String, dynamic>{
+          'value': Decimal.fromInt(3),
+          'qty': 4,
+        });
 
         var mody = UpdateExpression()
           ..$inc('value', Decimal.fromInt(2))
@@ -134,8 +142,10 @@ void main() async {
   tearDownAll(() async {
     await client.connect();
     db = client.db();
-    await Future.forEach(usedCollectionNames,
-        (String collectionName) => db.collection(collectionName).drop());
+    await Future.forEach(
+      usedCollectionNames,
+      (String collectionName) => db.collection(collectionName).drop(),
+    );
     await client.close();
   });
 }

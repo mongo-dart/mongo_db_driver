@@ -3,7 +3,11 @@ import 'package:mongo_db_driver/src/command/query_and_write_operation_commands/w
 import '../../../../command_exp.dart';
 
 base class InsertManyOperationV1 extends InsertManyOperation {
-  InsertManyOperationV1(super.collection, super.document,
-      {super.session, InsertManyOptionsV1? insertManyOptions, super.rawOptions})
-      : super.protected(insertManyOptions: insertManyOptions);
+  InsertManyOperationV1(
+    super.collection,
+    super.document, {
+    super.session,
+    InsertManyOptionsV1? insertManyOptions,
+    super.rawOptions,
+  }) : super.protected(insertManyOptions: insertManyOptions);
 }

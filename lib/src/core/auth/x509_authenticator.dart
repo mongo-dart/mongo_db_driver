@@ -19,10 +19,12 @@ class X509Authenticator extends Authenticator {
     var result = await command.execute(server: server, connection: connection);
 
     if (result[keyOk] == 0.0) {
-      throw MongoDartError(result[keyErrmsg],
-          mongoCode: result[keyCode],
-          errorCode: result[keyCode] == null ? null : '${result[keyCode]}',
-          errorCodeName: result[keyCodeName]);
+      throw MongoDartError(
+        result[keyErrmsg],
+        mongoCode: result[keyCode],
+        errorCode: result[keyCode] == null ? null : '${result[keyCode]}',
+        errorCodeName: result[keyCodeName],
+      );
     }
   }
 }

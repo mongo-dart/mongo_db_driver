@@ -21,22 +21,25 @@ import 'package:mongo_db_driver/src/utils/map_keys.dart';
 /// * getMoreOptions [GetMoreOptions] - Optional
 ///   - a set of optional values for the command
 base class GetMoreCommand extends CommandOperation {
-  GetMoreCommand(MongoCollection? collection, Int64 cursorId,
-      {MongoDatabase? db,
-      String? collectionName,
-      super.session,
-      GetMoreOptions? getMoreOptions,
-      Map<String, Object>? rawOptions})
-      : super(
-            db ??
-                collection?.db ??
-                (throw MongoDartError('At least a Db must be specified')),
-            <String, dynamic>{
-              keyGetMore: cursorId,
-              keyCollection: collection?.collectionName ?? collectionName ?? '',
-            },
-            <String, dynamic>{...?getMoreOptions?.options, ...?rawOptions},
-            collection: collection) {
+  GetMoreCommand(
+    MongoCollection? collection,
+    Int64 cursorId, {
+    MongoDatabase? db,
+    String? collectionName,
+    super.session,
+    GetMoreOptions? getMoreOptions,
+    Map<String, Object>? rawOptions,
+  }) : super(
+         db ??
+             collection?.db ??
+             (throw MongoDartError('At least a Db must be specified')),
+         <String, dynamic>{
+           keyGetMore: cursorId,
+           keyCollection: collection?.collectionName ?? collectionName ?? '',
+         },
+         <String, dynamic>{...?getMoreOptions?.options, ...?rawOptions},
+         collection: collection,
+       ) {
     // In case of aggregate collection agnostic commands, collection is
     // not needed
     if (collection == null) {

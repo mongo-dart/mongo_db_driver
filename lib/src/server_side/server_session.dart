@@ -16,8 +16,8 @@ class ServerSession {
   /// In either case, the lastUse field of the ServerSession MUST be set to
   /// the current time when the ServerSession is created.
   ServerSession({UuidValue? id})
-      : lastUse = DateTime.now(),
-        id = id ?? Uuid().v4obj();
+    : lastUse = DateTime.now(),
+      id = id ?? Uuid().v4obj();
   final UuidValue id;
 
   Int64 _lastTransactionNumber = Int64();

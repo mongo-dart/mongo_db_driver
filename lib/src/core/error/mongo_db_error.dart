@@ -5,9 +5,11 @@ class MongoDbError extends ApplicationError {
 }
 
 class MongoDbTemplateError extends TemplateError {
-  MongoDbTemplateError(super.originalErrorMessage,
-      {required super.templateMessageCode,
-      super.errorCode,
-      super.stackTrace,
-      super.values});
+  MongoDbTemplateError(
+    super.originalErrorMessage, {
+    required super.templateMessageCode,
+    super.errorCode,
+    super.stackTrace,
+    super.values,
+  });
 }

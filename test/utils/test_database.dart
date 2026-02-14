@@ -17,12 +17,16 @@ class DbTestInfo {
 }
 
 /// Returned client to be closed in test
-Future<DbTestInfo> testDatabase(String uriString,
-    {MongoClientOptions? mongoClientOptions}) async {
+Future<DbTestInfo> testDatabase(
+  String uriString, {
+  MongoClientOptions? mongoClientOptions,
+}) async {
   var testInfo = DbTestInfo();
 
-  testInfo.client =
-      MongoClient(uriString, mongoClientOptions: mongoClientOptions);
+  testInfo.client = MongoClient(
+    uriString,
+    mongoClientOptions: mongoClientOptions,
+  );
   Uri uri = Uri.parse(uriString);
   try {
     await testInfo.client!.connect();
@@ -64,6 +68,7 @@ Future<DbTestInfo> testDatabase(String uriString,
     throw StateError('Unknown error $e');
   }
 }
+
 /* 
 Future<String?> getFcv(String uri) async {
   var client = MongoClient(uri);

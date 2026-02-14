@@ -26,7 +26,7 @@ void main() async {
       'state': 'active',
       'rating': 100,
       'score': 5,
-      'userId': UuidValue.fromString('025456da-9e39-4e7c-b1f7-0f5a5e1cb212')
+      'userId': UuidValue.fromString('025456da-9e39-4e7c-b1f7-0f5a5e1cb212'),
     },
     {
       '_id': 2,
@@ -34,7 +34,7 @@ void main() async {
       'state': 'busy',
       'rating': 80,
       'score': 4,
-      'userId': Uuid().v4obj()
+      'userId': Uuid().v4obj(),
     },
     {
       '_id': 3,
@@ -42,7 +42,7 @@ void main() async {
       'state': 'on hold',
       'rating': 70,
       'score': 8,
-      'userId': Uuid().v4obj()
+      'userId': Uuid().v4obj(),
     },
     {
       '_id': 4,
@@ -50,7 +50,7 @@ void main() async {
       'state': 'active',
       'rating': 95,
       'score': 8,
-      'userId': Uuid().v4obj()
+      'userId': Uuid().v4obj(),
     },
     {
       '_id': 5,
@@ -58,7 +58,7 @@ void main() async {
       'state': 'idle',
       'rating': 40,
       'score': 3,
-      'userId': Uuid().v4obj()
+      'userId': Uuid().v4obj(),
     },
     {
       '_id': 6,
@@ -66,7 +66,7 @@ void main() async {
       'state': 'busy',
       'rating': 87,
       'score': 8,
-      'userId': Uuid().v4obj()
+      'userId': Uuid().v4obj(),
     },
     {
       '_id': 7,
@@ -74,8 +74,8 @@ void main() async {
       'state': 'idle',
       'rating': 72,
       'score': 7,
-      'userId': Uuid().v4obj()
-    }
+      'userId': Uuid().v4obj(),
+    },
   ]);
 
   if (!ret.isSuccess) {
@@ -83,15 +83,18 @@ void main() async {
   }
 
   var res = await collection.findOne(
-      filter: where
-        ..$eq('name', 'Tom')
-        ..$gt('rating', 10));
+    filter: where
+      ..$eq('name', 'Tom')
+      ..$gt('rating', 10),
+  );
 
   if (res == null) {
     print('No document found');
   } else {
-    print('Document fetched: '
-        '${res['name']} - ${res['state']} - ${res['userId']}');
+    print(
+      'Document fetched: '
+      '${res['name']} - ${res['state']} - ${res['userId']}',
+    );
   } // Tom - active - 025456da-9e39-4e7c-b1f7-0f5a5e1cb212
 
   await cleanupDatabase();

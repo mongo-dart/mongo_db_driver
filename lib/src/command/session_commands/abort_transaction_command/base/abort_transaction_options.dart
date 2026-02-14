@@ -12,14 +12,21 @@ class AbortTransactionOptions {
   @protected
   const AbortTransactionOptions.protected({this.writeConcern, this.comment});
 
-  factory AbortTransactionOptions(
-      {ServerApi? serverApi, WriteConcern? writeConcern, String? comment}) {
+  factory AbortTransactionOptions({
+    ServerApi? serverApi,
+    WriteConcern? writeConcern,
+    String? comment,
+  }) {
     if (serverApi != null && serverApi.version == ServerApiVersion.v1) {
       return AbortTransactionOptionsV1(
-          writeConcern: writeConcern, comment: comment);
+        writeConcern: writeConcern,
+        comment: comment,
+      );
     }
     return AbortTransactionOptionsOpen(
-        writeConcern: writeConcern, comment: comment);
+      writeConcern: writeConcern,
+      comment: comment,
+    );
   }
 
   /// The WriteConcern for this insert operation
@@ -39,16 +46,19 @@ class AbortTransactionOptions {
   AbortTransactionOptionsOpen get toOpen => this is AbortTransactionOptionsOpen
       ? this as AbortTransactionOptionsOpen
       : AbortTransactionOptionsOpen(
-          writeConcern: writeConcern, comment: comment);
+          writeConcern: writeConcern,
+          comment: comment,
+        );
 
   AbortTransactionOptionsV1 get toV1 => this is AbortTransactionOptionsV1
       ? this as AbortTransactionOptionsV1
       : AbortTransactionOptionsV1(writeConcern: writeConcern, comment: comment);
   Options getOptions(MongoClient client) => <String, dynamic>{
-        if (writeConcern != null)
-          keyWriteConcern: writeConcern!.asMap(
-              client.topology?.primary?.serverStatus ??
-                  (throw MongoDartError('No server detected'))),
-        if (comment != null) keyComment: comment!,
-      };
+    if (writeConcern != null)
+      keyWriteConcern: writeConcern!.asMap(
+        client.topology?.primary?.serverStatus ??
+            (throw MongoDartError('No server detected')),
+      ),
+    keyComment: ?comment,
+  };
 }

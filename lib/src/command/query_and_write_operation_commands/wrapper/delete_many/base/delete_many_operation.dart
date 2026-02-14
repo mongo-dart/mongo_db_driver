@@ -13,47 +13,55 @@ import '../v1/delete_many_operation_v1.dart';
 
 typedef DeleteManyDocumentRec = (
   WriteResult writeResult,
-  MongoDocument serverDocument
+  MongoDocument serverDocument,
 );
 
 abstract base class DeleteManyOperation extends DeleteOperation {
   @protected
   DeleteManyOperation.protected(
-      MongoCollection collection, DeleteManyStatement deleteRequest,
-      {super.session,
-      DeleteManyOptions? deleteManyOptions,
-      Options? rawOptions})
-      : super.protected(
-          collection,
-          [deleteRequest],
-          deleteOptions: deleteManyOptions,
-          rawOptions: rawOptions,
-        );
+    MongoCollection collection,
+    DeleteManyStatement deleteRequest, {
+    super.session,
+    DeleteManyOptions? deleteManyOptions,
+    Options? rawOptions,
+  }) : super.protected(
+         collection,
+         [deleteRequest],
+         deleteOptions: deleteManyOptions,
+         rawOptions: rawOptions,
+       );
 
   factory DeleteManyOperation(
-      MongoCollection collection, DeleteManyStatement deleteManyStatement,
-      {ClientSession? session,
-      DeleteManyOptions? deleteManyOptions,
-      Options? rawOptions}) {
+    MongoCollection collection,
+    DeleteManyStatement deleteManyStatement, {
+    ClientSession? session,
+    DeleteManyOptions? deleteManyOptions,
+    Options? rawOptions,
+  }) {
     if (collection.serverApi != null) {
       switch (collection.serverApi!.version) {
         case ServerApiVersion.v1:
           return DeleteManyOperationV1(
-              collection, deleteManyStatement.toDeleteManyV1,
-              session: session,
-              deleteManyOptions: deleteManyOptions?.toDeleteManyV1,
-              rawOptions: rawOptions);
+            collection,
+            deleteManyStatement.toDeleteManyV1,
+            session: session,
+            deleteManyOptions: deleteManyOptions?.toDeleteManyV1,
+            rawOptions: rawOptions,
+          );
         // ignore: unreachable_switch_default
         default:
           throw MongoDartError(
-              'Stable Api ${collection.serverApi!.version} not managed');
+            'Stable Api ${collection.serverApi!.version} not managed',
+          );
       }
     }
     return DeleteManyOperationOpen(
-        collection, deleteManyStatement.toDeleteManyOpen,
-        session: session,
-        deleteManyOptions: deleteManyOptions?.toDeleteManyOpen,
-        rawOptions: rawOptions);
+      collection,
+      deleteManyStatement.toDeleteManyOpen,
+      session: session,
+      deleteManyOptions: deleteManyOptions?.toDeleteManyOpen,
+      rawOptions: rawOptions,
+    );
   }
   Future<MongoDocument> executeDeleteMany() async => process();
 

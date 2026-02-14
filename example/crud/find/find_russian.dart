@@ -10,16 +10,18 @@ void main() async {
     'Имя': 'Вадим',
     'Фамилия': 'Цушко',
     'Профессия': 'Брадобрей',
-    'Шаблон': RegExp('^.adim\$')
+    'Шаблон': RegExp('^.adim\$'),
   });
   var v = await collection.findOne();
   print(
-      'Utf8 encoding demonstration. I18 strings may be used not only as values but also as keys');
+    'Utf8 encoding demonstration. I18 strings may be used not only as values but also as keys',
+  );
   print(v);
   v = await collection.findOne(filter: where..$eq('Имя', 'Вадим'));
   print('Filtered by query()..\$eq(): $v');
   v = await collection.findOne(
-      filter: where..$regex('Имя', '^..ДИМ\$', caseInsensitive: true));
+    filter: where..$regex('Имя', '^..ДИМ\$', caseInsensitive: true),
+  );
   print('Filtered by query().match(): $v');
   await client.close();
 }

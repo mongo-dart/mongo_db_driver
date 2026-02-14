@@ -29,8 +29,12 @@ void main() async {
   val = await coll.findOne(filter: {'_id': id});
   print('Filtered by _id=$id: $val. There more no such a doc');
   print("Filtered by {'str_field': {'\$regex': RegExp('^str_(5|7|8)17\$')}");
-  await coll.find(filter: {
-    'str_field': {'\$regex': RegExp('^str_(5|7|8)17\$')}
-  }).forEach((v) => print(v));
+  await coll
+      .find(
+        filter: {
+          'str_field': {'\$regex': RegExp('^str_(5|7|8)17\$')},
+        },
+      )
+      .forEach((v) => print(v));
   await client.close();
 }

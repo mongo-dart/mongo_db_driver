@@ -47,9 +47,11 @@ void main() async {
         expect(serverDescription?.address, '127.0.0.1:27017');
 
         var (writeResult, _, _, id) = await collection.insertOne(
-            {'Name': 'Jack', 'DateOfBirth': DateTime(1987, 5, 12), 'Score': 98},
-            insertOneOptions:
-                InsertOneOptions(writeConcern: WriteConcern.majority));
+          {'Name': 'Jack', 'DateOfBirth': DateTime(1987, 5, 12), 'Score': 98},
+          insertOneOptions: InsertOneOptions(
+            writeConcern: WriteConcern.majority,
+          ),
+        );
         expect(writeResult.isSuccess, isTrue);
         serverDescription = client.topology?.servers.first.serverDescription;
         expect((serverDescription?.options.roundTripTime ?? 0) > 0, isTrue);

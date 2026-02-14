@@ -26,7 +26,7 @@ void main() async {
       'status': 'Pending',
       'points': 0,
       'misc1': 'note to self: confirm status',
-      'misc2': 'Need to activate'
+      'misc2': 'Need to activate',
     },
     {
       '_id': 2,
@@ -34,7 +34,7 @@ void main() async {
       'status': 'D',
       'points': 59,
       'misc1': 'reminder: ping me at 100pts',
-      'misc2': 'Some random comment'
+      'misc2': 'Some random comment',
     },
   ]);
   if (!ret.isSuccess) {
@@ -42,19 +42,23 @@ void main() async {
   }
 
   var (res, _) = await collection.updateOne(
-      where..$eq('member', 'abc123'),
-      UpdateExpression()
-        ..$set('status', 'A')
-        ..$inc('points', 1),
-      writeConcern: WriteConcern(w: wMajority, wtimeout: 5000));
+    where..$eq('member', 'abc123'),
+    UpdateExpression()
+      ..$set('status', 'A')
+      ..$inc('points', 1),
+    writeConcern: WriteConcern(w: wMajority, wtimeout: 5000),
+  );
 
   print('Modified documents: ${res.nModified}'); // 1
 
-  var findResult =
-      await collection.find(filter: where..$eq('member', 'abc123')).toList();
+  var findResult = await collection
+      .find(filter: where..$eq('member', 'abc123'))
+      .toList();
 
-  print('Modified element status: '
-      '"${findResult.first['status']}"'); // 'A';
+  print(
+    'Modified element status: '
+    '"${findResult.first['status']}"',
+  ); // 'A';
 
   await cleanupDatabase();
 }

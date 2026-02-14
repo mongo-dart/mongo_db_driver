@@ -2,5 +2,5 @@ import 'package:mongo_db_driver/src/command/session_commands/abort_transaction_c
 
 class AbortTransactionOptionsOpen extends AbortTransactionOptions {
   const AbortTransactionOptionsOpen({super.writeConcern, super.comment})
-      : super.protected();
+    : super.protected();
 }

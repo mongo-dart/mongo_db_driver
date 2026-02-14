@@ -145,7 +145,7 @@ class MongoMessage extends MongoResponseMessage {
   static List<String> pulledOutCommand = <String>[
     keyInsert,
     keyUpdate,
-    keyDelete
+    keyDelete,
   ];
 
   late int flags;
@@ -158,8 +158,12 @@ class MongoMessage extends MongoResponseMessage {
     deserialize(buffer);
   }
 
-  MongoMessage(MongoDocument document,
-      {bool? checksumPresent, bool? moreToCome, bool? exhaustAllowed}) {
+  MongoMessage(
+    MongoDocument document, {
+    bool? checksumPresent,
+    bool? moreToCome,
+    bool? exhaustAllowed,
+  }) {
     checksumPresent ??= false;
     moreToCome ??= false;
     exhaustAllowed ??= false;
@@ -180,8 +184,10 @@ class MongoMessage extends MongoResponseMessage {
     sections = createSections(document);
 
     if (messageLength > maxMessageSizeBytes) {
-      throw MongoDartError('The total message length ($messageLength bytes) '
-          'is bigger than the max allowed limit ($maxMessageSizeBytes bytes)');
+      throw MongoDartError(
+        'The total message length ($messageLength bytes) '
+        'is bigger than the max allowed limit ($maxMessageSizeBytes bytes)',
+      );
     }
   }
 
@@ -192,7 +198,8 @@ class MongoMessage extends MongoResponseMessage {
 
     if (keys.isEmpty) {
       throw MongoDartError(
-          'Invalid document received for Mongo Modern Message');
+        'Invalid document received for Mongo Modern Message',
+      );
     }
 
     if (pulledOutCommand.contains(keys.first)) {
@@ -210,20 +217,25 @@ class MongoMessage extends MongoResponseMessage {
     var indexOfCommandName = commandName.indexOf(keys.first);
     if (indexOfCommandName == notFound) {
       throw MongoDartError(
-          'The first entry ("${keys.first}") of the document is not a command name');
+        'The first entry ("${keys.first}") of the document is not a command name',
+      );
     }
     var argumentName = commandArgument[indexOfCommandName];
     var data = doc[argumentName] as List<Map<String, dynamic>>?;
     if (data == null) {
-      throw MongoDartError('The command ${keys.first} requires an element with '
-          'key $argumentName');
+      throw MongoDartError(
+        'The command ${keys.first} requires an element with '
+        'key $argumentName',
+      );
     }
     doc.remove(argumentName);
     ret.add(Section(basePayloadType, doc));
     var totalElements = data.length;
     if (data.length > maxWriteBatchSize) {
-      throw MongoDartError('The total number of documents (${data.length}) '
-          'is greater than the max allowed ($maxWriteBatchSize)');
+      throw MongoDartError(
+        'The total number of documents (${data.length}) '
+        'is greater than the max allowed ($maxWriteBatchSize)',
+      );
     }
 
     List<Map<String, dynamic>> sectionList;
@@ -267,9 +279,11 @@ class MongoMessage extends MongoResponseMessage {
     responseFlags = buffer.readInt32();
 
     if (buffer.byteArray.lengthInBytes != super.messageLength) {
-      throw MongoDartError('The length of the buffer received '
-          '(${buffer.totalByteLength} bytes) is not what expected '
-          '(${super.messageLength} bytes)');
+      throw MongoDartError(
+        'The length of the buffer received '
+        '(${buffer.totalByteLength} bytes) is not what expected '
+        '(${super.messageLength} bytes)',
+      );
     }
     while (buffer.offset < super.messageLength) {
       sections.add(Section.fromBuffer(buffer));

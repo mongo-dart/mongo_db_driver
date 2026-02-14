@@ -23,7 +23,7 @@ void main() async {
   var collection = db.collection(collectionName);
 
   var documents = <Map<String, dynamic>>[
-    for (var idx = 0; idx < 1000; idx++) {'key': idx}
+    for (var idx = 0; idx < 1000; idx++) {'key': idx},
   ];
 
   var (ret, _, _, _) = await collection.insertMany(documents);
@@ -62,14 +62,16 @@ void main() async {
   /// and the susequent `getMore` command, otherwise it is transparent in
   /// the nextObject() call.
   var cursor = Cursor(
-      FindOperation(
-          collection,
-          QueryUnion({
-            'key': {r'$gte': 0}
-          }),
-          findOptions: FindOptions(batchSize: 100)),
-      db.server,
-      batchSize: 150);
+    FindOperation(
+      collection,
+      QueryUnion({
+        'key': {r'$gte': 0},
+      }),
+      findOptions: FindOptions(batchSize: 100),
+    ),
+    db.server,
+    batchSize: 150,
+  );
 
   var sum = 0;
   // Just an example, normally it is not needed.

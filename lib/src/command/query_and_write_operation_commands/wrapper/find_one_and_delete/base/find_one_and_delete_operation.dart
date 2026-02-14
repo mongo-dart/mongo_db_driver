@@ -16,56 +16,68 @@ import 'find_one_and_delete_options.dart';
 
 typedef FindOneAndDeleteDocumentRec = (
   FindAndModifyResult findAndModifyResult,
-  MongoDocument serverDocument
+  MongoDocument serverDocument,
 );
 
 abstract base class FindOneAndDeleteOperation extends FindAndModifyOperation {
   @protected
-  FindOneAndDeleteOperation.protected(super.collection, QueryUnion query,
-      {super.fields,
-      super.sort,
-      super.session,
-      super.hint,
-      FindOneAndDeleteOptions? findOneAndDeleteOptions,
-      super.rawOptions})
-      : super.protected(
-            query: query,
-            remove: true,
-            findAndModifyOptions: findOneAndDeleteOptions);
+  FindOneAndDeleteOperation.protected(
+    super.collection,
+    QueryUnion query, {
+    super.fields,
+    super.sort,
+    super.session,
+    super.hint,
+    FindOneAndDeleteOptions? findOneAndDeleteOptions,
+    super.rawOptions,
+  }) : super.protected(
+         query: query,
+         remove: true,
+         findAndModifyOptions: findOneAndDeleteOptions,
+       );
 
   factory FindOneAndDeleteOperation(
-      MongoCollection collection, QueryUnion query,
-      {ProjectionUnion? fields,
-      SortUnion? sort,
-      ClientSession? session,
-      HintUnion? hint,
-      FindOneAndDeleteOptions? findOneAndDeleteOptions,
-      Options? rawOptions}) {
+    MongoCollection collection,
+    QueryUnion query, {
+    ProjectionUnion? fields,
+    SortUnion? sort,
+    ClientSession? session,
+    HintUnion? hint,
+    FindOneAndDeleteOptions? findOneAndDeleteOptions,
+    Options? rawOptions,
+  }) {
     if (collection.serverApi != null) {
       switch (collection.serverApi!.version) {
         case ServerApiVersion.v1:
-          return FindOneAndDeleteOperationV1(collection, query,
-              fields: fields,
-              sort: sort,
-              session: session,
-              hint: hint,
-              findOneAndDeleteOptions:
-                  findOneAndDeleteOptions?.toFindOneAndDeleteOptionsV1,
-              rawOptions: rawOptions);
+          return FindOneAndDeleteOperationV1(
+            collection,
+            query,
+            fields: fields,
+            sort: sort,
+            session: session,
+            hint: hint,
+            findOneAndDeleteOptions:
+                findOneAndDeleteOptions?.toFindOneAndDeleteOptionsV1,
+            rawOptions: rawOptions,
+          );
         // ignore: unreachable_switch_default
         default:
           throw MongoDartError(
-              'Stable Api ${collection.serverApi!.version} not managed');
+            'Stable Api ${collection.serverApi!.version} not managed',
+          );
       }
     }
-    return FindOneAndDeleteOperationOpen(collection, query,
-        fields: fields,
-        sort: sort,
-        session: session,
-        hint: hint,
-        findOneAndDeleteOptions:
-            findOneAndDeleteOptions?.toFindOneAndDeleteOptionsOpen,
-        rawOptions: rawOptions);
+    return FindOneAndDeleteOperationOpen(
+      collection,
+      query,
+      fields: fields,
+      sort: sort,
+      session: session,
+      hint: hint,
+      findOneAndDeleteOptions:
+          findOneAndDeleteOptions?.toFindOneAndDeleteOptionsOpen,
+      rawOptions: rawOptions,
+    );
   }
 
   Future<MongoDocument> executeFindOneAndDelete() async => process();

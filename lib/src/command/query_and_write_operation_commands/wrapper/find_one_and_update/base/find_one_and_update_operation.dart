@@ -15,74 +15,84 @@ import '../v1/find_one_and_update_operation_v1.dart';
 
 typedef FindOneAndUpdateDocumentRec = (
   FindAndModifyResult findAndModifyResult,
-  MongoDocument serverDocument
+  MongoDocument serverDocument,
 );
 
 abstract base class FindOneAndUpdateOperation extends FindAndModifyOperation {
   @protected
-  FindOneAndUpdateOperation.protected(super.collection,
-      {super.query,
-      super.update,
-      super.fields,
-      super.sort,
-      super.upsert,
-      super.returnNew,
-      super.arrayFilters,
-      super.session,
-      super.hint,
-      FindOneAndUpdateOptions? findOneAndUpdateOptions,
-      super.rawOptions})
-      : super.protected(
-            remove: false, findAndModifyOptions: findOneAndUpdateOptions);
+  FindOneAndUpdateOperation.protected(
+    super.collection, {
+    super.query,
+    super.update,
+    super.fields,
+    super.sort,
+    super.upsert,
+    super.returnNew,
+    super.arrayFilters,
+    super.session,
+    super.hint,
+    FindOneAndUpdateOptions? findOneAndUpdateOptions,
+    super.rawOptions,
+  }) : super.protected(
+         remove: false,
+         findAndModifyOptions: findOneAndUpdateOptions,
+       );
 
-  factory FindOneAndUpdateOperation(MongoCollection collection,
-      {QueryUnion? query,
-      UpdateUnion? update,
-      ProjectionUnion? fields,
-      SortUnion? sort,
-      bool? upsert,
-      bool? returnNew,
-      List<ArrayFilter>? arrayFilters,
-      ClientSession? session,
-      HintUnion? hint,
-      FindOneAndUpdateOptions? findOneAndUpdateOptions,
-      Options? rawOptions}) {
+  factory FindOneAndUpdateOperation(
+    MongoCollection collection, {
+    QueryUnion? query,
+    UpdateUnion? update,
+    ProjectionUnion? fields,
+    SortUnion? sort,
+    bool? upsert,
+    bool? returnNew,
+    List<ArrayFilter>? arrayFilters,
+    ClientSession? session,
+    HintUnion? hint,
+    FindOneAndUpdateOptions? findOneAndUpdateOptions,
+    Options? rawOptions,
+  }) {
     query ??= QueryUnion(emptyQueryFilter);
     if (collection.serverApi != null) {
       switch (collection.serverApi!.version) {
         case ServerApiVersion.v1:
-          return FindOneAndUpdateOperationV1(collection,
-              query: query,
-              update: update,
-              fields: fields,
-              sort: sort,
-              upsert: upsert,
-              returnNew: returnNew,
-              arrayFilters: arrayFilters,
-              session: session,
-              findOneAndUpdateOptions:
-                  findOneAndUpdateOptions?.toFindOneAndUpdateOptionsV1,
-              hint: hint,
-              rawOptions: rawOptions);
+          return FindOneAndUpdateOperationV1(
+            collection,
+            query: query,
+            update: update,
+            fields: fields,
+            sort: sort,
+            upsert: upsert,
+            returnNew: returnNew,
+            arrayFilters: arrayFilters,
+            session: session,
+            findOneAndUpdateOptions:
+                findOneAndUpdateOptions?.toFindOneAndUpdateOptionsV1,
+            hint: hint,
+            rawOptions: rawOptions,
+          );
         // ignore: unreachable_switch_default
         default:
           throw MongoDartError(
-              'Stable Api ${collection.serverApi!.version} not managed');
+            'Stable Api ${collection.serverApi!.version} not managed',
+          );
       }
     }
-    return FindOneAndUpdateOperationOpen(collection,
-        query: query,
-        update: update,
-        fields: fields,
-        sort: sort,
-        upsert: upsert,
-        returnNew: returnNew,
-        arrayFilters: arrayFilters,
-        session: session,
-        findOneAndUpdateOptions:
-            findOneAndUpdateOptions?.toFindOneAndUpdateOptionsOpen,
-        hint: hint,
-        rawOptions: rawOptions);
+    return FindOneAndUpdateOperationOpen(
+      collection,
+      query: query,
+      update: update,
+      fields: fields,
+      sort: sort,
+      upsert: upsert,
+      returnNew: returnNew,
+      arrayFilters: arrayFilters,
+      session: session,
+      findOneAndUpdateOptions:
+          findOneAndUpdateOptions?.toFindOneAndUpdateOptionsOpen,
+      hint: hint,
+      rawOptions: rawOptions,
+    );
   }
 
   Future<MongoDocument> executeFindOneAndUpdate() async => process();

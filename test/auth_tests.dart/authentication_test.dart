@@ -80,29 +80,34 @@ void main() async {
 
     group('Basic', () {
       test('uri.parse', () {
-        var connectionUri =
-            Uri.parse('mongodb://@127.0.0.1:27031/mongodb-auth');
+        var connectionUri = Uri.parse(
+          'mongodb://@127.0.0.1:27031/mongodb-auth',
+        );
         expect(connectionUri.userInfo, '');
       });
 
       test('uri.parse 2', () {
-        var connectionUri =
-            Uri.parse('mongodb://unicode:übelkübel@$dbAddress:27031/$dbName');
+        var connectionUri = Uri.parse(
+          'mongodb://unicode:übelkübel@$dbAddress:27031/$dbName',
+        );
         expect(connectionUri.userInfo, 'unicode:%C3%BCbelk%C3%BCbel');
       });
       test('uri.parse 3', () {
-        var connectionUri =
-            Uri.parse('mongodb://special:1234AbcD@$dbAddress:27031/$dbName');
+        var connectionUri = Uri.parse(
+          'mongodb://special:1234AbcD@$dbAddress:27031/$dbName',
+        );
         expect(connectionUri.userInfo, 'special:1234AbcD');
       });
       test('uri.parse 4', () {
         var connectionUri = Uri.parse(
-            'mongodb://special:1234A%00%23bcD@$dbAddress:27031/$dbName');
+          'mongodb://special:1234A%00%23bcD@$dbAddress:27031/$dbName',
+        );
         expect(connectionUri.userInfo, 'special:1234A%00%23bcD');
       });
       test('uri.parse 5', () {
-        var connectionUri =
-            Uri.parse('mongodb://special:1234A##bcD@$dbAddress:27031/$dbName');
+        var connectionUri = Uri.parse(
+          'mongodb://special:1234A##bcD@$dbAddress:27031/$dbName',
+        );
         expect(connectionUri.userInfo, 'special:1234AbcD');
       });
       test('uri.parse dbUri3', () {
@@ -126,70 +131,81 @@ void main() async {
           await client.close();
         }
       });
-      test('Should be able to connect and authenticate with scram sha1',
-          () async {
-        if (serverRequiresAuth) {
-          var client = MongoClient(
-              '$mongoDbUri?authMechanism=${ScramSha1Authenticator.name}');
-          await client.connect();
-          var db = client.db();
-
-          expect(db.server.isAuthenticated, isTrue);
-          await db.collection('test').find().toList();
-          await client.close();
-        }
-      });
-      test('Should be able to connect and authenticate with scram sha256',
-          () async {
-        if (serverRequiresAuth && !isVer3_6 && !isVer3_2) {
-          var client = MongoClient(
-              '$mongoDbUri?authMechanism=${ScramSha256Authenticator.name}');
-          await client.connect();
-          var db = client.db();
-
-          expect(db.server.isAuthenticated, isTrue);
-          await db.collection('test').find().toList();
-          await client.close();
-          client = MongoClient(
-              '$mongoDbUri2?authMechanism=${ScramSha256Authenticator.name}');
-          await client.connect();
-          db = client.db();
-
-          expect(db.server.isAuthenticated, isTrue);
-          await db.collection('test').find().toList();
-          await client.close();
-
-          client = MongoClient(
-              '$mongoDbUri3?authMechanism=${ScramSha256Authenticator.name}');
-          await client.connect();
-          db = client.db();
-          expect(db.server.isAuthenticated, isTrue);
-          await db.collection('test').find().toList();
-          await client.close();
-        }
-      });
       test(
-          'Should be able to connect and authenticate special with scram sha256',
-          () async {
-        if (serverRequiresAuth && !isVer3_6 && !isVer3_2) {
-          var client = MongoClient(
-              '$mongoDbUri?authMechanism=${ScramSha256Authenticator.name}');
-          await client.connect();
-          var db = client.db();
+        'Should be able to connect and authenticate with scram sha1',
+        () async {
+          if (serverRequiresAuth) {
+            var client = MongoClient(
+              '$mongoDbUri?authMechanism=${ScramSha1Authenticator.name}',
+            );
+            await client.connect();
+            var db = client.db();
 
-          expect(db.server.isAuthenticated, isTrue);
-          await db.collection('test').find().toList();
-          await client.close();
-          client = MongoClient(
-              '$mongoDbUri3?authMechanism=${ScramSha256Authenticator.name}');
-          await client.connect();
-          db = client.db();
+            expect(db.server.isAuthenticated, isTrue);
+            await db.collection('test').find().toList();
+            await client.close();
+          }
+        },
+      );
+      test(
+        'Should be able to connect and authenticate with scram sha256',
+        () async {
+          if (serverRequiresAuth && !isVer3_6 && !isVer3_2) {
+            var client = MongoClient(
+              '$mongoDbUri?authMechanism=${ScramSha256Authenticator.name}',
+            );
+            await client.connect();
+            var db = client.db();
 
-          expect(db.server.isAuthenticated, isTrue);
-          await db.collection('test').find().toList();
-          await client.close();
-        }
-      });
+            expect(db.server.isAuthenticated, isTrue);
+            await db.collection('test').find().toList();
+            await client.close();
+            client = MongoClient(
+              '$mongoDbUri2?authMechanism=${ScramSha256Authenticator.name}',
+            );
+            await client.connect();
+            db = client.db();
+
+            expect(db.server.isAuthenticated, isTrue);
+            await db.collection('test').find().toList();
+            await client.close();
+
+            client = MongoClient(
+              '$mongoDbUri3?authMechanism=${ScramSha256Authenticator.name}',
+            );
+            await client.connect();
+            db = client.db();
+            expect(db.server.isAuthenticated, isTrue);
+            await db.collection('test').find().toList();
+            await client.close();
+          }
+        },
+      );
+      test(
+        'Should be able to connect and authenticate special with scram sha256',
+        () async {
+          if (serverRequiresAuth && !isVer3_6 && !isVer3_2) {
+            var client = MongoClient(
+              '$mongoDbUri?authMechanism=${ScramSha256Authenticator.name}',
+            );
+            await client.connect();
+            var db = client.db();
+
+            expect(db.server.isAuthenticated, isTrue);
+            await db.collection('test').find().toList();
+            await client.close();
+            client = MongoClient(
+              '$mongoDbUri3?authMechanism=${ScramSha256Authenticator.name}',
+            );
+            await client.connect();
+            db = client.db();
+
+            expect(db.server.isAuthenticated, isTrue);
+            await db.collection('test').find().toList();
+            await client.close();
+          }
+        },
+      );
       test("Throw exception when auth mechanism isn't supported", () async {
         if (serverRequiresAuth) {
           final authMechanism = 'Anything';
@@ -198,10 +214,15 @@ void main() async {
           dynamic sut() async => await client.connect();
 
           expect(
-              sut(),
-              throwsA(predicate((MongoDartError e) =>
-                  e.message ==
-                  'Provided authentication scheme is not supported : $authMechanism')));
+            sut(),
+            throwsA(
+              predicate(
+                (MongoDartError e) =>
+                    e.message ==
+                    'Provided authentication scheme is not supported : $authMechanism',
+              ),
+            ),
+          );
         }
       });
     });

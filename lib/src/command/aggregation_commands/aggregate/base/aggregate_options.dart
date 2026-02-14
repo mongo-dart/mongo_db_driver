@@ -6,46 +6,50 @@ import '../open/aggregate_options_open.dart';
 import '../v1/aggregate_options_v1.dart';
 
 class AggregateOptions {
-  AggregateOptions.protected(
-      {this.allowDiskUse = false,
-      this.maxTimeMS,
-      this.bypassDocumentValidation = false,
-      this.readConcern,
-      this.collation,
-      this.comment,
-      this.writeConcern}) {
+  AggregateOptions.protected({
+    this.allowDiskUse = false,
+    this.maxTimeMS,
+    this.bypassDocumentValidation = false,
+    this.readConcern,
+    this.collation,
+    this.comment,
+    this.writeConcern,
+  }) {
     if (maxTimeMS != null && maxTimeMS! < 1) {
       throw MongoDartError('MaxTimeMS parameter must be a positive value');
     }
   }
 
-  factory AggregateOptions(
-      {ServerApi? serverApi,
-      bool allowDiskUse = false,
-      int? maxTimeMS,
-      bool bypassDocumentValidation = false,
-      ReadConcern? readConcern,
-      CollationOptions? collation,
-      String? comment,
-      WriteConcern? writeConcern}) {
+  factory AggregateOptions({
+    ServerApi? serverApi,
+    bool allowDiskUse = false,
+    int? maxTimeMS,
+    bool bypassDocumentValidation = false,
+    ReadConcern? readConcern,
+    CollationOptions? collation,
+    String? comment,
+    WriteConcern? writeConcern,
+  }) {
     if (serverApi != null && serverApi.version == ServerApiVersion.v1) {
       return AggregateOptionsV1(
-          allowDiskUse: allowDiskUse,
-          maxTimeMS: maxTimeMS,
-          bypassDocumentValidation: bypassDocumentValidation,
-          readConcern: readConcern,
-          collation: collation,
-          comment: comment,
-          writeConcern: writeConcern);
-    }
-    return AggregateOptionsOpen(
         allowDiskUse: allowDiskUse,
         maxTimeMS: maxTimeMS,
         bypassDocumentValidation: bypassDocumentValidation,
         readConcern: readConcern,
         collation: collation,
         comment: comment,
-        writeConcern: writeConcern);
+        writeConcern: writeConcern,
+      );
+    }
+    return AggregateOptionsOpen(
+      allowDiskUse: allowDiskUse,
+      maxTimeMS: maxTimeMS,
+      bypassDocumentValidation: bypassDocumentValidation,
+      readConcern: readConcern,
+      collation: collation,
+      comment: comment,
+      writeConcern: writeConcern,
+    );
   }
 
   /// Enables writing to temporary files. When set to true, a
@@ -146,7 +150,8 @@ class AggregateOptions {
           readConcern: readConcern,
           collation: collation,
           comment: comment,
-          writeConcern: writeConcern);
+          writeConcern: writeConcern,
+        );
 
   AggregateOptionsV1 get toV1 => this is AggregateOptionsV1
       ? this as AggregateOptionsV1
@@ -157,17 +162,18 @@ class AggregateOptions {
           readConcern: readConcern,
           collation: collation,
           comment: comment,
-          writeConcern: writeConcern);
+          writeConcern: writeConcern,
+        );
 
   Options getOptions(MongoDatabase? db) => <String, dynamic>{
-        if (allowDiskUse) keyAllowDiskUse: allowDiskUse,
-        if (maxTimeMS != null) keyMaxTimeMS: maxTimeMS!,
-        if (bypassDocumentValidation)
-          keyBypassDocumentValidation: bypassDocumentValidation,
-        if (readConcern != null) keyReadConcern: readConcern!.toMap(),
-        if (collation != null) keyCollation: collation!.options,
-        if (comment != null) keyComment: comment!,
-        if (writeConcern != null && db?.server.serverStatus != null)
-          keyWriteConcern: writeConcern!.asMap(db!.server.serverStatus),
-      };
+    if (allowDiskUse) keyAllowDiskUse: allowDiskUse,
+    keyMaxTimeMS: ?maxTimeMS,
+    if (bypassDocumentValidation)
+      keyBypassDocumentValidation: bypassDocumentValidation,
+    if (readConcern != null) keyReadConcern: readConcern!.toMap(),
+    if (collation != null) keyCollation: collation!.options,
+    keyComment: ?comment,
+    if (writeConcern != null && db?.server.serverStatus != null)
+      keyWriteConcern: writeConcern!.asMap(db!.server.serverStatus),
+  };
 }

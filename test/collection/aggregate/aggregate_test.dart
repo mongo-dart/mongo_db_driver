@@ -42,9 +42,11 @@ void main() async {
 
   group('Aggregate', () {
     setUpAll(() async {
-      client = MongoClient(defaultUri,
-          debugOptions: MongoClientDebugOptions()
-            ..commandExecutionLogLevel = Level.FINE);
+      client = MongoClient(
+        defaultUri,
+        debugOptions: MongoClientDebugOptions()
+          ..commandExecutionLogLevel = Level.FINE,
+      );
       db = await initializeDatabase(client);
       clientV1 = MongoClient(defaultUriV1);
       dbV1 = await initializeDatabase(clientV1);
@@ -53,11 +55,15 @@ void main() async {
     tearDownAll(() async {
       await Future.delayed(Duration(seconds: 1));
 
-      await Future.forEach(usedCollectionNames,
-          (String collectionName) => db.collection(collectionName).drop());
+      await Future.forEach(
+        usedCollectionNames,
+        (String collectionName) => db.collection(collectionName).drop(),
+      );
       await client.close();
-      await Future.forEach(usedCollectionNamesV1,
-          (String collectionName) => dbV1.collection(collectionName).drop());
+      await Future.forEach(
+        usedCollectionNamesV1,
+        (String collectionName) => dbV1.collection(collectionName).drop(),
+      );
       await clientV1.close();
     });
 
@@ -75,8 +81,8 @@ void main() async {
             '_id': ObjectId.parse('52769ea0f3dc6ead47c9a1b2'),
             'author': "abc123",
             'title': "zzz",
-            'tags': ["programming", "database", "mongodb"]
-          }
+            'tags': ["programming", "database", "mongodb"],
+          },
         ]);
 
         var collectionName2 = getRandomCollectionName(usedCollectionNames);
@@ -84,7 +90,7 @@ void main() async {
         var (_, _, _, _) = await collection2!.insertMany([
           {'_id': 1, 'category': "café", 'status': "A"},
           {'_id': 2, 'category': "cafe", 'status': "a"},
-          {'_id': 3, 'category': "cafE", 'status': "a"}
+          {'_id': 3, 'category': "cafE", 'status': "a"},
         ]);
         var collectionName3 = getRandomCollectionName(usedCollectionNames);
         collection3 = db.collection(collectionName3);
@@ -92,7 +98,7 @@ void main() async {
           {'_id': 1, 'category': "cake", 'type': 'chocolate', 'qty': 10},
           {'_id': 2, 'category': 'cake', 'type': 'ice cream', 'qty': 25},
           {'_id': 3, 'category': 'pie', 'type': 'boston cream', 'qty': 20},
-          {'_id': 4, 'category': 'pie', 'type': 'blueberry', 'qty': 15}
+          {'_id': 4, 'category': 'pie', 'type': 'blueberry', 'qty': 15},
         ]);
         await collection3!.createIndex(keys: {'qty': 1, 'type': 1});
         await collection3!.createIndex(keys: {'qty': 1, 'category': 1});
@@ -101,22 +107,22 @@ void main() async {
         var (_, _, _, _) = await collection4!.insertMany([
           {'_id': 1, 'flavor': "chocolate", 'salesTotal': 1580},
           {'_id': 2, 'flavor': "strawberry", 'salesTotal': 4350},
-          {'_id': 3, 'flavor': "cherry", 'salesTotal': 2150}
+          {'_id': 3, 'flavor': "cherry", 'salesTotal': 2150},
         ]);
       });
 
       test('Document - Aggregate Data with Multi-Stage Pipeline', () async {
         var cursor = collection!.aggregate([
           {
-            r'$project': {'tags': 1}
+            r'$project': {'tags': 1},
           },
           {r'$unwind': r'$tags'},
           {
             r'$group': {
               '_id': r"$tags",
-              'count': {r'$sum': 1}
-            }
-          }
+              'count': {r'$sum': 1},
+            },
+          },
         ]);
         await cursor.nextObject();
 
@@ -171,7 +177,8 @@ void main() async {
         var pipeline = pipelineBuilder
           ..addStage($match(where..$eq('status', 'A')))
           ..addStage(
-              $group(id: r'$cust_id', fields: {'total': $sum(r'$amount')}))
+            $group(id: r'$cust_id', fields: {'total': $sum(r'$amount')}),
+          )
           ..addStage($sort({'total': -1}));
 
         var cursor = collection!.aggregate(pipeline, explain: true);
@@ -190,7 +197,8 @@ void main() async {
         var pipeline = pipelineBuilder
           ..addStage($match(where..$eq('status', 'A')))
           ..addStage(
-              $group(id: r'$cust_id', fields: {'total': $sum(r'$amount')}))
+            $group(id: r'$cust_id', fields: {'total': $sum(r'$amount')}),
+          )
           ..addStage($sort({'total': -1}))
           ..addStage($limit(2));
 
@@ -212,9 +220,12 @@ void main() async {
           ..addStage($match(where..$eq('status', 'A')))
           ..addStage($group(id: r'$category', fields: {'count': $sum(1)}));
 
-        var cursor = collection2!.aggregate(pipeline,
-            aggregateOptions: AggregateOptions(
-                collation: CollationOptions('fr', strength: 1)));
+        var cursor = collection2!.aggregate(
+          pipeline,
+          aggregateOptions: AggregateOptions(
+            collation: CollationOptions('fr', strength: 1),
+          ),
+        );
         await cursor.nextObject();
         var result = cursor.lastServerDocument;
 
@@ -230,13 +241,19 @@ void main() async {
       test('Hint an Index', () async {
         var pipeline = pipelineBuilder
           ..addStage($sort({'qty': 1}))
-          ..addStage($match(where
-            ..$eq('category', 'cake')
-            ..$eq('qty', 10)))
+          ..addStage(
+            $match(
+              where
+                ..$eq('category', 'cake')
+                ..$eq('qty', 10),
+            ),
+          )
           ..addStage($sort({'type': -1}));
 
-        var cursor = collection3!
-            .aggregate(pipeline, hint: HintUnion({'qty': 1, 'category': 1}));
+        var cursor = collection3!.aggregate(
+          pipeline,
+          hint: HintUnion({'qty': 1, 'category': 1}),
+        );
         await cursor.nextObject();
         var result = cursor.lastServerDocument;
 
@@ -247,15 +264,22 @@ void main() async {
 
         expect(ret, isNotNull);
         expect(ret.length, 1);
-        expect(ret.first,
-            {'_id': 1, 'category': "cake", 'type': 'chocolate', 'qty': 10});
+        expect(ret.first, {
+          '_id': 1,
+          'category': "cake",
+          'type': 'chocolate',
+          'qty': 10,
+        });
       });
       test('Override Default Read Concern', () async {
         var pipeline = pipelineBuilder..addStage($match(where..$lt('qty', 18)));
 
-        var cursor = collection3!.aggregate(pipeline,
-            aggregateOptions: AggregateOptions(
-                readConcern: ReadConcern(ReadConcernLevel.majority)));
+        var cursor = collection3!.aggregate(
+          pipeline,
+          aggregateOptions: AggregateOptions(
+            readConcern: ReadConcern(ReadConcernLevel.majority),
+          ),
+        );
         await cursor.nextObject();
         var result = cursor.lastServerDocument;
 
@@ -266,16 +290,23 @@ void main() async {
 
         expect(ret, isNotNull);
         expect(ret.length, 2);
-        expect(ret.last,
-            {'_id': 4, 'category': 'pie', 'type': 'blueberry', 'qty': 15});
+        expect(ret.last, {
+          '_id': 4,
+          'category': 'pie',
+          'type': 'blueberry',
+          'qty': 15,
+        });
       });
       test(' Use Variables in let', () async {
         var pipeline = pipelineBuilder
-          ..addStage($match(
-              where..$expr($gt(Field('salesTotal'), Var('targetTotal')))));
+          ..addStage(
+            $match(where..$expr($gt(Field('salesTotal'), Var('targetTotal')))),
+          );
 
-        var cursor =
-            collection4!.aggregate(pipeline, let: {'targetTotal': 3000});
+        var cursor = collection4!.aggregate(
+          pipeline,
+          let: {'targetTotal': 3000},
+        );
         await cursor.nextObject();
         var result = cursor.lastServerDocument;
 
@@ -286,8 +317,11 @@ void main() async {
 
         expect(ret, isNotNull);
         expect(ret.length, 1);
-        expect(
-            ret.last, {'_id': 2, 'flavor': "strawberry", 'salesTotal': 4350});
+        expect(ret.last, {
+          '_id': 2,
+          'flavor': "strawberry",
+          'salesTotal': 4350,
+        });
       });
     });
     group('V1', () {
@@ -305,8 +339,8 @@ void main() async {
             '_id': ObjectId.parse('52769ea0f3dc6ead47c9a1b2'),
             'author': "abc123",
             'title': "zzz",
-            'tags': ["programming", "database", "mongodb"]
-          }
+            'tags': ["programming", "database", "mongodb"],
+          },
         ]);
         if (result.isFailure) {
           print(result.errmsg);
@@ -317,7 +351,7 @@ void main() async {
         var (_, _, _, _) = await collection2!.insertMany([
           {'_id': 1, 'category': "café", 'status': "A"},
           {'_id': 2, 'category': "cafe", 'status': "a"},
-          {'_id': 3, 'category': "cafE", 'status': "a"}
+          {'_id': 3, 'category': "cafE", 'status': "a"},
         ]);
         var collectionName3 = getRandomCollectionName(usedCollectionNamesV1);
         collection3 = dbV1.collection(collectionName3);
@@ -325,7 +359,7 @@ void main() async {
           {'_id': 1, 'category': "cake", 'type': 'chocolate', 'qty': 10},
           {'_id': 2, 'category': 'cake', 'type': 'ice cream', 'qty': 25},
           {'_id': 3, 'category': 'pie', 'type': 'boston cream', 'qty': 20},
-          {'_id': 4, 'category': 'pie', 'type': 'blueberry', 'qty': 15}
+          {'_id': 4, 'category': 'pie', 'type': 'blueberry', 'qty': 15},
         ]);
         await collection3!.createIndex(keys: {'qty': 1, 'type': 1});
         await collection3!.createIndex(keys: {'qty': 1, 'category': 1});
@@ -334,7 +368,7 @@ void main() async {
         var (_, _, _, _) = await collection4!.insertMany([
           {'_id': 1, 'flavor': "chocolate", 'salesTotal': 1580},
           {'_id': 2, 'flavor': "strawberry", 'salesTotal': 4350},
-          {'_id': 3, 'flavor': "cherry", 'salesTotal': 2150}
+          {'_id': 3, 'flavor': "cherry", 'salesTotal': 2150},
         ]);
 
         var collectionName5 = getRandomCollectionName(usedCollectionNamesV1);
@@ -345,30 +379,30 @@ void main() async {
             '_id': 8752,
             'title': 'Divine Comedy',
             'author': 'Dante',
-            'copies': 1
+            'copies': 1,
           },
           {'_id': 8645, 'title': 'Eclogues', 'author': 'Dante', 'copies': 2},
           {
             '_id': 7000,
             'title': 'The Odyssey',
             'author': 'Homer',
-            'copies': 10
+            'copies': 10,
           },
-          {'_id': 7020, 'title': 'Iliad', 'author': 'Homer', 'copies': 10}
+          {'_id': 7020, 'title': 'Iliad', 'author': 'Homer', 'copies': 10},
         ]);
       });
       test('Document - Aggregate Data with Multi-Stage Pipeline', () async {
         var cursor = collection.aggregate([
           {
-            r'$project': {'tags': 1}
+            r'$project': {'tags': 1},
           },
           {r'$unwind': r'$tags'},
           {
             r'$group': {
               '_id': r"$tags",
-              'count': {r'$sum': 1}
-            }
-          }
+              'count': {r'$sum': 1},
+            },
+          },
         ]);
         await cursor.nextObject();
 
@@ -421,7 +455,8 @@ void main() async {
         var pipeline = pipelineBuilder
           ..addStage($match(where..$eq('status', 'A')))
           ..addStage(
-              $group(id: r'$cust_id', fields: {'total': $sum(r'$amount')}))
+            $group(id: r'$cust_id', fields: {'total': $sum(r'$amount')}),
+          )
           ..addStage($sort({'total': -1}));
 
         var cursor = collection.aggregate(pipeline, explain: true);
@@ -440,7 +475,8 @@ void main() async {
         var pipeline = pipelineBuilder
           ..addStage($match(where..$eq('status', 'A')))
           ..addStage(
-              $group(id: r'$cust_id', fields: {'total': $sum(r'$amount')}))
+            $group(id: r'$cust_id', fields: {'total': $sum(r'$amount')}),
+          )
           ..addStage($sort({'total': -1}))
           ..addStage($limit(2));
 
@@ -461,9 +497,12 @@ void main() async {
           ..addStage($match(where..$eq('status', 'A')))
           ..addStage($group(id: r'$category', fields: {'count': $sum(1)}));
 
-        var cursor = collection2!.aggregate(pipeline,
-            aggregateOptions: AggregateOptions(
-                collation: CollationOptions('fr', strength: 1)));
+        var cursor = collection2!.aggregate(
+          pipeline,
+          aggregateOptions: AggregateOptions(
+            collation: CollationOptions('fr', strength: 1),
+          ),
+        );
         await cursor.nextObject();
         var result = cursor.lastServerDocument;
 
@@ -479,13 +518,19 @@ void main() async {
       test('Hint an Index', () async {
         var pipeline = pipelineBuilder
           ..addStage($sort({'qty': 1}))
-          ..addStage($match(where
-            ..$eq('category', 'cake')
-            ..$eq('qty', 10)))
+          ..addStage(
+            $match(
+              where
+                ..$eq('category', 'cake')
+                ..$eq('qty', 10),
+            ),
+          )
           ..addStage($sort({'type': -1}));
 
-        var cursor = collection3!
-            .aggregate(pipeline, hint: HintUnion({'qty': 1, 'category': 1}));
+        var cursor = collection3!.aggregate(
+          pipeline,
+          hint: HintUnion({'qty': 1, 'category': 1}),
+        );
         await cursor.nextObject();
         var result = cursor.lastServerDocument;
 
@@ -496,15 +541,22 @@ void main() async {
 
         expect(ret, isNotNull);
         expect(ret.length, 1);
-        expect(ret.first,
-            {'_id': 1, 'category': "cake", 'type': 'chocolate', 'qty': 10});
+        expect(ret.first, {
+          '_id': 1,
+          'category': "cake",
+          'type': 'chocolate',
+          'qty': 10,
+        });
       });
       test('Override Default Read Concern', () async {
         var pipeline = pipelineBuilder..addStage($match(where..$lt('qty', 18)));
 
-        var cursor = collection3!.aggregate(pipeline,
-            aggregateOptions: AggregateOptions(
-                readConcern: ReadConcern(ReadConcernLevel.majority)));
+        var cursor = collection3!.aggregate(
+          pipeline,
+          aggregateOptions: AggregateOptions(
+            readConcern: ReadConcern(ReadConcernLevel.majority),
+          ),
+        );
         await cursor.nextObject();
         var result = cursor.lastServerDocument;
 
@@ -515,16 +567,23 @@ void main() async {
 
         expect(ret, isNotNull);
         expect(ret.length, 2);
-        expect(ret.last,
-            {'_id': 4, 'category': 'pie', 'type': 'blueberry', 'qty': 15});
+        expect(ret.last, {
+          '_id': 4,
+          'category': 'pie',
+          'type': 'blueberry',
+          'qty': 15,
+        });
       });
       test(' Use Variables in let', () async {
         var pipeline = pipelineBuilder
-          ..addStage($match(
-              where..$expr($gt(Field('salesTotal'), Var('targetTotal')))));
+          ..addStage(
+            $match(where..$expr($gt(Field('salesTotal'), Var('targetTotal')))),
+          );
 
-        var cursor =
-            collection4!.aggregate(pipeline, let: {'targetTotal': 3000});
+        var cursor = collection4!.aggregate(
+          pipeline,
+          let: {'targetTotal': 3000},
+        );
         await cursor.nextObject();
         var result = cursor.lastServerDocument;
 
@@ -535,13 +594,20 @@ void main() async {
 
         expect(ret, isNotNull);
         expect(ret.length, 1);
-        expect(
-            ret.last, {'_id': 2, 'flavor': "strawberry", 'salesTotal': 4350});
+        expect(ret.last, {
+          '_id': 2,
+          'flavor': "strawberry",
+          'salesTotal': 4350,
+        });
       });
       test('No data returned', () async {
         var pipeline = pipelineBuilder
-          ..addStage($group(
-              id: Field('author'), fields: {'books': $push(Field('title'))}))
+          ..addStage(
+            $group(
+              id: Field('author'),
+              fields: {'books': $push(Field('title'))},
+            ),
+          )
           ..addStage($out(coll: 'authors'));
 
         var cursor = collection5!.aggregate(pipeline);

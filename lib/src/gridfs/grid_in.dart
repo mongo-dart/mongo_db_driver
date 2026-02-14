@@ -19,9 +19,12 @@ class GridIn extends GridFSFile {
 
   /// Used for MD5 calculation, now deprecated
   //Uint8List contentToDigest = Uint8List(0);
-  GridIn(GridFS fs, String filename, Stream<List<int>> inputStream,
-      [Map<String, dynamic>? extraData])
-      : super(fs, extraData) {
+  GridIn(
+    GridFS fs,
+    String filename,
+    Stream<List<int>> inputStream, [
+    Map<String, dynamic>? extraData,
+  ]) : super(fs, extraData) {
     id = ObjectId();
     input = ChunkHandler(chunkSize).transformer.bind(inputStream);
     uploadDate = DateTime.now();
@@ -45,7 +48,8 @@ class GridIn extends GridFSFile {
     }
     if (chunkSize <= 0 || chunkSize > GridFS.maxChunkSize) {
       throw MongoDartError(
-          'chunkSize must be greater than zero and less than or equal to GridFS.MAX_CHUNKSIZE');
+        'chunkSize must be greater than zero and less than or equal to GridFS.MAX_CHUNKSIZE',
+      );
     }
 
     await for (var data in input) {
@@ -64,7 +68,7 @@ class GridIn extends GridFSFile {
     var chunk = <String, dynamic>{
       'files_id': id,
       'n': currentChunkNumber,
-      'data': BsonBinary.from(writeBuffer)
+      'data': BsonBinary.from(writeBuffer),
     };
     currentChunkNumber++;
 

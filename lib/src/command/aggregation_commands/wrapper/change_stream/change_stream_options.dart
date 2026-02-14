@@ -9,17 +9,17 @@ import '../../../command_exp.dart';
 /// Please, note that even if the resume parameters are present,
 /// no atomatic resume logic is applied (at least in this driver version).
 class ChangeStreamOptions extends AggregateOptions {
-  ChangeStreamOptions(
-      {this.resumeAfter,
-      this.startAfter,
-      this.fullDocument,
-      this.maxAwaitTimeMS,
-      this.startAtOperationTime,
-      super.bypassDocumentValidation,
-      super.allowDiskUse,
-      super.collation,
-      super.comment})
-      : super.protected();
+  ChangeStreamOptions({
+    this.resumeAfter,
+    this.startAfter,
+    this.fullDocument,
+    this.maxAwaitTimeMS,
+    this.startAtOperationTime,
+    super.bypassDocumentValidation,
+    super.allowDiskUse,
+    super.collation,
+    super.comment,
+  }) : super.protected();
 
   /// Directs watch to attempt resuming notifications starting after the
   /// operation specified in the resume token.
@@ -72,11 +72,10 @@ class ChangeStreamOptions extends AggregateOptions {
   /// These options mut be passed to the $changeStream key in the aggregate
   /// command
   Options changeStreamSpecificOptions() => <String, dynamic>{
-        if (resumeAfter != null) keyResumeAfter: resumeAfter!,
-        if (startAfter != null) keyStartAfter: startAfter!,
-        if (fullDocument != null) keyFullDocument: fullDocument!,
-        if (maxAwaitTimeMS != null) keyMaxAwaitTimeMS: maxAwaitTimeMS!,
-        if (startAtOperationTime != null)
-          keyStartAtOperationTime: startAtOperationTime!,
-      };
+    keyResumeAfter: ?resumeAfter,
+    keyStartAfter: ?startAfter,
+    keyFullDocument: ?fullDocument,
+    keyMaxAwaitTimeMS: ?maxAwaitTimeMS,
+    keyStartAtOperationTime: ?startAtOperationTime,
+  };
 }

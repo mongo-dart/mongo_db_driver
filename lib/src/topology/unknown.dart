@@ -13,7 +13,7 @@ import 'standalone.dart';
 /// The correct topology object will have to complete all the connections.
 class Unknown extends Topology {
   Unknown(super.mongoClient, super.hostsSeedList, {TopologyType? topologyType})
-      : super.protected(type: topologyType ?? TopologyType.unknown);
+    : super.protected(type: topologyType ?? TopologyType.unknown);
 
   /// If the TopologyType is **not** Single, the topology can contain zero or
   /// more servers. The state of topology containing zero servers is terminal
@@ -73,17 +73,26 @@ class Unknown extends Topology {
     Topology topology;
 
     if (servers.first.isStandalone) {
-      topology =
-          Standalone(mongoClient, hostsSeedList, detectedServers: servers);
+      topology = Standalone(
+        mongoClient,
+        hostsSeedList,
+        detectedServers: servers,
+      );
       topology.primary = servers.first;
     } else if (servers.first.isReplicaSet) {
-      topology =
-          ReplicaSet(mongoClient, hostsSeedList, detectedServers: servers);
+      topology = ReplicaSet(
+        mongoClient,
+        hostsSeedList,
+        detectedServers: servers,
+      );
       await topology.updateServersStatus();
     } else if (servers.first.isShardedCluster) {
       // Todo
-      topology =
-          SharderdCluster(mongoClient, hostsSeedList, detectedServers: servers);
+      topology = SharderdCluster(
+        mongoClient,
+        hostsSeedList,
+        detectedServers: servers,
+      );
     } else {
       throw MongoDartError('Unknown topology type');
     }

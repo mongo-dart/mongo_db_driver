@@ -7,12 +7,12 @@ enum WriteCommandType { insert, update, delete }
 
 abstract class AbstractWriteResult with BasicResult {
   AbstractWriteResult.fromMap(
-      WriteCommandType writeCommandType, Map<String, dynamic> result)
-      // ignore: prefer_initializing_formals
-      : writeCommandType =
-            writeCommandType /* ,
-        serverResponses = [result]  */
-  {
+    WriteCommandType writeCommandType,
+    Map<String, dynamic> result,
+  )
+    // ignore: prefer_initializing_formals
+    : writeCommandType = writeCommandType /* ,
+        serverResponses = [result]  */ {
     extractBasic(result);
 
     switch (writeCommandType) {
@@ -33,8 +33,9 @@ abstract class AbstractWriteResult with BasicResult {
       nUpserted = (result[keyUpserted] as List).length;
     }
     if (result.containsKey(keyWriteConcernError)) {
-      writeConcernError = WriteConcernError.fromMap(
-          <String, dynamic>{...?(result[keyWriteConcernError] as Map?)});
+      writeConcernError = WriteConcernError.fromMap(<String, dynamic>{
+        ...?(result[keyWriteConcernError] as Map?),
+      });
     }
   }
 

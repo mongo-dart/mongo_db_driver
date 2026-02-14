@@ -11,28 +11,31 @@ import '../../../base/operation_base.dart';
 
 abstract class InsertOptions {
   @protected
-  InsertOptions.protected(
-      {this.writeConcern,
-      bool? ordered = true,
-      bool? bypassDocumentValidation = false})
-      : ordered = ordered ?? true,
-        bypassDocumentValidation = bypassDocumentValidation ?? false;
+  InsertOptions.protected({
+    this.writeConcern,
+    bool? ordered = true,
+    bool? bypassDocumentValidation = false,
+  }) : ordered = ordered ?? true,
+       bypassDocumentValidation = bypassDocumentValidation ?? false;
 
-  factory InsertOptions(
-      {ServerApi? serverApi,
-      WriteConcern? writeConcern,
-      bool? ordered = true,
-      bool? bypassDocumentValidation = false}) {
+  factory InsertOptions({
+    ServerApi? serverApi,
+    WriteConcern? writeConcern,
+    bool? ordered = true,
+    bool? bypassDocumentValidation = false,
+  }) {
     if (serverApi != null && serverApi.version == ServerApiVersion.v1) {
       return InsertOptionsV1(
-          writeConcern: writeConcern,
-          ordered: ordered,
-          bypassDocumentValidation: bypassDocumentValidation);
-    }
-    return InsertOptionsOpen(
         writeConcern: writeConcern,
         ordered: ordered,
-        bypassDocumentValidation: bypassDocumentValidation);
+        bypassDocumentValidation: bypassDocumentValidation,
+      );
+    }
+    return InsertOptionsOpen(
+      writeConcern: writeConcern,
+      ordered: ordered,
+      bypassDocumentValidation: bypassDocumentValidation,
+    );
   }
 
   /// The WriteConcern for this insert operation
@@ -60,14 +63,16 @@ abstract class InsertOptions {
       : InsertOptionsOpen(
           writeConcern: writeConcern,
           ordered: ordered,
-          bypassDocumentValidation: bypassDocumentValidation);
+          bypassDocumentValidation: bypassDocumentValidation,
+        );
 
   InsertOptionsV1 get toV1 => this is InsertOptionsV1
       ? this as InsertOptionsV1
       : InsertOptionsV1(
           writeConcern: writeConcern,
           ordered: ordered,
-          bypassDocumentValidation: bypassDocumentValidation);
+          bypassDocumentValidation: bypassDocumentValidation,
+        );
 
   // The db parameter is used to transform the writeConcern into a Map
   /// When a writeConcern is given a Db object must be specified

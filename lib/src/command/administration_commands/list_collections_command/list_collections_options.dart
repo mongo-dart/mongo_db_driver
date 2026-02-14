@@ -52,13 +52,16 @@ class ListCollectionsOptions {
   /// New in version 4.4.
   final String? comment;
 
-  const ListCollectionsOptions(
-      {this.nameOnly, this.authorizedCollections, this.comment});
+  const ListCollectionsOptions({
+    this.nameOnly,
+    this.authorizedCollections,
+    this.comment,
+  });
 
   Options get options => <String, dynamic>{
-        if (nameOnly != null && nameOnly!) keyNameOnly: nameOnly!,
-        if (authorizedCollections != null && authorizedCollections!)
-          keyAuthorizedCollections: authorizedCollections!,
-        if (comment != null) keyComment: comment!,
-      };
+    if (nameOnly != null && nameOnly!) keyNameOnly: nameOnly!,
+    if (authorizedCollections != null && authorizedCollections!)
+      keyAuthorizedCollections: authorizedCollections!,
+    keyComment: ?comment,
+  };
 }

@@ -12,14 +12,21 @@ class CommitTransactionOptions {
   @protected
   const CommitTransactionOptions.protected({this.writeConcern, this.comment});
 
-  factory CommitTransactionOptions(
-      {ServerApi? serverApi, WriteConcern? writeConcern, String? comment}) {
+  factory CommitTransactionOptions({
+    ServerApi? serverApi,
+    WriteConcern? writeConcern,
+    String? comment,
+  }) {
     if (serverApi != null && serverApi.version == ServerApiVersion.v1) {
       return CommitTransactionOptionsV1(
-          writeConcern: writeConcern, comment: comment);
+        writeConcern: writeConcern,
+        comment: comment,
+      );
     }
     return CommitTransactionOptionsOpen(
-        writeConcern: writeConcern, comment: comment);
+      writeConcern: writeConcern,
+      comment: comment,
+    );
   }
 
   /// The WriteConcern for this insert operation
@@ -38,20 +45,25 @@ class CommitTransactionOptions {
 
   CommitTransactionOptionsOpen get toOpen =>
       this is CommitTransactionOptionsOpen
-          ? this as CommitTransactionOptionsOpen
-          : CommitTransactionOptionsOpen(
-              writeConcern: writeConcern, comment: comment);
+      ? this as CommitTransactionOptionsOpen
+      : CommitTransactionOptionsOpen(
+          writeConcern: writeConcern,
+          comment: comment,
+        );
 
   CommitTransactionOptionsV1 get toV1 => this is CommitTransactionOptionsV1
       ? this as CommitTransactionOptionsV1
       : CommitTransactionOptionsV1(
-          writeConcern: writeConcern, comment: comment);
+          writeConcern: writeConcern,
+          comment: comment,
+        );
 
   Options getOptions(MongoClient client) => <String, dynamic>{
-        if (writeConcern != null)
-          keyWriteConcern: writeConcern!.asMap(
-              client.topology?.primary?.serverStatus ??
-                  (throw MongoDartError('No server detected'))),
-        if (comment != null) keyComment: comment!,
-      };
+    if (writeConcern != null)
+      keyWriteConcern: writeConcern!.asMap(
+        client.topology?.primary?.serverStatus ??
+            (throw MongoDartError('No server detected')),
+      ),
+    keyComment: ?comment,
+  };
 }

@@ -9,25 +9,30 @@ import '../v1/update_options_v1.dart';
 
 abstract class UpdateOptions {
   @protected
-  UpdateOptions.protected(
-      {this.writeConcern, bool? bypassDocumentValidation, this.comment})
-      : bypassDocumentValidation = bypassDocumentValidation ?? false;
+  UpdateOptions.protected({
+    this.writeConcern,
+    bool? bypassDocumentValidation,
+    this.comment,
+  }) : bypassDocumentValidation = bypassDocumentValidation ?? false;
 
-  factory UpdateOptions(
-      {ServerApi? serverApi,
-      WriteConcern? writeConcern,
-      bool? bypassDocumentValidation = false,
-      String? comment}) {
+  factory UpdateOptions({
+    ServerApi? serverApi,
+    WriteConcern? writeConcern,
+    bool? bypassDocumentValidation = false,
+    String? comment,
+  }) {
     if (serverApi != null && serverApi.version == ServerApiVersion.v1) {
       return UpdateOptionsV1(
-          writeConcern: writeConcern,
-          bypassDocumentValidation: bypassDocumentValidation,
-          comment: comment);
-    }
-    return UpdateOptionsOpen(
         writeConcern: writeConcern,
         bypassDocumentValidation: bypassDocumentValidation,
-        comment: comment);
+        comment: comment,
+      );
+    }
+    return UpdateOptionsOpen(
+      writeConcern: writeConcern,
+      bypassDocumentValidation: bypassDocumentValidation,
+      comment: comment,
+    );
   }
 
   /// A document expressing the [write concern](https://docs.mongodb.com/manual/reference/write-concern/).
@@ -63,20 +68,22 @@ abstract class UpdateOptions {
       : UpdateOptionsOpen(
           writeConcern: writeConcern,
           bypassDocumentValidation: bypassDocumentValidation,
-          comment: comment);
+          comment: comment,
+        );
 
   UpdateOptionsV1 get toV1 => this is UpdateOptionsV1
       ? this as UpdateOptionsV1
       : UpdateOptionsV1(
           writeConcern: writeConcern,
           bypassDocumentValidation: bypassDocumentValidation,
-          comment: comment);
+          comment: comment,
+        );
 
   Options getOptions(MongoDatabase db) => <String, dynamic>{
-        if (bypassDocumentValidation)
-          keyBypassDocumentValidation: bypassDocumentValidation,
-        if (writeConcern != null)
-          keyWriteConcern: writeConcern!.asMap(db.server.serverStatus),
-        if (comment != null) keyComment: comment!,
-      };
+    if (bypassDocumentValidation)
+      keyBypassDocumentValidation: bypassDocumentValidation,
+    if (writeConcern != null)
+      keyWriteConcern: writeConcern!.asMap(db.server.serverStatus),
+    keyComment: ?comment,
+  };
 }

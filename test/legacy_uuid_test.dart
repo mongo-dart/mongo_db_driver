@@ -47,8 +47,10 @@ void main() async {
       //await cleanupDatabase();
     });
     tearDownAll(() async {
-      await Future.forEach(usedCollectionNames,
-          (String collectionName) => db.collection(collectionName).drop());
+      await Future.forEach(
+        usedCollectionNames,
+        (String collectionName) => db.collection(collectionName).drop(),
+      );
       await client.close();
     });
     group('Uuid:', () {
@@ -64,24 +66,33 @@ void main() async {
           'standard': LegacyUuid.fromHexString(uuidValue.uuid),
           'javaLegacy': LegacyUuid.toJavaLegacy(uuidValue),
           'cSharpLegacy': LegacyUuid.toCSharpLegacy(uuidValue),
-          'pythonLegacy': LegacyUuid.toPythonLegacy(uuidValue)
+          'pythonLegacy': LegacyUuid.toPythonLegacy(uuidValue),
         });
 
         var values = await collection
             .find(
-                filter: where
-                  ..$eq('javaLegacy', LegacyUuid.toJavaLegacy(uuidValue)))
+              filter: where
+                ..$eq('javaLegacy', LegacyUuid.toJavaLegacy(uuidValue)),
+            )
             .toList();
 
         expect(values.length, 1);
         expect(
-            (values.first['standard'] as LegacyUuid).pythonLegacy, uuidValue);
+          (values.first['standard'] as LegacyUuid).pythonLegacy,
+          uuidValue,
+        );
         expect(
-            (values.first['javaLegacy'] as LegacyUuid).javaLegacy, uuidValue);
-        expect((values.first['cSharpLegacy'] as LegacyUuid).cSharpLegacy,
-            uuidValue);
-        expect((values.first['pythonLegacy'] as LegacyUuid).pythonLegacy,
-            uuidValue);
+          (values.first['javaLegacy'] as LegacyUuid).javaLegacy,
+          uuidValue,
+        );
+        expect(
+          (values.first['cSharpLegacy'] as LegacyUuid).cSharpLegacy,
+          uuidValue,
+        );
+        expect(
+          (values.first['pythonLegacy'] as LegacyUuid).pythonLegacy,
+          uuidValue,
+        );
       });
 
       test('update Uuid', () async {
@@ -96,27 +107,38 @@ void main() async {
           'standard': LegacyUuid.fromHexString(uuidValue.uuid),
           'javaLegacy': LegacyUuid.toJavaLegacy(uuidValue),
           'cSharpLegacy': LegacyUuid.toCSharpLegacy(uuidValue),
-          'pythonLegacy': LegacyUuid.toPythonLegacy(uuidValue)
+          'pythonLegacy': LegacyUuid.toPythonLegacy(uuidValue),
         });
 
         var uuidValue2 = Uuid().v4obj();
         await collection.updateOne(
-            where..$eq('cSharpLegacy', LegacyUuid.toCSharpLegacy(uuidValue)),
-            modify..$set('javaLegacy2', LegacyUuid.toJavaLegacy(uuidValue2)));
+          where..$eq('cSharpLegacy', LegacyUuid.toCSharpLegacy(uuidValue)),
+          modify..$set('javaLegacy2', LegacyUuid.toJavaLegacy(uuidValue2)),
+        );
 
         var values = await collection.find().toList();
 
         expect(values.length, 1);
         expect(
-            (values.first['standard'] as LegacyUuid).pythonLegacy, uuidValue);
+          (values.first['standard'] as LegacyUuid).pythonLegacy,
+          uuidValue,
+        );
         expect(
-            (values.first['javaLegacy'] as LegacyUuid).javaLegacy, uuidValue);
+          (values.first['javaLegacy'] as LegacyUuid).javaLegacy,
+          uuidValue,
+        );
         expect(
-            (values.first['javaLegacy2'] as LegacyUuid).javaLegacy, uuidValue2);
-        expect((values.first['cSharpLegacy'] as LegacyUuid).cSharpLegacy,
-            uuidValue);
-        expect((values.first['pythonLegacy'] as LegacyUuid).pythonLegacy,
-            uuidValue);
+          (values.first['javaLegacy2'] as LegacyUuid).javaLegacy,
+          uuidValue2,
+        );
+        expect(
+          (values.first['cSharpLegacy'] as LegacyUuid).cSharpLegacy,
+          uuidValue,
+        );
+        expect(
+          (values.first['pythonLegacy'] as LegacyUuid).pythonLegacy,
+          uuidValue,
+        );
       });
 
       test('replace Legacy Uuid', () async {
@@ -130,25 +152,30 @@ void main() async {
           'standard': LegacyUuid.fromHexString(uuidValue.uuid),
           'javaLegacy': LegacyUuid.toJavaLegacy(uuidValue),
           'cSharpLegacy': LegacyUuid.toCSharpLegacy(uuidValue),
-          'pythonLegacy': LegacyUuid.toPythonLegacy(uuidValue)
+          'pythonLegacy': LegacyUuid.toPythonLegacy(uuidValue),
         });
 
         var uuidNew = Uuid().v4obj();
         await collection.replaceOne(
-            where..$eq('cSharpLegacy', LegacyUuid.toCSharpLegacy(uuidValue)),
-            {
-              'cSharpLegacy': LegacyUuid.toCSharpLegacy(uuidValue),
-              'pythonLegacy': LegacyUuid.toPythonLegacy(uuidNew)
-            },
-            upsert: true);
+          where..$eq('cSharpLegacy', LegacyUuid.toCSharpLegacy(uuidValue)),
+          {
+            'cSharpLegacy': LegacyUuid.toCSharpLegacy(uuidValue),
+            'pythonLegacy': LegacyUuid.toPythonLegacy(uuidNew),
+          },
+          upsert: true,
+        );
 
         var values = await collection.find().toList();
 
         expect(values.length, 1);
-        expect((values.first['cSharpLegacy'] as LegacyUuid).cSharpLegacy,
-            uuidValue);
         expect(
-            (values.first['pythonLegacy'] as LegacyUuid).pythonLegacy, uuidNew);
+          (values.first['cSharpLegacy'] as LegacyUuid).cSharpLegacy,
+          uuidValue,
+        );
+        expect(
+          (values.first['pythonLegacy'] as LegacyUuid).pythonLegacy,
+          uuidNew,
+        );
       });
 
       test('delete Uuid', () async {
@@ -162,10 +189,11 @@ void main() async {
           'standard': LegacyUuid.fromHexString(uuid.uuid),
           'javaLegacy': LegacyUuid.toJavaLegacy(uuid),
           'cSharpLegacy': LegacyUuid.toCSharpLegacy(uuid),
-          'pythonLegacy': LegacyUuid.toPythonLegacy(uuid)
+          'pythonLegacy': LegacyUuid.toPythonLegacy(uuid),
         });
         await collection.deleteOne(
-            where..$eq('pythonLegacy', LegacyUuid.toPythonLegacy(uuid)));
+          where..$eq('pythonLegacy', LegacyUuid.toPythonLegacy(uuid)),
+        );
 
         var values = await collection.find().toList();
 

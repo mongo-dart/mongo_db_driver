@@ -30,18 +30,22 @@ void main() async {
   }
 
   var (res, _) = await collection.findOneAndUpdate(
-      where
-        ..$eq('category', 'cafe')
-        ..$eq('status', 'a'),
-      UpdateExpression()..$set('status', 'updated'),
-      sort: <String, dynamic>{'category': 1},
-      findOneAndUpdateOptions: FindOneAndUpdateOptions(
-          collation: CollationOptions('fr', strength: 1)));
+    where
+      ..$eq('category', 'cafe')
+      ..$eq('status', 'a'),
+    UpdateExpression()..$set('status', 'updated'),
+    sort: <String, dynamic>{'category': 1},
+    findOneAndUpdateOptions: FindOneAndUpdateOptions(
+      collation: CollationOptions('fr', strength: 1),
+    ),
+  );
 
   print('Updated document: ${res.lastErrorObject?.updatedExisting}'); // true
 
-  print('Modified element original category: '
-      '${res.value?['category']}'); // 'café';
+  print(
+    'Modified element original category: '
+    '${res.value?['category']}',
+  ); // 'café';
 
   await cleanupDatabase();
 }

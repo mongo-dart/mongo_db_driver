@@ -41,7 +41,7 @@ void _configureRs(StringBuffer buffer, [int rsLength = rsLength]) {
   }
   buffer.write('  ]');
   buffer.write('});');
-//  buffer.write('printjson(x);');
+  //  buffer.write('printjson(x);');
 }
 
 void _waitRs(StringBuffer buffer) {
@@ -49,7 +49,7 @@ void _waitRs(StringBuffer buffer) {
   buffer.write('while(1) {');
   buffer.write('  sleep(2000);');
   buffer.write('  x = db.isMaster();');
-//  buffer.write('  printjson(x);');
+  //  buffer.write('  printjson(x);');
   buffer.write('  if (x.ismaster || x.secondary) {');
   buffer.write('    print("Instance is online now");');
   buffer.write('    break;');
@@ -85,7 +85,7 @@ ProcessResult _startMongod(int port, [String? rs]) {
     '$dataPath/$port',
     '--port',
     '$port',
-    '-v'
+    '-v',
   ];
   if (rs != null) {
     args.addAll(['--replSet', rs]);
@@ -262,7 +262,9 @@ void main(List<String> args) {
       }
       break;
     default:
-      print('Usage: ${basename(Platform.script.path)}'
-          '{start|stop|status} [all|standalone|rs]');
+      print(
+        'Usage: ${basename(Platform.script.path)}'
+        '{start|stop|status} [all|standalone|rs]',
+      );
   }
 }

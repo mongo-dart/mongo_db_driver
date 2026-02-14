@@ -8,18 +8,19 @@ import 'server_status_result.dart';
 var _command = <String, dynamic>{keyServerStatus: 1};
 
 base class ServerStatusCommand extends DbAdminCommandOperation {
-  ServerStatusCommand(MongoClient client,
-      {super.session,
-      ServerStatusOptions? serverStatusOptions,
-      Map<String, Object>? rawOptions})
-      : super(
-          client,
-          _command,
-          options: <String, dynamic>{
-            ...?serverStatusOptions?.options,
-            ...?rawOptions
-          },
-        );
+  ServerStatusCommand(
+    MongoClient client, {
+    super.session,
+    ServerStatusOptions? serverStatusOptions,
+    Map<String, Object>? rawOptions,
+  }) : super(
+         client,
+         _command,
+         options: <String, dynamic>{
+           ...?serverStatusOptions?.options,
+           ...?rawOptions,
+         },
+       );
 
   Future<ServerStatusResult> executeDocument(Server server) async {
     var result = await super.process();

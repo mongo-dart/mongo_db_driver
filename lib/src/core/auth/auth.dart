@@ -15,8 +15,11 @@ enum AuthenticationScheme { MONGODB_CR, SCRAM_SHA_1, SCRAM_SHA_256, X509 }
 abstract class Authenticator {
   Authenticator(this.connection);
 
-  factory Authenticator.create(AuthenticationScheme authenticationScheme,
-      ConnectionBase connection, UsernamePasswordCredential credentials) {
+  factory Authenticator.create(
+    AuthenticationScheme authenticationScheme,
+    ConnectionBase connection,
+    UsernamePasswordCredential credentials,
+  ) {
     switch (authenticationScheme) {
       /*  case AuthenticationScheme.MONGODB_CR:
         return MongoDbCRAuthenticator(credentials, connection); */
@@ -38,7 +41,8 @@ abstract class Authenticator {
 }
 
 abstract class RandomStringGenerator {
-  static const String allowedCharacters = '!"#\'\$%&()*+-./0123456789:;<=>?@'
+  static const String allowedCharacters =
+      '!"#\'\$%&()*+-./0123456789:;<=>?@'
       'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~';
 
   String generate(int length);

@@ -30,17 +30,17 @@ import 'list_collections_options.dart';
 ///   (must be manually set)
 
 base class ListCollectionsCommand extends CommandOperation {
-  ListCollectionsCommand(MongoDatabase db,
-      {this.filter,
-      super.session,
-      ListCollectionsOptions? listCollectionsOptions,
-      Map<String, Object>? rawOptions})
-      : super(db, <String, dynamic>{
-          keyListCollections: 1,
-        }, <String, dynamic>{
-          ...?listCollectionsOptions?.options,
-          ...?rawOptions
-        });
+  ListCollectionsCommand(
+    MongoDatabase db, {
+    this.filter,
+    super.session,
+    ListCollectionsOptions? listCollectionsOptions,
+    Map<String, Object>? rawOptions,
+  }) : super(
+         db,
+         <String, dynamic>{keyListCollections: 1},
+         <String, dynamic>{...?listCollectionsOptions?.options, ...?rawOptions},
+       );
 
   /// Optional. A query expression to filter the list of collections.
   ///
@@ -50,7 +50,7 @@ base class ListCollectionsCommand extends CommandOperation {
 
   @override
   Command $buildCommand() => <String, dynamic>{
-        keyListCollections: 1,
-        if (filter != null) keyFilter: filter!,
-      };
+    keyListCollections: 1,
+    keyFilter: ?filter,
+  };
 }

@@ -155,6 +155,7 @@ const keyLimit = 'limit';
 const keyListCollections = 'listCollections';
 const keyListDatabases = 'listDatabases';
 const keyListIndexes = 'listIndexes';
+const keyLoadBalaned = 'laodBalanced';
 const keyLocale = 'locale';
 const keyLocalTime = 'localTime';
 const keyLocks = 'locks';

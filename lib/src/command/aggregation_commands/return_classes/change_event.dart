@@ -76,8 +76,9 @@ class ChangeEvent {
     fullDocument = streamData[keyFullDocument] as Map<String, dynamic>?;
     documentKey = streamData[keyDocumentKey] as Map<String, dynamic>?;
     if (streamData[keyNs] != null) {
-      ns = MongoDBNamespace.fromMap(
-          <String, dynamic>{...streamData[keyNs] as Map});
+      ns = MongoDBNamespace.fromMap(<String, dynamic>{
+        ...streamData[keyNs] as Map,
+      });
     }
     return Map.from(streamData);
   }

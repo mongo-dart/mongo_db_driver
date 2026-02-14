@@ -21,9 +21,8 @@ class DropIndexesOptions {
   DropIndexesOptions({this.writeConcern, this.comment});
 
   Options getOptions(MongoCollection collection) => <String, dynamic>{
-        if (writeConcern != null)
-          keyWriteConcern:
-              writeConcern!.asMap(collection.db.server.serverStatus),
-        if (comment != null) keyComment: comment!,
-      };
+    if (writeConcern != null)
+      keyWriteConcern: writeConcern!.asMap(collection.db.server.serverStatus),
+    keyComment: ?comment,
+  };
 }

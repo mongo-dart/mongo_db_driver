@@ -12,15 +12,16 @@ Future testCreatePayload0FromDocument() async {
   var data = <String, Object>{
     keyInsert: 'collectionName',
     key$Db: 'databaseName',
-    keyWriteConcern: {'w': 'majority'}
+    keyWriteConcern: {'w': 'majority'},
   };
   var payload0 = Payload0(data);
 
   expect(payload0.byteLength, 89);
   var check = BsonBinary.fromHexString(
-      '5900000002696e73657274000f000000636f6c6c656374696f6e4e616d6500022464620'
-      '00d00000064617461626173654e616d6500037772697465436f6e6365726e0015000000'
-      '027700090000006d616a6f72697479000000');
+    '5900000002696e73657274000f000000636f6c6c656374696f6e4e616d6500022464620'
+    '00d00000064617461626173654e616d6500037772697465436f6e6365726e0015000000'
+    '027700090000006d616a6f72697479000000',
+  );
   var buffer = BsonBinary(payload0.byteLength);
   payload0.packValue(buffer);
   expect(buffer.offset, payload0.byteLength);
@@ -31,13 +32,14 @@ Future testCreatePayload0FromBuffer() async {
   var data = <String, Object>{
     keyInsert: 'collectionName',
     key$Db: 'databaseName',
-    keyWriteConcern: {'w': 'majority'}
+    keyWriteConcern: {'w': 'majority'},
   };
   var check = Payload0(data);
   var buffer = BsonBinary.fromHexString(
-      '5900000002696e73657274000f000000636f6c6c656374696f6e4e616d6500022464620'
-      '00d00000064617461626173654e616d6500037772697465436f6e6365726e0015000000'
-      '027700090000006d616a6f72697479000000');
+    '5900000002696e73657274000f000000636f6c6c656374696f6e4e616d6500022464620'
+    '00d00000064617461626173654e616d6500037772697465436f6e6365726e0015000000'
+    '027700090000006d616a6f72697479000000',
+  );
   buffer.offset = 0;
   var payload = Payload0.fromBuffer(buffer);
 
@@ -50,7 +52,7 @@ Future testCreatePayload1FromDocument() async {
   var data = <Map<String, Object>>[
     {key_id: 'Document#1', 'example': 1},
     {key_id: 'Document#2', 'example': 2},
-    {key_id: 'Document#3', 'example': 3}
+    {key_id: 'Document#3', 'example': 3},
   ];
   var payload1 = Payload1('documents', data);
 
@@ -58,10 +60,11 @@ Future testCreatePayload1FromDocument() async {
   expect(payload1.documentsByteLength, 114);
   expect(payload1.byteLength, 128);
   var check = BsonBinary.fromHexString(
-      '80000000646f63756d656e74730026000000025f6964000b000000446f63756d656e74'
-      '233100106578616d706c6500010000000026000000025f6964000b000000446f63756d'
-      '656e74233200106578616d706c6500020000000026000000025f6964000b000000446f'
-      '63756d656e74233300106578616d706c65000300000000');
+    '80000000646f63756d656e74730026000000025f6964000b000000446f63756d656e74'
+    '233100106578616d706c6500010000000026000000025f6964000b000000446f63756d'
+    '656e74233200106578616d706c6500020000000026000000025f6964000b000000446f'
+    '63756d656e74233300106578616d706c65000300000000',
+  );
   var buffer = BsonBinary(payload1.byteLength);
   payload1.packValue(buffer);
   expect(buffer.offset, payload1.byteLength);
@@ -72,14 +75,15 @@ Future testCreatePayload1FromBuffer() async {
   var data = <Map<String, Object>>[
     {key_id: 'Document#1', 'example': 1},
     {key_id: 'Document#2', 'example': 2},
-    {key_id: 'Document#3', 'example': 3}
+    {key_id: 'Document#3', 'example': 3},
   ];
   var check = Payload1('documents', data);
   var buffer = BsonBinary.fromHexString(
-      '80000000646f63756d656e74730026000000025f6964000b000000446f63756d656e74'
-      '233100106578616d706c6500010000000026000000025f6964000b000000446f63756d'
-      '656e74233200106578616d706c6500020000000026000000025f6964000b000000446f'
-      '63756d656e74233300106578616d706c65000300000000');
+    '80000000646f63756d656e74730026000000025f6964000b000000446f63756d656e74'
+    '233100106578616d706c6500010000000026000000025f6964000b000000446f63756d'
+    '656e74233200106578616d706c6500020000000026000000025f6964000b000000446f'
+    '63756d656e74233300106578616d706c65000300000000',
+  );
   buffer.offset = 0;
   var payload = Payload1.fromBuffer(buffer);
 
@@ -96,7 +100,7 @@ Future testCreateSectionType0FromDocument() async {
   var data = <String, Object>{
     'insert': 'collectionName',
     key$Db: 'databaseName',
-    'writeConcern': {'w': 'majority'}
+    'writeConcern': {'w': 'majority'},
   };
   var section0 = Section(MongoMessage.basePayloadType, data);
   var payload0 = Payload0(data);
@@ -104,9 +108,10 @@ Future testCreateSectionType0FromDocument() async {
   expect(section0.byteLength, 90);
   expect(payload0.byteLength, 89);
   var check = BsonBinary.fromHexString(
-      '005900000002696e73657274000f000000636f6c6c656374696f6e4e616d6500022464'
-      '62000d00000064617461626173654e616d6500037772697465436f6e6365726e001500'
-      '0000027700090000006d616a6f72697479000000');
+    '005900000002696e73657274000f000000636f6c6c656374696f6e4e616d6500022464'
+    '62000d00000064617461626173654e616d6500037772697465436f6e6365726e001500'
+    '0000027700090000006d616a6f72697479000000',
+  );
   var buffer = BsonBinary(section0.byteLength);
   section0.packValue(buffer);
   expect(buffer.offset, section0.byteLength);
@@ -117,13 +122,14 @@ Future testCreateSectionType0FromBuffer() async {
   var data = <String, Object>{
     'insert': 'collectionName',
     key$Db: 'databaseName',
-    'writeConcern': {'w': 'majority'}
+    'writeConcern': {'w': 'majority'},
   };
   var check = Section(MongoMessage.basePayloadType, data);
   var buffer = BsonBinary.fromHexString(
-      '005900000002696e73657274000f000000636f6c6c656374696f6e4e616d6500022464'
-      '62000d00000064617461626173654e616d6500037772697465436f6e6365726e001500'
-      '0000027700090000006d616a6f72697479000000');
+    '005900000002696e73657274000f000000636f6c6c656374696f6e4e616d6500022464'
+    '62000d00000064617461626173654e616d6500037772697465436f6e6365726e001500'
+    '0000027700090000006d616a6f72697479000000',
+  );
   buffer.offset = 0;
   var section = Section.fromBuffer(buffer);
 
@@ -137,8 +143,8 @@ Future testCreateSectionType1FromDocument() async {
     'documents': [
       {key_id: 'Document#1', 'example': 1},
       {key_id: 'Document#2', 'example': 2},
-      {key_id: 'Document#3', 'example': 3}
-    ]
+      {key_id: 'Document#3', 'example': 3},
+    ],
   };
   var section = Section(MongoMessage.documentsPayloadType, data);
 
@@ -146,10 +152,11 @@ Future testCreateSectionType1FromDocument() async {
   expect((section.payload as Payload1).documentsByteLength, 114);
   expect(section.byteLength, 129);
   var check = BsonBinary.fromHexString(
-      '0180000000646f63756d656e74730026000000025f6964000b000000446f63756d656e74'
-      '233100106578616d706c6500010000000026000000025f6964000b000000446f63756d'
-      '656e74233200106578616d706c6500020000000026000000025f6964000b000000446f'
-      '63756d656e74233300106578616d706c65000300000000');
+    '0180000000646f63756d656e74730026000000025f6964000b000000446f63756d656e74'
+    '233100106578616d706c6500010000000026000000025f6964000b000000446f63756d'
+    '656e74233200106578616d706c6500020000000026000000025f6964000b000000446f'
+    '63756d656e74233300106578616d706c65000300000000',
+  );
   var buffer = BsonBinary(section.byteLength);
   section.packValue(buffer);
   expect(buffer.offset, section.byteLength);
@@ -161,15 +168,16 @@ Future testCreateSectionType1FromBuffer() async {
     'documents': [
       {key_id: 'Document#1', 'example': 1},
       {key_id: 'Document#2', 'example': 2},
-      {key_id: 'Document#3', 'example': 3}
-    ]
+      {key_id: 'Document#3', 'example': 3},
+    ],
   };
   var check = Section(MongoMessage.documentsPayloadType, data);
   var buffer = BsonBinary.fromHexString(
-      '0180000000646f63756d656e74730026000000025f6964000b000000446f63756d656e74'
-      '233100106578616d706c6500010000000026000000025f6964000b000000446f63756d'
-      '656e74233200106578616d706c6500020000000026000000025f6964000b000000446f'
-      '63756d656e74233300106578616d706c65000300000000');
+    '0180000000646f63756d656e74730026000000025f6964000b000000446f63756d656e74'
+    '233100106578616d706c6500010000000026000000025f6964000b000000446f63756d'
+    '656e74233200106578616d706c6500020000000026000000025f6964000b000000446f'
+    '63756d656e74233300106578616d706c65000300000000',
+  );
   buffer.offset = 0;
   var section = Section.fromBuffer(buffer);
 
@@ -178,17 +186,21 @@ Future testCreateSectionType1FromBuffer() async {
   expect(section.byteLength, 129);
 
   expect(section.byteLength, check.byteLength);
-  expect((section.payload as Payload1).identifier.toString(),
-      (check.payload as Payload1).identifier.toString());
-  expect((section.payload as Payload1).documentsByteLength,
-      (check.payload as Payload1).documentsByteLength);
+  expect(
+    (section.payload as Payload1).identifier.toString(),
+    (check.payload as Payload1).identifier.toString(),
+  );
+  expect(
+    (section.payload as Payload1).documentsByteLength,
+    (check.payload as Payload1).documentsByteLength,
+  );
 }
 
 Future testCreateModernMessageFromDocument() async {
   var data = <String, Object>{
     keyInsert: 'collectionName',
     key$Db: 'databaseName',
-    keyWriteConcern: {'w': 'majority'}
+    keyWriteConcern: {'w': 'majority'},
   };
   var documents = <Map<String, Object>>[];
   for (var idx = 1; idx <= 120; idx++) {
@@ -230,13 +242,14 @@ Future testCreateModernMessageFromBuffer() async {
   var data = <String, Object>{
     'insert': 'collectionName',
     key$Db: 'databaseName',
-    'writeConcern': {'w': 'majority'}
+    'writeConcern': {'w': 'majority'},
   };
   var check = Section(MongoMessage.basePayloadType, data);
   var buffer = BsonBinary.fromHexString(
-      '005900000002696e73657274000f000000636f6c6c656374696f6e4e616d6500022464'
-      '62000d00000064617461626173654e616d6500037772697465436f6e6365726e001500'
-      '0000027700090000006d616a6f72697479000000');
+    '005900000002696e73657274000f000000636f6c6c656374696f6e4e616d6500022464'
+    '62000d00000064617461626173654e616d6500037772697465436f6e6365726e001500'
+    '0000027700090000006d616a6f72697479000000',
+  );
   buffer.offset = 0;
   var section = Section.fromBuffer(buffer);
 
@@ -248,32 +261,48 @@ Future testCreateModernMessageFromBuffer() async {
 void main() async {
   group('Messages - ', () {
     group('Bson Payload0 Test', () {
-      test('create Payload Type 0 from document',
-          testCreatePayload0FromDocument);
+      test(
+        'create Payload Type 0 from document',
+        testCreatePayload0FromDocument,
+      );
       test('create Payload Type 0 from buffer', testCreatePayload0FromBuffer);
     });
     group('Bson Payload1 Test', () {
-      test('create Payload Type 1 from document',
-          testCreatePayload1FromDocument);
+      test(
+        'create Payload Type 1 from document',
+        testCreatePayload1FromDocument,
+      );
       test('create Payload Type 1 from buffer', testCreatePayload1FromBuffer);
     });
     group('Bson Section0 Test', () {
-      test('create Section Type 0 from document',
-          testCreateSectionType0FromDocument);
-      test('create Section Type 0 from buffer',
-          testCreateSectionType0FromBuffer);
+      test(
+        'create Section Type 0 from document',
+        testCreateSectionType0FromDocument,
+      );
+      test(
+        'create Section Type 0 from buffer',
+        testCreateSectionType0FromBuffer,
+      );
     });
     group('Bson Section1 Test', () {
-      test('create Section Type 1 from document',
-          testCreateSectionType1FromDocument);
-      test('create Section Type 1 from buffer',
-          testCreateSectionType1FromBuffer);
+      test(
+        'create Section Type 1 from document',
+        testCreateSectionType1FromDocument,
+      );
+      test(
+        'create Section Type 1 from buffer',
+        testCreateSectionType1FromBuffer,
+      );
     });
     group('Modern Message Test', () {
-      test('create Moder Message from document',
-          testCreateModernMessageFromDocument);
-      test('create Moder Message from buffer',
-          testCreateModernMessageFromBuffer);
+      test(
+        'create Moder Message from document',
+        testCreateModernMessageFromDocument,
+      );
+      test(
+        'create Moder Message from buffer',
+        testCreateModernMessageFromBuffer,
+      );
     });
   });
 }

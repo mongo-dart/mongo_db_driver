@@ -48,7 +48,7 @@ Future<BulkWriteResult> insertFrenchCafe(MongoCollection collection) async {
   var toInsert = <Map<String, dynamic>>[
     {'_id': 1, 'category': 'café', 'status': 'A'},
     {'_id': 2, 'category': 'cafe', 'status': 'a'},
-    {'_id': 3, 'category': 'cafE', 'status': 'a'}
+    {'_id': 3, 'category': 'cafE', 'status': 'a'},
   ];
 
   var (bulkWriteResult, _, _, _) = await collection.insertMany(toInsert);
@@ -64,7 +64,7 @@ Future<BulkWriteResult> insertMembers(MongoCollection collection) async {
       'status': 'P',
       'points': 0,
       'misc1': null,
-      'misc2': null
+      'misc2': null,
     },
     {
       '_id': 2,
@@ -72,7 +72,7 @@ Future<BulkWriteResult> insertMembers(MongoCollection collection) async {
       'status': 'A',
       'points': 60,
       'misc1': 'reminder: ping me at 100pts',
-      'misc2': 'Some random comment'
+      'misc2': 'Some random comment',
     },
     {
       '_id': 3,
@@ -80,7 +80,7 @@ Future<BulkWriteResult> insertMembers(MongoCollection collection) async {
       'status': 'P',
       'points': 0,
       'misc1': null,
-      'misc2': null
+      'misc2': null,
     },
     {
       '_id': 4,
@@ -88,7 +88,7 @@ Future<BulkWriteResult> insertMembers(MongoCollection collection) async {
       'status': 'D',
       'points': 20,
       'misc1': 'Deactivated',
-      'misc2': null
+      'misc2': null,
     },
     {
       '_id': 5,
@@ -96,7 +96,7 @@ Future<BulkWriteResult> insertMembers(MongoCollection collection) async {
       'status': 'P',
       'points': 0,
       'misc1': null,
-      'misc2': null
+      'misc2': null,
     },
     {
       '_id': 6,
@@ -104,8 +104,8 @@ Future<BulkWriteResult> insertMembers(MongoCollection collection) async {
       'status': 'A',
       'points': 86,
       'misc1': 'reminder: ping me at 100pts',
-      'misc2': 'Some random comment'
-    }
+      'misc2': 'Some random comment',
+    },
   ];
 
   var (bulkWriteResult, _, _, _) = await collection.insertMany(toInsert);
@@ -120,7 +120,7 @@ Future<BulkWriteResult> insertPeople(MongoCollection collection) async {
     {'_id': 4, 'name': 'George', 'state': 'active', 'rating': 95, 'score': 8},
     {'_id': 5, 'name': 'Jim', 'state': 'idle', 'rating': 40, 'score': 3},
     {'_id': 6, 'name': 'Laureen', 'state': 'busy', 'rating': 87, 'score': 8},
-    {'_id': 7, 'name': 'John', 'state': 'idle', 'rating': 72, 'score': 7}
+    {'_id': 7, 'name': 'John', 'state': 'idle', 'rating': 72, 'score': 7},
   ];
 
   var (bulkWriteResult, _, _, _) = await collection.insertMany(toInsert);
@@ -128,7 +128,9 @@ Future<BulkWriteResult> insertPeople(MongoCollection collection) async {
 }
 
 Future<BulkWriteResult> insertManyDocuments(
-    MongoCollection collection, int numberOfRecords) async {
+  MongoCollection collection,
+  int numberOfRecords,
+) async {
   var toInsert = <Map<String, dynamic>>[];
   for (var n = 0; n < numberOfRecords; n++) {
     toInsert.add({'a': n});

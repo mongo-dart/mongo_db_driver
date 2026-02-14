@@ -9,19 +9,26 @@ import '../v1/delete_options_v1.dart';
 abstract class DeleteOptions {
   @protected
   DeleteOptions.protected({this.writeConcern, bool? ordered, this.comment})
-      : ordered = ordered ?? true;
+    : ordered = ordered ?? true;
 
-  factory DeleteOptions(
-      {ServerApi? serverApi,
-      WriteConcern? writeConcern,
-      bool? ordered,
-      String? comment}) {
+  factory DeleteOptions({
+    ServerApi? serverApi,
+    WriteConcern? writeConcern,
+    bool? ordered,
+    String? comment,
+  }) {
     if (serverApi != null && serverApi.version == ServerApiVersion.v1) {
       return DeleteOptionsV1(
-          writeConcern: writeConcern, ordered: ordered, comment: comment);
+        writeConcern: writeConcern,
+        ordered: ordered,
+        comment: comment,
+      );
     }
     return DeleteOptionsOpen(
-        writeConcern: writeConcern, ordered: ordered, comment: comment);
+      writeConcern: writeConcern,
+      ordered: ordered,
+      comment: comment,
+    );
   }
 
   /// The WriteConcern for this delete operation.
@@ -50,19 +57,25 @@ abstract class DeleteOptions {
   DeleteOptionsOpen get toOpen => this is DeleteOptionsOpen
       ? this as DeleteOptionsOpen
       : DeleteOptionsOpen(
-          writeConcern: writeConcern, ordered: ordered, comment: comment);
+          writeConcern: writeConcern,
+          ordered: ordered,
+          comment: comment,
+        );
 
   DeleteOptionsV1 get toV1 => this is DeleteOptionsV1
       ? this as DeleteOptionsV1
       : DeleteOptionsV1(
-          writeConcern: writeConcern, ordered: ordered, comment: comment);
+          writeConcern: writeConcern,
+          ordered: ordered,
+          comment: comment,
+        );
 
   // The db parameter is used to transform the writeConcern into a Map
   /// When a writeConcern is given a Db object must be specified
   Options getOptions(MongoDatabase db) => <String, dynamic>{
-        if (writeConcern != null)
-          keyWriteConcern: writeConcern!.asMap(db.server.serverStatus),
-        if (!ordered) keyOrdered: ordered,
-        if (comment != null) keyComment: comment
-      };
+    if (writeConcern != null)
+      keyWriteConcern: writeConcern!.asMap(db.server.serverStatus),
+    if (!ordered) keyOrdered: ordered,
+    if (comment != null) keyComment: comment,
+  };
 }

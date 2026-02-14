@@ -52,22 +52,19 @@ class CreateIndexOptions {
   });
 
   Options get options => <String, dynamic>{
-        if (writeConcern != null)
-          keyWriteConcern:
-              writeConcern!.asMap(collection.db.server.serverStatus),
-        keyUniqueIndex: uniqueIndex,
-        keySparseIndex: sparseIndex,
-        keyBackground: background,
-        keyDropDuplicatedEntries: dropDuplicatedEntries,
-        if (geoLowerBound != null) keyGeoLowerBound: geoLowerBound!,
-        if (geoHighBound != null) keyGeoHighBound: geoHighBound!,
-        if (formatVersion != null) keyFormatVersion: formatVersion!,
-        if (expireAfterSeconds != null)
-          keyExpireAfterSeconds: expireAfterSeconds!,
-        if (indexName != null) keyIndexName: indexName!,
-        if (partialFilterExpression != null)
-          keyPartialFilterExpression: partialFilterExpression!,
-        if (collation != null) keyCollation: collation!,
-        //if (session 1= null) keySession: session
-      };
+    if (writeConcern != null)
+      keyWriteConcern: writeConcern!.asMap(collection.db.server.serverStatus),
+    keyUniqueIndex: uniqueIndex,
+    keySparseIndex: sparseIndex,
+    keyBackground: background,
+    keyDropDuplicatedEntries: dropDuplicatedEntries,
+    keyGeoLowerBound: ?geoLowerBound,
+    keyGeoHighBound: ?geoHighBound,
+    keyFormatVersion: ?formatVersion,
+    keyExpireAfterSeconds: ?expireAfterSeconds,
+    keyIndexName: ?indexName,
+    keyPartialFilterExpression: ?partialFilterExpression,
+    keyCollation: ?collation,
+    //if (session 1= null) keySession: session
+  };
 }

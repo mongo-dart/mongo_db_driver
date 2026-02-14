@@ -11,47 +11,59 @@ import '../v1/update_operation_v1.dart';
 
 abstract base class UpdateOperation extends CommandOperation {
   @protected
-  UpdateOperation.protected(MongoCollection collection, this.updates,
-      {bool? ordered,
-      super.session,
-      UpdateOptions? updateOptions,
-      Options? rawOptions})
-      : ordered = ordered ?? true,
-        super(
-            collection.db,
-            {},
-            <String, dynamic>{
-              ...?updateOptions?.getOptions(collection.db),
-              ...?rawOptions
-            },
-            collection: collection,
-            aspect: Aspect.writeOperation);
+  UpdateOperation.protected(
+    MongoCollection collection,
+    this.updates, {
+    bool? ordered,
+    super.session,
+    UpdateOptions? updateOptions,
+    Options? rawOptions,
+  }) : ordered = ordered ?? true,
+       super(
+         collection.db,
+         {},
+         <String, dynamic>{
+           ...?updateOptions?.getOptions(collection.db),
+           ...?rawOptions,
+         },
+         collection: collection,
+         aspect: Aspect.writeOperation,
+       );
 
   factory UpdateOperation(
-      MongoCollection collection, List<UpdateStatement> updates,
-      {bool? ordered,
-      ClientSession? session,
-      UpdateOptions? updateOptions,
-      Map<String, Object>? rawOptions}) {
+    MongoCollection collection,
+    List<UpdateStatement> updates, {
+    bool? ordered,
+    ClientSession? session,
+    UpdateOptions? updateOptions,
+    Map<String, Object>? rawOptions,
+  }) {
     if (collection.serverApi != null) {
       switch (collection.serverApi!.version) {
         case ServerApiVersion.v1:
-          return UpdateOperationV1(collection, updates,
-              ordered: ordered,
-              session: session,
-              updateOptions: updateOptions?.toV1,
-              rawOptions: rawOptions);
+          return UpdateOperationV1(
+            collection,
+            updates,
+            ordered: ordered,
+            session: session,
+            updateOptions: updateOptions?.toV1,
+            rawOptions: rawOptions,
+          );
         // ignore: unreachable_switch_default
         default:
           throw MongoDartError(
-              'Stable Api ${collection.serverApi!.version} not managed');
+            'Stable Api ${collection.serverApi!.version} not managed',
+          );
       }
     }
-    return UpdateOperationOpen(collection, updates,
-        ordered: ordered,
-        session: session,
-        updateOptions: updateOptions?.toOpen,
-        rawOptions: rawOptions);
+    return UpdateOperationOpen(
+      collection,
+      updates,
+      ordered: ordered,
+      session: session,
+      updateOptions: updateOptions?.toOpen,
+      rawOptions: rawOptions,
+    );
   }
 
   /// An array of one or more update statements to perform on the
@@ -66,8 +78,8 @@ abstract base class UpdateOperation extends CommandOperation {
 
   @override
   Command $buildCommand() => <String, dynamic>{
-        keyUpdate: collection!.collectionName,
-        keyUpdates: [for (var request in updates) request.toMap()],
-        if (ordered) keyOrdered: ordered,
-      };
+    keyUpdate: collection!.collectionName,
+    keyUpdates: [for (var request in updates) request.toMap()],
+    if (ordered) keyOrdered: ordered,
+  };
 }

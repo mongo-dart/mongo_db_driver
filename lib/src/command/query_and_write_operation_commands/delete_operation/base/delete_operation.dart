@@ -14,51 +14,65 @@ import 'delete_options.dart';
 
 abstract base class DeleteOperation extends CommandOperation {
   @protected
-  DeleteOperation.protected(MongoCollection collection, this.deleteRequests,
-      {super.session, DeleteOptions? deleteOptions, Options? rawOptions})
-      : super(
-            collection.db,
-            {},
-            <String, dynamic>{
-              ...?deleteOptions?.getOptions(collection.db),
-              ...?rawOptions
-            },
-            collection: collection,
-            aspect: Aspect.writeOperation) {
+  DeleteOperation.protected(
+    MongoCollection collection,
+    this.deleteRequests, {
+    super.session,
+    DeleteOptions? deleteOptions,
+    Options? rawOptions,
+  }) : super(
+         collection.db,
+         {},
+         <String, dynamic>{
+           ...?deleteOptions?.getOptions(collection.db),
+           ...?rawOptions,
+         },
+         collection: collection,
+         aspect: Aspect.writeOperation,
+       ) {
     if (deleteRequests.isEmpty) {
       throw ArgumentError('Delete request required in delete operation');
     }
   }
 
   factory DeleteOperation(
-      MongoCollection collection, List<DeleteStatement> deleteRequests,
-      {ClientSession? session,
-      DeleteOptions? deleteOptions,
-      Map<String, Object>? rawOptions}) {
+    MongoCollection collection,
+    List<DeleteStatement> deleteRequests, {
+    ClientSession? session,
+    DeleteOptions? deleteOptions,
+    Map<String, Object>? rawOptions,
+  }) {
     if (collection.serverApi != null) {
       switch (collection.serverApi!.version) {
         case ServerApiVersion.v1:
-          return DeleteOperationV1(collection, deleteRequests,
-              session: session,
-              deleteOptions: deleteOptions?.toV1,
-              rawOptions: rawOptions);
+          return DeleteOperationV1(
+            collection,
+            deleteRequests,
+            session: session,
+            deleteOptions: deleteOptions?.toV1,
+            rawOptions: rawOptions,
+          );
         // ignore: unreachable_switch_default
         default:
           throw MongoDartError(
-              'Stable Api ${collection.serverApi!.version} not managed');
+            'Stable Api ${collection.serverApi!.version} not managed',
+          );
       }
     }
-    return DeleteOperationOpen(collection, deleteRequests,
-        session: session,
-        deleteOptions: deleteOptions?.toOpen,
-        rawOptions: rawOptions);
+    return DeleteOperationOpen(
+      collection,
+      deleteRequests,
+      session: session,
+      deleteOptions: deleteOptions?.toOpen,
+      rawOptions: rawOptions,
+    );
   }
 
   List<DeleteStatement> deleteRequests;
 
   @override
   Command $buildCommand() => <String, dynamic>{
-        keyDelete: collection!.collectionName,
-        keyDeletes: [for (var request in deleteRequests) request.toMap()]
-      };
+    keyDelete: collection!.collectionName,
+    keyDeletes: [for (var request in deleteRequests) request.toMap()],
+  };
 }

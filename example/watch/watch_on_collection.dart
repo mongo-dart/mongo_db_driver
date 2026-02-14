@@ -55,8 +55,10 @@ void main() async {
   /// In our case, if we do not specify 'updateLookup' the returned document
   /// will not contain the 'custId' field and the match
   /// {'custId': {r'$in': [1, 2]}} will not be performed (no event returned)
-  var stream = collection.watch(pipeline,
-      changeStreamOptions: ChangeStreamOptions(fullDocument: 'updateLookup'));
+  var stream = collection.watch(
+    pipeline,
+    changeStreamOptions: ChangeStreamOptions(fullDocument: 'updateLookup'),
+  );
 
   var pleaseClose = false;
 
@@ -65,8 +67,10 @@ void main() async {
   var controller = stream.listen((changeEvent) {
     Map<String, dynamic> fullDocument =
         changeEvent.fullDocument ?? <String, dynamic>{};
-    print('Detected change for "custId" '
-        '${fullDocument['custId']}: "${fullDocument['name']}"');
+    print(
+      'Detected change for "custId" '
+      '${fullDocument['custId']}: "${fullDocument['name']}"',
+    );
 
     pleaseClose = true;
   });
@@ -76,8 +80,10 @@ void main() async {
   /// This is default behavior starting from 4.2, in 4.0 and earlier you have
   /// to set the writeConcern to 'majority' or the events will not be emitted
   await collection.updateOne(
-      where..$eq('custId', 1), UpdateExpression()..$set('name', 'Harry'),
-      writeConcern: WriteConcern.majority);
+    where..$eq('custId', 1),
+    UpdateExpression()..$set('name', 'Harry'),
+    writeConcern: WriteConcern.majority,
+  );
 
   var waitingCount = 0;
   await Future.doWhile(() async {

@@ -4,22 +4,26 @@ part of '../../crud_test.dart';
 /// In the following example, the document passed to the insertOneRaw()
 /// method does not contain the _id field:
 Future insertDocumentWithoutIdRaw(
-    MongoDatabase db, List<String> usedColletions) async {
+  MongoDatabase db,
+  List<String> usedColletions,
+) async {
   var collectionName = getRandomCollectionName(usedColletions);
   var collection = db.collection(collectionName);
   var result = await db.runCommand({
     'insert': collectionName,
     'documents': [
-      {'item': "card", 'qty': 15}
+      {'item': "card", 'qty': 15},
     ],
     'ordered': true,
     'writeConcern': WriteConcern.majority.asMap(db.server.serverStatus),
     'bypassDocumentValidation': false,
-    'comment': 'Test comment'
+    'comment': 'Test comment',
   });
 
-  var (_, result2, _, _) =
-      await collection.insertOne({'item': "card", 'qty': 15});
+  var (_, result2, _, _) = await collection.insertOne({
+    'item': "card",
+    'qty': 15,
+  });
   //MongoDocument result2 = doc.serverResponses.first;
 
   expect(result, containsPair('ok', 1.0));

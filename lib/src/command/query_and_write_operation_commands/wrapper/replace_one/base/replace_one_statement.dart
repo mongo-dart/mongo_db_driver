@@ -10,36 +10,65 @@ import '../../../../command_exp.dart';
 
 abstract class ReplaceOneStatement extends UpdateStatement {
   @protected
-  ReplaceOneStatement.protected(QueryUnion q, MongoDocument u,
-      {super.upsert, super.collation, super.hint})
-      : super.protected(q, UpdateUnion(u), multi: false) {
+  ReplaceOneStatement.protected(
+    QueryUnion q,
+    MongoDocument u, {
+    super.upsert,
+    super.collation,
+    super.hint,
+  }) : super.protected(q, UpdateUnion(u), multi: false) {
     if (!UpdateUnion(u).specs.isPureDocument) {
-      throw MongoDartError('Invalid document in ReplaceOneStatement. '
-          'The document is either null or contains update operators');
+      throw MongoDartError(
+        'Invalid document in ReplaceOneStatement. '
+        'The document is either null or contains update operators',
+      );
     }
   }
 
-  factory ReplaceOneStatement(QueryUnion q, MongoDocument u,
-      {ServerApi? serverApi,
-      bool? upsert,
-      CollationOptions? collation,
-      HintUnion? hint}) {
+  factory ReplaceOneStatement(
+    QueryUnion q,
+    MongoDocument u, {
+    ServerApi? serverApi,
+    bool? upsert,
+    CollationOptions? collation,
+    HintUnion? hint,
+  }) {
     if (serverApi != null && serverApi.version == ServerApiVersion.v1) {
-      return ReplaceOneStatementV1(q, u,
-          upsert: upsert, collation: collation, hint: hint);
+      return ReplaceOneStatementV1(
+        q,
+        u,
+        upsert: upsert,
+        collation: collation,
+        hint: hint,
+      );
     }
-    return ReplaceOneStatementOpen(q, u,
-        upsert: upsert, collation: collation, hint: hint);
+    return ReplaceOneStatementOpen(
+      q,
+      u,
+      upsert: upsert,
+      collation: collation,
+      hint: hint,
+    );
   }
 
   ReplaceOneStatementOpen get toReplaceOneOpen =>
       this is ReplaceOneStatementOpen
-          ? this as ReplaceOneStatementOpen
-          : ReplaceOneStatementOpen(QueryUnion(q), u.value,
-              upsert: upsert, collation: collation, hint: hint);
+      ? this as ReplaceOneStatementOpen
+      : ReplaceOneStatementOpen(
+          QueryUnion(q),
+          u.value,
+          upsert: upsert,
+          collation: collation,
+          hint: hint,
+        );
 
   ReplaceOneStatementV1 get toReplaceOneV1 => this is ReplaceOneStatementV1
       ? this as ReplaceOneStatementV1
-      : ReplaceOneStatementV1(QueryUnion(q), u.value,
-          upsert: upsert, collation: collation, hint: hint);
+      : ReplaceOneStatementV1(
+          QueryUnion(q),
+          u.value,
+          upsert: upsert,
+          collation: collation,
+          hint: hint,
+        );
 }

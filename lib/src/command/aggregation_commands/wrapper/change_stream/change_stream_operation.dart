@@ -4,19 +4,20 @@ import '../../aggregate/base/aggregate_operation.dart';
 import 'change_stream_options.dart';
 
 base class ChangeStreamOperation extends AggregateOperation {
-  ChangeStreamOperation(super.pipeline,
-      {super.collection,
-      super.db,
-      int? batchSize,
-      super.hint,
-      ChangeStreamOptions? changeStreamOptions,
-      super.rawOptions})
-      : super.protected(
-          cursor: batchSize == null
-              ? null
-              : <String, dynamic>{keyBatchSize: batchSize},
-          aggregateOptions: changeStreamOptions,
-        ) {
+  ChangeStreamOperation(
+    super.pipeline, {
+    super.collection,
+    super.db,
+    int? batchSize,
+    super.hint,
+    ChangeStreamOptions? changeStreamOptions,
+    super.rawOptions,
+  }) : super.protected(
+         cursor: batchSize == null
+             ? null
+             : <String, dynamic>{keyBatchSize: batchSize},
+         aggregateOptions: changeStreamOptions,
+       ) {
     var doc = <String, dynamic>{aggregateChangeStream: <String, dynamic>{}};
     print('${doc.runtimeType}, $doc');
     print(pipeline.runtimeType);
@@ -24,7 +25,8 @@ base class ChangeStreamOperation extends AggregateOperation {
       if (changeStreamOptions == null)
         aggregateChangeStream: <String, dynamic>{}
       else
-        aggregateChangeStream: changeStreamOptions.changeStreamSpecificOptions()
+        aggregateChangeStream: changeStreamOptions
+            .changeStreamSpecificOptions(),
     });
   }
 }

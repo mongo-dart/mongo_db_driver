@@ -26,14 +26,11 @@ class DropDatabaseOptions {
   /// New in version 4.4.
   final String? comment;
 
-  DropDatabaseOptions({
-    this.comment,
-    this.writeConcern,
-  });
+  DropDatabaseOptions({this.comment, this.writeConcern});
 
   Options getOptions(MongoDatabase db) => <String, dynamic>{
-        if (writeConcern != null)
-          keyWriteConcern: writeConcern!.asMap(db.server.serverStatus),
-        if (comment != null) keyComment: comment!,
-      };
+    if (writeConcern != null)
+      keyWriteConcern: writeConcern!.asMap(db.server.serverStatus),
+    keyComment: ?comment,
+  };
 }

@@ -4,9 +4,10 @@ import 'delete_many_statement_open.dart';
 
 base class DeleteManyOperationOpen extends DeleteManyOperation {
   DeleteManyOperationOpen(
-      super.collection, DeleteManyStatementOpen super.deleteManyStatement,
-      {super.session,
-      DeleteManyOptionsOpen? super.deleteManyOptions,
-      super.rawOptions})
-      : super.protected();
+    super.collection,
+    DeleteManyStatementOpen super.deleteManyStatement, {
+    super.session,
+    DeleteManyOptionsOpen? super.deleteManyOptions,
+    super.rawOptions,
+  }) : super.protected();
 }

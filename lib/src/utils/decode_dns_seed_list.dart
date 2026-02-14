@@ -9,25 +9,35 @@ var _log = Logger('decode_dns_seed_list');
 /// This method receive an Uri with "mongodb+srv" schema and returns
 /// A List of urls in "mongodb" schema format
 Future<List<String>> decodeDnsSeedlist(Uri dnsSeedlistUri) async {
-  assert(dnsSeedlistUri.scheme == 'mongodb+srv',
-      'The method "decodeDnsSeedlist" requires an Uri with mongodb+srv schema');
+  assert(
+    dnsSeedlistUri.scheme == 'mongodb+srv',
+    'The method "decodeDnsSeedlist" requires an Uri with mongodb+srv schema',
+  );
   if (dnsSeedlistUri.host.contains(',')) {
-    throw MongoDartError('mongodb+srv schema Uri requires only one host, '
-        'while more then one have been found in host section '
-        '("${dnsSeedlistUri.host}")');
+    throw MongoDartError(
+      'mongodb+srv schema Uri requires only one host, '
+      'while more then one have been found in host section '
+      '("${dnsSeedlistUri.host}")',
+    );
   }
-  var records =
-      await DnsUtils.lookupRecord(dnsSeedlistUri.host, RRecordType.TXT);
+  var records = await DnsUtils.lookupRecord(
+    dnsSeedlistUri.host,
+    RRecordType.TXT,
+  );
   if (records == null) {
-    throw MongoDartError('It is impossible to contact the DNS server'
-        ' or the host "${dnsSeedlistUri.host}" is not correct.');
+    throw MongoDartError(
+      'It is impossible to contact the DNS server'
+      ' or the host "${dnsSeedlistUri.host}" is not correct.',
+    );
   }
   if (records.isEmpty) {
     throw MongoDartError('DNS data is not correct (missing TXT detail)');
   }
   var additionalParms = records.first.data.replaceAll('"', '');
   records = await DnsUtils.lookupRecord(
-      '_mongodb._tcp.${dnsSeedlistUri.host}', RRecordType.SRV);
+    '_mongodb._tcp.${dnsSeedlistUri.host}',
+    RRecordType.SRV,
+  );
   if (records == null) {
     throw MongoDartError('Impossible to contact the DNS server');
   }
@@ -38,11 +48,12 @@ Future<List<String>> decodeDnsSeedlist(Uri dnsSeedlistUri) async {
   var postPrefix = user.isEmpty ? '' : '$user@';
   var prefix = 'mongodb://$postPrefix';
   var requestedParameters = dnsSeedlistUri.queryParameters;
-  var dnsServerParameters =
-      Uri.parse('mongodb://db.example.com/?$additionalParms').queryParameters;
+  var dnsServerParameters = Uri.parse(
+    'mongodb://db.example.com/?$additionalParms',
+  ).queryParameters;
   var actualParameters = <String, String>{
     ...dnsServerParameters,
-    ...requestedParameters
+    ...requestedParameters,
   };
   var tlsString = actualParameters['tls'] ?? actualParameters['ssl'];
   if (tlsString == null) {
@@ -83,8 +94,10 @@ Future<List<String>> decodeDnsSeedlist(Uri dnsSeedlistUri) async {
       var actualParts = actualUri.host.split('.');
       var actualDomain =
           '${actualParts[actualParts.length - 2]}.${actualParts.last}';
-      throw MongoDartError('Different domain detected in DNS SRV record: '
-          'required "$dnsDomain", detected "$actualDomain"');
+      throw MongoDartError(
+        'Different domain detected in DNS SRV record: '
+        'required "$dnsDomain", detected "$actualDomain"',
+      );
     }
     _log.info('Dns host detected: $address');
   }

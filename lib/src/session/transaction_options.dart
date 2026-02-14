@@ -21,13 +21,15 @@ class TransactionOptions {
 
   // TODO manage the value depending on the topology
   Options getOptions(MongoClient client) => <String, dynamic>{
-        if (writeConcern != null)
-          keyWriteConcern: writeConcern!.asMap(
-              client.topology?.primary?.serverStatus ??
-                  (throw MongoDartError('No server detected'))),
-        if (readConcern != null) keyReadConcern: readConcern!.toMap(),
-        ...?readPreference?.toMap(
-            topologyType: client.topology?.type ?? TopologyType.unknown),
-        if (maxCommitTimeMS != null) keyMaxCommitTimeMS: maxCommitTimeMS
-      };
+    if (writeConcern != null)
+      keyWriteConcern: writeConcern!.asMap(
+        client.topology?.primary?.serverStatus ??
+            (throw MongoDartError('No server detected')),
+      ),
+    if (readConcern != null) keyReadConcern: readConcern!.toMap(),
+    ...?readPreference?.toMap(
+      topologyType: client.topology?.type ?? TopologyType.unknown,
+    ),
+    if (maxCommitTimeMS != null) keyMaxCommitTimeMS: maxCommitTimeMS,
+  };
 }

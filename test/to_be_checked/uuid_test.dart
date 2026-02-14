@@ -43,8 +43,10 @@ void main() async {
     tearDownAll(() async {
       await client.connect();
       db = client.db();
-      await Future.forEach(usedCollectionNames,
-          (String collectionName) => db.collection(collectionName).drop());
+      await Future.forEach(
+        usedCollectionNames,
+        (String collectionName) => db.collection(collectionName).drop(),
+      );
       await client.close();
     });
     group('Uuid:', () {
@@ -55,8 +57,9 @@ void main() async {
         var uuid = Uuid().v4obj();
         await collection.insertOne({'uuid': uuid, 'null': null});
 
-        var values =
-            await collection.find(filter: where..$eq('uuid', uuid)).toList();
+        var values = await collection
+            .find(filter: where..$eq('uuid', uuid))
+            .toList();
 
         expect(values.length, 1);
         expect(values.first['uuid'], uuid);
@@ -71,7 +74,9 @@ void main() async {
         await collection.insertOne({'uuid': uuid, 'null': null});
 
         await collection.updateOne(
-            where..$eq('null', null), UpdateExpression()..$set('newField', 12));
+          where..$eq('null', null),
+          UpdateExpression()..$set('newField', 12),
+        );
 
         var values = await collection.find().toList();
 
@@ -88,9 +93,10 @@ void main() async {
         await collection.insertOne({'uuid': uuid, 'null': null});
 
         var uuidNew = Uuid().v4obj();
-        await collection.replaceOne(
-            where..$eq('notNull', 0), {'uuid': uuidNew, 'notNull': 0},
-            upsert: true);
+        await collection.replaceOne(where..$eq('notNull', 0), {
+          'uuid': uuidNew,
+          'notNull': 0,
+        }, upsert: true);
 
         var values = await collection.find().toList();
 

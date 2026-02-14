@@ -17,13 +17,17 @@ enum TopologyType {
   replicaSetWithPrimary,
   sharded,
   loadBalanced,
-  unknown
+  unknown,
 }
 
 abstract class Topology {
   @protected
-  Topology.protected(this.mongoClient, this.hostsSeedList,
-      {List<Server>? detectedServers, required this.type}) {
+  Topology.protected(
+    this.mongoClient,
+    this.hostsSeedList, {
+    List<Server>? detectedServers,
+    required this.type,
+  }) {
     if (detectedServers != null) {
       servers.addAll(detectedServers);
     }
@@ -58,9 +62,9 @@ abstract class Topology {
 
   // *** To be overridden. This behavior works just for standalone typology
   /// Retruns the server based on the readPreference
-  Server getServer(
-          {ReadPreferenceMode? readPreferenceMode =
-              ReadPreferenceMode.primary}) =>
+  Server getServer({
+    ReadPreferenceMode? readPreferenceMode = ReadPreferenceMode.primary,
+  }) =>
       isConnected ? servers.first : throw MongoDartError('No primary detected');
 
   Future connect() async {
@@ -76,7 +80,10 @@ abstract class Topology {
       // TODO Check serverConfig
       var serverConfig = await parseUri(element, mongoClientOptions);
       var server = Server(
-          mongoClient, serverConfig, mongoClientOptions.connectionPoolSettings);
+        mongoClient,
+        serverConfig,
+        mongoClientOptions.connectionPoolSettings,
+      );
       servers.add(server);
       await server.connect();
     }
@@ -92,8 +99,9 @@ abstract class Topology {
         await server.refreshStatus();
       }
       if (!mongoClientOptions.directConnection) {
-        additionalServers
-            .addAll(await addOtherServers(server, additionalServers));
+        additionalServers.addAll(
+          await addOtherServers(server, additionalServers),
+        );
       }
     }
 
@@ -110,11 +118,13 @@ abstract class Topology {
       if (!server.isConnected) {
         continue;
       }
-      int calculatedMinutes = (server.hello?.logicalSessionTimeoutMinutes ??
+      int calculatedMinutes =
+          (server.hello?.logicalSessionTimeoutMinutes ??
           defLogicalSessionTimeoutMinutes.inMinutes);
       if (calculatedMinutes < detectedLogicalSessionTimeoutMinutes.inMinutes) {
-        detectedLogicalSessionTimeoutMinutes =
-            Duration(minutes: calculatedMinutes);
+        detectedLogicalSessionTimeoutMinutes = Duration(
+          minutes: calculatedMinutes,
+        );
       }
     }
     logicalSessionTimeoutMinutes = detectedLogicalSessionTimeoutMinutes;
@@ -123,14 +133,15 @@ abstract class Topology {
   // *** To be overridden. This behavior works just for standalone typology
   @protected
   Future<Set<Server>> addOtherServers(
-          Server server, Set<Server> additionalServers) async =>
-      <Server>{};
+    Server server,
+    Set<Server> additionalServers,
+  ) async => <Server>{};
 
   Future<ServerConfig> parseUri(Uri uri, MongoClientOptions options) async {
     if (uri.scheme != 'mongodb') {
       throw MongoDartError('Invalid scheme in uri: ${uri.scheme}');
     }
-/* 
+    /* 
     Uint8List? tlsCAFileContent;
     if (options.tlsCAFile != null) {
       tlsCAFileContent = await File(options.tlsCAFile!).readAsBytes();
@@ -158,7 +169,7 @@ abstract class Topology {
     if (serverConfig.port == 0) {
       serverConfig.port = defMongoPort;
     }
-/* 
+    /* 
     mongoClient.clientAuth?.userName = options.auth?.username;
     mongoClient.clientAuth?.password = options.auth?.password;
  */
@@ -216,7 +227,7 @@ abstract class Topology {
   ///
   /// See Replacing the TopologyDescription for an example implementation of
   /// topologyVersion comparison.
-//https://github.com/mongodb/specifications/blob/master/source/server-discovery-and-monitoring/server-discovery-and-monitoring.md#topologyversion
+  //https://github.com/mongodb/specifications/blob/master/source/server-discovery-and-monitoring/server-discovery-and-monitoring.md#topologyversion
 
   Future<void> monitorServers() async {
     if (endMonitoring) {
@@ -224,8 +235,9 @@ abstract class Topology {
     }
 
     await Future.delayed(
-        Duration(milliseconds: mongoClientOptions.heartbeatFrequencyMS),
-        updateServersStatus);
+      Duration(milliseconds: mongoClientOptions.heartbeatFrequencyMS),
+      updateServersStatus,
+    );
     unawaited(monitorServers());
   }
 

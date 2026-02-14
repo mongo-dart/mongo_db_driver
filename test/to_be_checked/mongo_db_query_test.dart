@@ -14,10 +14,11 @@ void testQueryExpressionOnObjectId() {
   var selector = where..id(id);
   expect(selector.rawFilter.length, greaterThan(0));
   expect(
-      selector.rawFilter,
-      equals({
-        '_id': {r'$eq': id}
-      }));
+    selector.rawFilter,
+    equals({
+      '_id': {r'$eq': id},
+    }),
+  );
 }
 
 void testQueries() {
@@ -25,7 +26,7 @@ void testQueries() {
     ..$gt('my_field', 995)
     ..sortBy('my_field');
   expect(selector.rawFilter, {
-    'my_field': {r'$gt': 995}
+    'my_field': {r'$gt': 995},
   });
   expect(selector.sortExp.build(), {'my_field': 1});
   selector = where
@@ -39,7 +40,7 @@ void testQueries() {
     ..$eq('my_field', 17)
     ..fields.includeField('str_field');
   expect(selector.rawFilter, {
-    'my_field': {r'$eq': 17}
+    'my_field': {r'$eq': 17},
   });
   expect(selector.fields.build(), {'str_field': 1});
   selector = where
@@ -64,19 +65,21 @@ void testQueryComposition() {
     ..$gt('a', 995)
     ..$eq('b', 'bbb');
   expect(
-      selector.rawFilter,
-      equals({
-        'a': {r'$gt': 995},
-        'b': {r'$eq': 'bbb'}
-      }));
+    selector.rawFilter,
+    equals({
+      'a': {r'$gt': 995},
+      'b': {r'$eq': 'bbb'},
+    }),
+  );
   selector = where
     ..$gt('a', 995)
     ..$lt('a', 1000);
   expect(
-      selector.rawFilter,
-      equals({
-        'a': {r'$gt': 995, r'$lt': 1000}
-      }));
+    selector.rawFilter,
+    equals({
+      'a': {r'$gt': 995, r'$lt': 1000},
+    }),
+  );
   selector = where
     ..$gt('a', 995)
     ..$and
@@ -89,12 +92,12 @@ void testQueryComposition() {
     'a': {'\$gt': 995},
     '\$or': [
       {
-        'b': {'\$lt': 1000}
+        'b': {'\$lt': 1000},
       },
       {
-        'c': {'\$gt': 2000}
-      }
-    ]
+        'c': {'\$gt': 2000},
+      },
+    ],
   });
   selector = where
     ..open
@@ -107,13 +110,13 @@ void testQueryComposition() {
   expect(selector.rawFilter, {
     '\$or': [
       {
-        'b': {'\$lt': 1000}
+        'b': {'\$lt': 1000},
       },
       {
-        'c': {'\$gt': 2000}
-      }
+        'c': {'\$gt': 2000},
+      },
     ],
-    'a': {'\$gt': 995}
+    'a': {'\$gt': 995},
   });
   selector = where
     ..open
@@ -125,13 +128,13 @@ void testQueryComposition() {
   expect(selector.rawFilter, {
     '\$or': [
       {
-        'b': {'\$lt': 1000}
+        'b': {'\$lt': 1000},
       },
       {
-        'c': {'\$gt': 2000}
-      }
+        'c': {'\$gt': 2000},
+      },
     ],
-    'a': {'\$gt': 995}
+    'a': {'\$gt': 995},
   });
   selector = where
     ..$lt('b', 1000)
@@ -142,15 +145,15 @@ void testQueryComposition() {
   expect(selector.rawFilter, {
     '\$or': [
       {
-        'b': {'\$lt': 1000}
+        'b': {'\$lt': 1000},
       },
       {
-        'c': {'\$gt': 2000}
+        'c': {'\$gt': 2000},
       },
       {
-        'a': {'\$gt': 995}
-      }
-    ]
+        'a': {'\$gt': 995},
+      },
+    ],
   });
   selector = where
     ..$eq('price', 1.99)
@@ -164,12 +167,12 @@ void testQueryComposition() {
     'price': {r'$eq': 1.99},
     '\$or': [
       {
-        'qty': {'\$lt': 20}
+        'qty': {'\$lt': 20},
       },
       {
-        'sale': {r'$eq': true}
-      }
-    ]
+        'sale': {r'$eq': true},
+      },
+    ],
   });
   selector = where
     ..$eq('price', 1.99)
@@ -180,7 +183,7 @@ void testQueryComposition() {
   expect(selector.rawFilter, {
     'price': {r'$eq': 1.99},
     'qty': {'\$lt': 20},
-    'sale': {r'$eq': true}
+    'sale': {r'$eq': true},
   });
   selector = where
     ..$eq('price', 1.99)
@@ -189,7 +192,7 @@ void testQueryComposition() {
   expect(selector.rawFilter, {
     'price': {r'$eq': 1.99},
     'qty': {'\$lt': 20},
-    'sale': {r'$eq': true}
+    'sale': {r'$eq': true},
   });
 }
 
@@ -198,18 +201,20 @@ void testUpdateExpression() {
     ..$set('a', 995)
     ..$set('b', 'bbb');
   expect(
-      modifier.build(),
-      equals({
-        r'$set': {'a': 995, 'b': 'bbb'}
-      }));
+    modifier.build(),
+    equals({
+      r'$set': {'a': 995, 'b': 'bbb'},
+    }),
+  );
   modifier = modify
     ..$unset('a')
     ..$unset('b');
   expect(
-      modifier.build(),
-      equals({
-        r'$unset': {'a': 1, 'b': 1}
-      }));
+    modifier.build(),
+    equals({
+      r'$unset': {'a': 1, 'b': 1},
+    }),
+  );
 }
 
 void testGetQueryString() {

@@ -29,7 +29,7 @@ abstract class GridFSFile {
     return retValue;
   }
 
-/* 
+  /* 
   Future<bool> validate() {
     //if (fs == null) {
     //  throw MongoDartError('no fs');

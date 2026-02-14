@@ -9,11 +9,13 @@ class SaslStartOptions {
   final bool skipEmptyExchange;
   final int autoAuthorize;
 
-  const SaslStartOptions(
-      {this.skipEmptyExchange = true, this.autoAuthorize = 1});
+  const SaslStartOptions({
+    this.skipEmptyExchange = true,
+    this.autoAuthorize = 1,
+  });
 
   Options get options => <String, dynamic>{
-        keyOptions: {keySkipEmptyExchange: skipEmptyExchange},
-        keyAutoAuthorize: 1
-      };
+    keyOptions: {keySkipEmptyExchange: skipEmptyExchange},
+    keyAutoAuthorize: 1,
+  };
 }

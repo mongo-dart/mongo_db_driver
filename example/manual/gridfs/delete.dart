@@ -58,7 +58,7 @@ void main() async {
     0x80,
     0x81,
     0xfe,
-    0xff
+    0xff,
   ];
 
   // Set small chunks
@@ -76,7 +76,7 @@ void main() async {
   var extraData = <String, dynamic>{
     'test': [1, 2, 3],
     'extraData': 'Test',
-    'map': {'a': 1}
+    'map': {'a': 1},
   };
 
   var inputStream = Stream.fromIterable([data]);

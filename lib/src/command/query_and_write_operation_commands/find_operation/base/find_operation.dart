@@ -18,18 +18,24 @@ import '../find_result.dart';
 typedef FindDocumentRec = (FindResult findResult, MongoDocument serverDocument);
 
 base class FindOperation extends CommandOperation {
-  FindOperation.protected(MongoCollection collection, this.filter,
-      {this.sort,
-      this.projection,
-      this.hint,
-      this.skip,
-      this.limit,
-      super.session,
-      FindOptions? findOptions,
-      Options? rawOptions})
-      : super(collection.db, {},
-            <String, dynamic>{...?findOptions?.options, ...?rawOptions},
-            collection: collection, aspect: Aspect.readOperation) {
+  FindOperation.protected(
+    MongoCollection collection,
+    this.filter, {
+    this.sort,
+    this.projection,
+    this.hint,
+    this.skip,
+    this.limit,
+    super.session,
+    FindOptions? findOptions,
+    Options? rawOptions,
+  }) : super(
+         collection.db,
+         {},
+         <String, dynamic>{...?findOptions?.options, ...?rawOptions},
+         collection: collection,
+         aspect: Aspect.readOperation,
+       ) {
     if (skip != null && skip! < 1) {
       throw MongoDartError('Skip parameter must be a positive integer');
     }
@@ -55,30 +61,37 @@ base class FindOperation extends CommandOperation {
     if (collection.serverApi != null) {
       switch (collection.serverApi!.version) {
         case ServerApiVersion.v1:
-          return FindOperationV1(collection, filter,
-              sort: sort,
-              projection: projection,
-              hint: hint,
-              skip: skip,
-              limit: limit,
-              session: session,
-              findOptions: findOptions?.toV1,
-              rawOptions: rawOptions);
+          return FindOperationV1(
+            collection,
+            filter,
+            sort: sort,
+            projection: projection,
+            hint: hint,
+            skip: skip,
+            limit: limit,
+            session: session,
+            findOptions: findOptions?.toV1,
+            rawOptions: rawOptions,
+          );
         // ignore: unreachable_switch_default
         default:
           throw MongoDartError(
-              'Stable Api ${collection.serverApi!.version} not managed');
+            'Stable Api ${collection.serverApi!.version} not managed',
+          );
       }
     }
-    return FindOperationOpen(collection, filter,
-        sort: sort,
-        projection: projection,
-        hint: hint,
-        skip: skip,
-        limit: limit,
-        session: session,
-        findOptions: findOptions?.toOpen,
-        rawOptions: rawOptions);
+    return FindOperationOpen(
+      collection,
+      filter,
+      sort: sort,
+      projection: projection,
+      hint: hint,
+      skip: skip,
+      limit: limit,
+      session: session,
+      findOptions: findOptions?.toOpen,
+      rawOptions: rawOptions,
+    );
   }
 
   /// Optional. The query predicate. If unspecified, then all documents in the
@@ -131,7 +144,7 @@ base class FindOperation extends CommandOperation {
         limit != null &&
         limit! == 1) {
       return <String, dynamic>{
-        for (var key in filter.query.keys) key: filter.query[key] ?? ''
+        for (var key in filter.query.keys) key: filter.query[key] ?? '',
       };
     }
     return <String, dynamic>{
@@ -148,8 +161,10 @@ base class FindOperation extends CommandOperation {
 
   Future<FindDocumentRec> executeDocument({ClientSession? session}) async {
     if (collection!.collectionName == r'$cmd') {
-      throw MongoDartError('cannot return a FindResult object '
-          r'for a coomand request ($cmd collection)');
+      throw MongoDartError(
+        'cannot return a FindResult object '
+        r'for a coomand request ($cmd collection)',
+      );
     }
     var ret = await execute();
     return (FindResult(ret, session ?? super.session), ret);

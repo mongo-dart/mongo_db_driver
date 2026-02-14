@@ -8,7 +8,8 @@ bool checkSameDomain(Uri uri, Uri checkUri) {
   }
   if (checkParts.length < 2) {
     throw MongoDartError(
-        'At list a domain is required, but got "${checkUri.host}"');
+      'At list a domain is required, but got "${checkUri.host}"',
+    );
   }
   return uriParts.last == checkParts.last &&
       uriParts[uriParts.length - 2] == checkParts[checkParts.length - 2];

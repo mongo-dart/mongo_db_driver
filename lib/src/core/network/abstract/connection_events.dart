@@ -7,7 +7,7 @@ Set<String> connectionEvents = {
   extractType(ConnectionError),
   extractType(ConnectionClosed),
   extractType(ConnectionActive),
-  extractType(ConnectionAvailable)
+  extractType(ConnectionAvailable),
 };
 
 abstract class ConnectionEvent extends Event {

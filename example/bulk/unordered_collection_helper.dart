@@ -61,8 +61,8 @@ void main() async {
           {'cust_num': 12345, 'item': 'tst24', 'status': 'D'},
           {'cust_num': 12911, 'item': 'book1', 'status': 'A'},
           {'cust_num': 12345, 'item': 'sample', 'status': 'R'},
-        ]
-      }
+        ],
+      },
     },
     {
       /// here also you can use the convenient constants or the string
@@ -70,17 +70,17 @@ void main() async {
       bulkUpdateMany: {
         bulkFilter: {'status': 'D'},
         bulkUpdate: {
-          r'$set': {'status': 'd'}
-        }
-      }
+          r'$set': {'status': 'd'},
+        },
+      },
     },
     {
       bulkUpdateOne: {
         bulkFilter: {'cust_num': 99999, 'item': 'abc123', 'status': 'A'},
         bulkUpdate: {
-          r'$inc': {'ordered': 1}
-        }
-      }
+          r'$inc': {'ordered': 1},
+        },
+      },
     },
     {
       bulkReplaceOne: {
@@ -88,11 +88,11 @@ void main() async {
         bulkReplacement: {
           'cust_num': 12345,
           'item': 'tst24',
-          'status': 'Replaced'
+          'status': 'Replaced',
         },
-        bulkUpsert: true
-      }
-    }
+        bulkUpsert: true,
+      },
+    },
 
     /// Unordered operations will be executed in an "optimized" way.
     /// Today the driver joins all inserts and execute them and then

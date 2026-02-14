@@ -25,7 +25,7 @@ void main() async {
     {'_id': 4, 'name': 'George', 'state': 'active', 'rating': 95, 'score': 8},
     {'_id': 5, 'name': 'Jim', 'state': 'idle', 'rating': 40, 'score': 3},
     {'_id': 6, 'name': 'Laureen', 'state': 'busy', 'rating': 87, 'score': 8},
-    {'_id': 7, 'name': 'John', 'state': 'idle', 'rating': 72, 'score': 7}
+    {'_id': 7, 'name': 'John', 'state': 'idle', 'rating': 72, 'score': 7},
   ]);
 
   if (!ret.isSuccess) {
@@ -34,9 +34,10 @@ void main() async {
 
   var res = await collection
       .find(
-          filter: where
-            ..$eq('name', 'Tom')
-            ..$gt('rating', 10))
+        filter: where
+          ..$eq('name', 'Tom')
+          ..$gt('rating', 10),
+      )
       .toList();
 
   print('First document fetched: ${res.first['name']} - ${res.first['state']}');

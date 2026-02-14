@@ -408,4 +408,15 @@ class ConnectionStringOptions {
   /// For the default, see the Drivers documentation for your driver.
   /// *********    NOT YET MANAGED     *******************
   static const uuidRepresentation = 'uuidRepresentation';
+
+  /// Specifies whether the client is connecting to a load balancer.
+  /// This option is false by default.
+  /// You can set this option to true only if you meet the following
+  /// requirements:
+  /// -  You specify only one host name.
+  /// -  You aren't connecting to a replica set.
+  /// -  The srvMaxHosts option is unset or has a value of 0.
+  /// -  The directConnection option is unset or has a value of false.
+  /// *********    NOT YET MANAGED     *******************
+  static const loadBalanced = 'loadBalanced';
 }

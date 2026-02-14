@@ -42,18 +42,18 @@ void main() async {
   }
   var aggregateResult = await collection.aggregateToStream([
     {
-      r'$project': {'state': 1, '_id': 0}
+      r'$project': {'state': 1, '_id': 0},
     },
     {
       r'$unionWith': {
         'coll': collection2Name,
         'pipeline': [
           {
-            r'$project': {'state': 1, '_id': 0}
-          }
-        ]
-      }
-    }
+            r'$project': {'state': 1, '_id': 0},
+          },
+        ],
+      },
+    },
   ]).toList();
 
   print('Documents number: ${aggregateResult.length}'); // 2

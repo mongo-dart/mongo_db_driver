@@ -12,8 +12,9 @@ class BulkWriteResult extends AbstractWriteResult {
   //List<Map<String, dynamic>>? documents;
 
   BulkWriteResult.fromMap(
-      WriteCommandType writeCommandType, Map<String, dynamic> result)
-      : super.fromMap(writeCommandType, result) {
+    WriteCommandType writeCommandType,
+    Map<String, dynamic> result,
+  ) : super.fromMap(writeCommandType, result) {
     if (result[keyWriteErrors] != null &&
         (result[keyWriteErrors] as List).isNotEmpty) {
       var writeErrorsList = <Map<String, dynamic>>[];
@@ -21,7 +22,7 @@ class BulkWriteResult extends AbstractWriteResult {
         writeErrorsList.add(<String, dynamic>{...element});
       }
       writeErrors = [
-        for (var errorMap in writeErrorsList) BulkWriteError.fromMap(errorMap)
+        for (var errorMap in writeErrorsList) BulkWriteError.fromMap(errorMap),
       ];
     }
   }
@@ -33,7 +34,9 @@ class BulkWriteResult extends AbstractWriteResult {
   int get writeErrorsNumber => writeErrors.length;
 
   void mergeFromMap(
-      WriteCommandType writeCommandType, Map<String, dynamic> result) {
+    WriteCommandType writeCommandType,
+    Map<String, dynamic> result,
+  ) {
     if (this.writeCommandType != writeCommandType) {
       this.writeCommandType = null;
     }
@@ -64,7 +67,7 @@ class BulkWriteResult extends AbstractWriteResult {
     }
     if (result[keyWriteConcernError] != null) {
       var writeConcernMap = <String, dynamic>{
-        ...result[keyWriteConcernError] as Map
+        ...result[keyWriteConcernError] as Map,
       };
       writeConcernError = WriteConcernError.fromMap(writeConcernMap);
     }
@@ -76,7 +79,7 @@ class BulkWriteResult extends AbstractWriteResult {
       }
       writeErrors = [
         ...writeErrors,
-        for (var errorMap in writeErrorsList) BulkWriteError.fromMap(errorMap)
+        for (var errorMap in writeErrorsList) BulkWriteError.fromMap(errorMap),
       ];
     }
   }

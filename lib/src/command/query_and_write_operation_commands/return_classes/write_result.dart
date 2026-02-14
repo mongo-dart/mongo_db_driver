@@ -14,12 +14,14 @@ class WriteResult extends AbstractWriteResult {
   WriteError? writeError;
 
   WriteResult.fromMap(
-      WriteCommandType writeCommandType, Map<String, dynamic> result)
-      : super.fromMap(writeCommandType, result) {
+    WriteCommandType writeCommandType,
+    Map<String, dynamic> result,
+  ) : super.fromMap(writeCommandType, result) {
     if (result[keyWriteErrors] != null &&
         (result[keyWriteErrors] as List).isNotEmpty) {
-      writeError = WriteError.fromMap(
-          <String, dynamic>{...?(result[keyWriteErrors] as List).first});
+      writeError = WriteError.fromMap(<String, dynamic>{
+        ...?(result[keyWriteErrors] as List).first,
+      });
     }
   }
 

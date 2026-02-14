@@ -5,15 +5,16 @@ import 'aggregate_options_open.dart';
 /// In case of admin/diagnostic pipeline which does not require an underlying
 /// collection, the db parameter must be passed instead.
 base class AggregateOperationOpen extends AggregateOperation {
-  AggregateOperationOpen(super.pipeline,
-      {super.collection,
-      super.db,
-      super.explain,
-      super.cursor,
-      super.session,
-      super.hint,
-      AggregateOptionsOpen? aggregateOptionsOpen,
-      super.rawOptions,
-      super.let})
-      : super.protected(aggregateOptions: aggregateOptionsOpen);
+  AggregateOperationOpen(
+    super.pipeline, {
+    super.collection,
+    super.db,
+    super.explain,
+    super.cursor,
+    super.session,
+    super.hint,
+    AggregateOptionsOpen? aggregateOptionsOpen,
+    super.rawOptions,
+    super.let,
+  }) : super.protected(aggregateOptions: aggregateOptionsOpen);
 }

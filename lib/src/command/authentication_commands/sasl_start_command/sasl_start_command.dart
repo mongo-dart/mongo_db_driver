@@ -10,19 +10,26 @@ import '../../base/auth_command.dart';
 import 'sasl_start_options.dart';
 
 base class SaslStartCommand extends AuthCommand {
-  SaslStartCommand(MongoClient client, String mechanism, Uint8List payload,
-      {super.session,
-      SaslStartOptions? saslStartOptions,
-      Options? rawOptions,
-      ConnectionBase? connection})
-      : super(client, <String, dynamic>{
-          keySaslStart: 1,
-          keyMechanism: mechanism,
-          keyPayload: base64.encode(payload)
-        }, options: <String, dynamic>{
-          ...?saslStartOptions?.options,
-          ...?rawOptions
-        }) {
+  SaslStartCommand(
+    MongoClient client,
+    String mechanism,
+    Uint8List payload, {
+    super.session,
+    SaslStartOptions? saslStartOptions,
+    Options? rawOptions,
+    ConnectionBase? connection,
+  }) : super(
+         client,
+         <String, dynamic>{
+           keySaslStart: 1,
+           keyMechanism: mechanism,
+           keyPayload: base64.encode(payload),
+         },
+         options: <String, dynamic>{
+           ...?saslStartOptions?.options,
+           ...?rawOptions,
+         },
+       ) {
     requiresAuthentication = false;
   }
 }

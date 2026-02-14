@@ -15,7 +15,8 @@ class Connection extends ConnectionBase {
     } catch (e) {
       // Socket connection - Connection refused from remote computer.
       var ex = ConnectionException(
-          'Could not connect to ${serverConfig.hostUrl}\n- $e');
+        'Could not connect to ${serverConfig.hostUrl}\n- $e',
+      );
       throw ex;
     }
 
